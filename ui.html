@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#1a1510;--sf:#231c14;--sf2:#2c2418;--br:#3a3020;--brh:#4e4030;--tx:#e8dfd0;--mu:#907e68;--dm:#7a6a58;--go:#c98d1a;--ru:#cc6030;--te:#5a9e80;--go-dim:rgba(201,141,26,.10);--ru-dim:rgba(204,96,48,.10)}
+body{background:var(--bg);color:var(--tx);font-family:'Martian Mono',monospace;font-size:11px;line-height:1.5;overflow-x:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--br)}
+.tab{flex:1;padding:10px 0;text-align:center;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab.active{color:var(--go);border-bottom-color:var(--go)}
+.tab:hover:not(.active){color:var(--tx)}
+.panel{display:none;padding:12px 14px}.panel.active{display:block}
+.sel-all{display:flex;align-items:center;gap:7px;padding:6px 2px 10px;border-bottom:1px solid var(--br);margin-bottom:10px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm);cursor:pointer}
+.sel-all:hover{color:var(--mu)}
+.sel-all input{accent-color:var(--go);width:12px;height:12px;flex-shrink:0;cursor:pointer}
+.sec-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--br)}
+.sec-row:last-child{border-bottom:none}
+.sec-label{flex:1;display:flex;align-items:center;gap:8px;font-size:10px;color:var(--tx);cursor:pointer}
+.sec-label input[type=checkbox]{accent-color:var(--go);width:12px;height:12px;flex-shrink:0;cursor:pointer}
+.num-tag{font-size:9px;color:var(--dm);letter-spacing:.06em;flex-shrink:0}
+.row-actions{display:flex;gap:3px;flex-shrink:0}
+.ibtn{font-family:'Martian Mono',monospace;font-size:8px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--brh);border-radius:2px;cursor:pointer;padding:3px 6px;min-height:22px;background:transparent;color:var(--mu);transition:all .12s;display:inline-flex;align-items:center}
+.ibtn:hover{background:var(--sf2);color:var(--tx)}
+.ibtn.del:hover{border-color:var(--ru);color:var(--ru);background:var(--ru-dim)}
+.ibtn.bld:hover{border-color:var(--go);color:var(--go);background:var(--go-dim)}
+.actions{display:flex;gap:5px;padding:10px 14px;border-top:1px solid var(--br);background:var(--sf)}
+.btn{font-family:'Martian Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;border:1px solid;border-radius:2px;cursor:pointer;padding:0 12px;height:32px;transition:all .12s;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn-primary{background:var(--go);color:var(--bg);border-color:var(--go);flex:2}.btn-primary:hover{filter:brightness(1.12)}
+.btn-ghost{background:transparent;color:var(--mu);border-color:var(--brh);flex:1}.btn-ghost:hover{background:var(--sf2);color:var(--tx)}
+.btn-danger{background:transparent;color:var(--ru);border-color:var(--ru);flex:1}.btn-danger:hover{background:var(--ru-dim)}
+.statusbar{padding:8px 14px;font-size:9px;letter-spacing:.06em;color:var(--dm);border-top:1px solid var(--br);display:flex;align-items:center;gap:8px;min-height:34px}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--brh)}
+.dot.ok{background:var(--te)}.dot.err{background:var(--ru)}.dot.busy{background:var(--go);animation:pulse .7s infinite alternate}
+@keyframes pulse{from{opacity:.3}to{opacity:1}}
+</style>
+</head>
+<body>
+<div class="tabs">
+  <div class="tab active" id="tab-sg" onclick="switchTab('sg')">Style Guide</div>
+  <div class="tab" id="tab-lp" onclick="switchTab('lp')">Landing Page</div>
+</div>
+<div class="panel active" id="panel-sg">
+  <div class="sel-all"><input type="checkbox" id="sg-all" onchange="toggleAll('sg',this.checked)"><span onclick="toggleAllClick('sg')">Select all</span></div>
+  <div id="sg-list"></div>
+</div>
+<div class="panel" id="panel-lp">
+  <div class="sel-all"><input type="checkbox" id="lp-all" onchange="toggleAll('lp',this.checked)"><span onclick="toggleAllClick('lp')">Select all</span></div>
+  <div id="lp-list"></div>
+</div>
+<div class="actions" id="action-bar">
+  <button class="btn btn-primary" id="btn-build" onclick="buildSelected()">Build selected</button>
+  <button class="btn btn-ghost" id="btn-update" onclick="buildSelected()">Update</button>
+  <button class="btn btn-danger" id="btn-remove" onclick="removeSelected()">Remove</button>
+</div>
+<div class="statusbar">
+  <div class="dot" id="dot"></div>
+  <span id="status">Ready</span>
+</div>
+<script>
+var SG=[{key:'colour',num:'01',label:'Colour Palette'},{key:'typography',num:'02',label:'Typography'},{key:'buttons',num:'03',label:'Buttons'},{key:'inputs',num:'04',label:'Inputs and Labels'},{key:'tags',num:'05',label:'Tags and Badges'},{key:'cards',num:'06',label:'Cards'},{key:'dodont',num:'07',label:'Do Dont + Variables'}];
+var LP=[{key:'nav',num:'N',label:'Nav bar'},{key:'hero',num:'H',label:'Hero — headline + terminal'},{key:'launch',num:'L',label:'Launch status + counter'},{key:'problem',num:'P',label:'Problem — task trap'},{key:'features',num:'F',label:'Features — two modules'},{key:'security',num:'S',label:'Security — zero data'},{key:'pricing',num:'$',label:'Pricing — four tiers'},{key:'faq',num:'?',label:'FAQ — accordion'},{key:'footercta',num:'C',label:'Footer CTA — email form'},{key:'footer',num:'_',label:'Footer — links'}];
+function buildList(cid,items,prefix){var el=document.getElementById(cid);el.innerHTML='';for(var i=0;i<items.length;i++){var s=items[i];el.innerHTML+='<div class="sec-row"><label class="sec-label"><input type="checkbox" class="'+prefix+'-cb" value="'+s.key+'"><span class="num-tag">'+s.num+'</span>'+s.label+'</label><div class="row-actions"><button class="ibtn bld" onclick="buildOne(\''+prefix+'\',\''+s.key+'\')">Build</button><button class="ibtn del" onclick="removeOne(\''+prefix+'\',\''+s.key+'\')">X</button></div></div>';}}
+buildList('sg-list',SG,'sg');buildList('lp-list',LP,'lp');
+var activeTab='sg';
+function switchTab(t){activeTab=t;document.getElementById('tab-sg').classList.toggle('active',t==='sg');document.getElementById('tab-lp').classList.toggle('active',t==='lp');document.getElementById('panel-sg').classList.toggle('active',t==='sg');document.getElementById('panel-lp').classList.toggle('active',t==='lp');}
+function toggleAll(p,c){document.querySelectorAll('.'+p+'-cb').forEach(function(b){b.checked=c;});}
+function toggleAllClick(p){var m=document.getElementById(p+'-all');m.checked=!m.checked;toggleAll(p,m.checked);}
+function getSelected(p){return Array.from(document.querySelectorAll('.'+p+'-cb:checked')).map(function(b){return b.value;});}
+function setStatus(msg,state){var dot=document.getElementById('dot'),txt=document.getElementById('status');dot.className='dot'+(state==='ok'?' ok':state==='err'?' err':state==='busy'?' busy':'');txt.textContent=msg;txt.style.color=state==='err'?'var(--ru)':state==='ok'?'var(--te)':'var(--dm)';}
+function setBusy(b){['btn-build','btn-update','btn-remove'].forEach(function(id){document.getElementById(id).disabled=b;});document.querySelectorAll('.ibtn').forEach(function(btn){btn.disabled=b;});}
+function send(type,sections){parent.postMessage({pluginMessage:{type:type,sections:sections}},'*');}
+function buildSelected(){var sel=getSelected(activeTab);if(!sel.length){setStatus('Select at least one section','err');return;}setBusy(true);setStatus('Building...','busy');send(activeTab==='sg'?'BUILD_SG':'BUILD_LP',sel);}
+function removeSelected(){var sel=getSelected(activeTab);if(!sel.length){setStatus('Select sections to remove','err');return;}setBusy(true);setStatus('Removing...','busy');send(activeTab==='sg'?'REMOVE_SG':'REMOVE_LP',sel);}
+function buildOne(p,k){setBusy(true);setStatus('Building...','busy');send(p==='sg'?'BUILD_SG':'BUILD_LP',[k]);}
+function removeOne(p,k){setBusy(true);setStatus('Removing...','busy');send(p==='sg'?'REMOVE_SG':'REMOVE_LP',[k]);}
+window.onmessage=function(e){var msg=e.data.pluginMessage;if(!msg)return;setBusy(false);if(msg.type==='STATUS'){setStatus(msg.msg,'busy');setBusy(true);}else if(msg.type==='DONE'){setStatus(msg.msg,'ok');}else if(msg.type==='ERROR'){setStatus('Error: '+msg.msg,'err');}};
+</script>
+</body>
+</html>

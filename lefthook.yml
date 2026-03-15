@@ -1,0 +1,10 @@
+pre-commit:
+  commands:
+    biome-check:
+      run: npx biome check --staged --write
+      stage_fixed: true
+
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm typecheck

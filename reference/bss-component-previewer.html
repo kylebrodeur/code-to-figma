@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSS Component Previewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Martian+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css">
+<style>
+/* ─── BSS tokens ─────────────────────────────── */
+:root{
+  --bg:#f2ede4;--sf:#e8e1d6;--sf2:#d0c8b8;--bd:#d0c8b8;
+  --tx:#1e1510;--mu:#6a5a48;--dm:#7a6a58;
+  --go:#8a6010;--ru:#a83e18;--te:#2a6a4c;
+  --go-fg:#f2ede4;--ru-fg:#f2ede4;
+  --ring:var(--go);--input-bg:var(--sf);
+  --grid-op:0.06;
+  font-size:15px;
+}
+[data-theme="dark"]{
+  --bg:#1a1510;--sf:#231c14;--sf2:#2c2418;--bd:#3a3020;
+  --tx:#e8dfd0;--mu:#907e68;--dm:#7a6a58;
+  --go:#c98d1a;--ru:#cc6030;--te:#5a9e80;
+  --go-fg:#1a1510;--ru-fg:#e8dfd0;
+  --grid-op:0.04;
+  --input-bg:#2c2418;
+}
+*,*::before,*::after{box-sizing:border-box;font-style:normal!important;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--tx);
+  font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    linear-gradient(rgba(232,223,208,var(--grid-op)) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,223,208,var(--grid-op)) 1px,transparent 1px);
+  background-size:24px 24px;
+  padding:0 0 80px;
+}
+h1,h2,h3,h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;line-height:1.15;letter-spacing:-0.02em}
+.mono{font-family:'Martian Mono',monospace}
+
+/* ─── Layout ─────────────────────────────────── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--sf);border-bottom:1px solid var(--bd);
+  padding:0 32px;display:flex;align-items:center;gap:24px;
+  height:52px;
+}
+.nav-title{font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--go)}
+.nav-links{display:flex;gap:16px;margin-left:auto}
+.nav-link{font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);text-decoration:none;transition:color .15s}
+.nav-link:hover{color:var(--tx)}
+.theme-btn{
+  font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:var(--sf2);color:var(--tx);border:1px solid var(--bd);
+  border-radius:2px;padding:6px 10px;cursor:pointer;
+  min-height:44px;display:flex;align-items:center;gap:6px;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.theme-btn:hover{background:var(--bd)}
+.theme-btn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+
+.wrap{max-width:1100px;margin:0 auto;padding:40px 32px}
+.section{margin-bottom:64px}
+.section-hd{
+  font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--go);
+  margin-bottom:24px;padding-bottom:10px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:8px;
+}
+.section-hd::before{content:'';width:16px;height:1px;background:var(--go)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.col{display:flex;flex-direction:column;gap:8px}
+.label-sm{font-family:'Martian Mono',monospace;font-size:9px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px}
+
+/* ─── Buttons ─────────────────────────────────── */
+.btn{
+  font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;
+  border-radius:2px;border:1px solid;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:44px;padding:0 16px;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.btn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.btn-primary{background:var(--go);color:var(--go-fg);border-color:var(--go)}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-secondary{background:var(--sf2);color:var(--tx);border-color:var(--bd)}
+.btn-secondary:hover{background:var(--bd)}
+.btn-destructive{background:var(--ru);color:var(--ru-fg);border-color:var(--ru)}
+.btn-destructive:hover{filter:brightness(1.08)}
+.btn-outline{background:transparent;color:var(--go);border-color:var(--go)}
+.btn-outline:hover{background:color-mix(in srgb,var(--go) 10%,transparent)}
+.btn-ghost{background:transparent;color:var(--tx);border-color:transparent}
+.btn-ghost:hover{background:var(--sf2)}
+.btn-icon{width:44px;padding:0;border-color:var(--bd);background:var(--sf2);color:var(--tx)}
+.btn-icon:hover{background:var(--bd)}
+.btn-sm{min-height:44px;padding:0 12px;font-size:10px}
+.btn-lg{min-height:52px;padding:0 24px;font-size:12px}
+
+/* ─── Inputs ─────────────────────────────────── */
+.input-wrap{display:flex;flex-direction:column;gap:6px;width:100%;max-width:340px}
+.lbl{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.lbl.req::after{content:" *";color:var(--go)}
+.inp{
+  font-family:'Barlow',sans-serif;font-size:15px;color:var(--tx);
+  background:var(--input-bg);border:1px solid var(--bd);border-radius:2px;
+  padding:0 12px;min-height:44px;width:100%;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.inp::placeholder{color:var(--mu)}
+.inp:focus{border-color:var(--go);box-shadow:0 0 0 2px color-mix(in srgb,var(--go) 25%,transparent)}
+.inp.error{border-color:var(--ru)}
+.inp.error:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--ru) 25%,transparent)}
+.inp.success{border-color:var(--te)}
+.inp.success:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--te) 25%,transparent)}
+.inp:disabled{opacity:.4;cursor:not-allowed}
+.helper{font-family:'Barlow',sans-serif;font-size:12px;color:var(--mu)}
+.helper.err{color:var(--ru)}
+textarea.inp{min-height:100px;padding:10px 12px;resize:vertical}
+
+/* ─── Badges ─────────────────────────────────── */
+.badge{
+  font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  border-radius:2px;border:1px solid;
+  padding:2px 7px;display:inline-flex;align-items:center;gap:4px;
+  white-space:nowrap;user-select:none;
+}
+.badge-default{background:color-mix(in srgb,var(--go) 15%,transparent);color:var(--go);border-color:color-mix(in srgb,var(--go) 30%,transparent)}
+.badge-secondary{background:var(--sf2);color:var(--tx);border-color:var(--bd)}
+.badge-destructive{background:color-mix(in srgb,var(--ru) 15%,transparent);color:var(--ru);border-color:color-mix(in srgb,var(--ru) 30%,transparent)}
+.badge-teal{background:color-mix(in srgb,var(--te) 15%,transparent);color:var(--te);border-color:color-mix(in srgb,var(--te) 30%,transparent)}
+.badge-outline{background:transparent;color:var(--tx);border-color:var(--bd)}
+.badge-outline-gold{background:transparent;color:var(--go);border-color:var(--go)}
+
+/* ─── Cards ─────────────────────────────────── */
+.card{
+  background:var(--sf);border:1px solid var(--bd);border-radius:2px;
+  overflow:hidden;
+}
+.card-accent-gold{border-left:2px solid var(--go)}
+.card-accent-rust{border-left:2px solid var(--ru)}
+.card-accent-teal{border-left:2px solid var(--te)}
+.card-hd{padding:20px 20px 0}
+.card-title{font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.3;margin-bottom:4px}
+.card-desc{font-family:'Barlow',sans-serif;font-size:13px;color:var(--mu);line-height:1.5}
+.card-body{padding:16px 20px}
+.card-ft{padding:14px 20px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* ─── Typography scale ─────────────────────────────────── */
+.type-row{display:flex;flex-direction:column;gap:2px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.type-meta{font-family:'Martian Mono',monospace;font-size:9px;letter-spacing:.06em;color:var(--dm);width:120px;flex-shrink:0}
+.type-sample{flex:1}
+.type-row-inner{display:flex;align-items:baseline;gap:16px}
+
+/* ─── Color palette ────────────────────────────────────── */
+.palette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+.swatch{border-radius:2px;overflow:hidden;border:1px solid var(--bd)}
+.swatch-color{height:56px}
+.swatch-info{padding:8px;background:var(--sf)}
+.swatch-name{font-family:'Martian Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu)}
+.swatch-hex{font-family:'Martian Mono',monospace;font-size:10px;color:var(--tx);margin-top:2px}
+
+/* ─── States demo ────────────────────────────────────── */
+.state-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.state-label{font-family:'Martian Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);width:80px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="nav">
+  <span class="nav-title">BSS · Components</span>
+  <div class="nav-links">
+    <a href="#buttons"    class="nav-link">Buttons</a>
+    <a href="#inputs"     class="nav-link">Inputs</a>
+    <a href="#badges"     class="nav-link">Badges</a>
+    <a href="#cards"      class="nav-link">Cards</a>
+    <a href="#type"       class="nav-link">Type</a>
+    <a href="#palette"    class="nav-link">Palette</a>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+    <i class="ri-moon-line" id="themeIcon"></i>
+    <span id="themeLabel">Dark</span>
+  </button>
+</nav>
+
+<div class="wrap">
+
+<!-- ── Buttons ── -->
+<section class="section" id="buttons">
+  <div class="section-hd">01 · Buttons</div>
+
+  <div class="label-sm">Variants</div>
+  <div class="row">
+    <div class="col"><div class="label-sm">Primary</div>
+      <button class="btn btn-primary"><i class="ri-flashlight-line"></i> Get started</button>
+    </div>
+    <div class="col"><div class="label-sm">Secondary</div>
+      <button class="btn btn-secondary">Cancel</button>
+    </div>
+    <div class="col"><div class="label-sm">Destructive</div>
+      <button class="btn btn-destructive"><i class="ri-delete-bin-line"></i> Delete</button>
+    </div>
+    <div class="col"><div class="label-sm">Outline</div>
+      <button class="btn btn-outline">View docs</button>
+    </div>
+    <div class="col"><div class="label-sm">Ghost</div>
+      <button class="btn btn-ghost">Skip</button>
+    </div>
+    <div class="col"><div class="label-sm">Icon only</div>
+      <button class="btn btn-icon btn-ghost" aria-label="Settings"><i class="ri-settings-3-line" style="font-size:16px"></i></button>
+    </div>
+  </div>
+
+  <div class="label-sm" style="margin-top:20px">Sizes</div>
+  <div class="row">
+    <div class="col"><div class="label-sm">sm</div>
+      <button class="btn btn-primary btn-sm">Push rows</button>
+    </div>
+    <div class="col"><div class="label-sm">md (default)</div>
+      <button class="btn btn-primary">Sync now</button>
+    </div>
+    <div class="col"><div class="label-sm">lg</div>
+      <button class="btn btn-primary btn-lg"><i class="ri-arrow-right-line"></i> Start free</button>
+    </div>
+  </div>
+
+  <div class="label-sm" style="margin-top:20px">States</div>
+  <div class="row">
+    <div class="col"><div class="label-sm">Default</div>
+      <button class="btn btn-primary">Sync mapping</button>
+    </div>
+    <div class="col"><div class="label-sm">Disabled</div>
+      <button class="btn btn-primary" disabled>Sync mapping</button>
+    </div>
+    <div class="col"><div class="label-sm">Loading (example)</div>
+      <button class="btn btn-primary" disabled><i class="ri-loader-4-line"></i> Syncing...</button>
+    </div>
+    <div class="col"><div class="label-sm">With both icons</div>
+      <button class="btn btn-outline"><i class="ri-shield-check-line"></i> Verified <i class="ri-external-link-line"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ── Inputs ── -->
+<section class="section" id="inputs">
+  <div class="section-hd">02 · Inputs &amp; Labels</div>
+
+  <div class="row" style="align-items:flex-start;flex-wrap:wrap;gap:20px">
+    <div class="input-wrap">
+      <label class="lbl" for="p1">Webhook URL</label>
+      <input class="inp" id="p1" type="url" placeholder="https://hooks.zapier.com/...">
+      <span class="helper">Paste your Zapier webhook endpoint</span>
+    </div>
+
+    <div class="input-wrap">
+      <label class="lbl req" for="p2">Email Address</label>
+      <input class="inp" id="p2" type="email" placeholder="you@company.com">
+    </div>
+
+    <div class="input-wrap">
+      <label class="lbl" for="p3">Target Sheet — Error state</label>
+      <input class="inp error" id="p3" type="text" value="Sheet not found" aria-invalid="true" aria-describedby="p3-err">
+      <span class="helper err" id="p3-err"><i class="ri-error-warning-line"></i> This sheet doesn't exist in your Drive</span>
+    </div>
+
+    <div class="input-wrap">
+      <label class="lbl" for="p4">Mapping name — Success state</label>
+      <input class="inp success" id="p4" type="text" value="CRM Import v2">
+      <span class="helper"><i class="ri-checkbox-circle-line" style="color:var(--te)"></i> Name is available</span>
+    </div>
+
+    <div class="input-wrap">
+      <label class="lbl" for="p5">Disabled</label>
+      <input class="inp" id="p5" type="text" placeholder="Read only" disabled>
+    </div>
+
+    <div class="input-wrap" style="max-width:340px">
+      <label class="lbl" for="p6">JSON Preview</label>
+      <textarea class="inp" id="p6" placeholder='{"name":"Kyle","email":"k@domain.com"}'></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ── Badges ── -->
+<section class="section" id="badges">
+  <div class="section-hd">03 · Badges</div>
+
+  <div class="label-sm">Variants</div>
+  <div class="row">
+    <span class="badge badge-default">Active</span>
+    <span class="badge badge-secondary">Module 1</span>
+    <span class="badge badge-destructive"><i class="ri-error-warning-line" style="font-size:10px"></i> Error</span>
+    <span class="badge badge-teal"><i class="ri-checkbox-circle-line" style="font-size:10px"></i> Synced</span>
+    <span class="badge badge-outline">Beta</span>
+    <span class="badge badge-outline-gold">Founding</span>
+  </div>
+
+  <div class="label-sm" style="margin-top:20px">In-context usage</div>
+  <div class="row">
+    <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px">
+      Column Mapping <span class="badge badge-outline-gold">Beta</span>
+    </h3>
+    <div style="display:flex;gap:6px">
+      <span class="badge badge-teal">247 rows pushed</span>
+      <span class="badge badge-secondary">Last sync 2m ago</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cards ── -->
+<section class="section" id="cards">
+  <div class="section-hd">04 · Cards</div>
+
+  <div class="grid-3">
+    <!-- Default card -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-title">Inbound Sync</div>
+        <div class="card-desc">Map a JSON payload to sheet columns. One task per Zap, regardless of row count.</div>
+      </div>
+      <div class="card-body">
+        <span class="badge badge-secondary">Module 1</span>
+      </div>
+      <div class="card-ft">
+        <span class="badge badge-teal"><i class="ri-checkbox-circle-line" style="font-size:10px"></i> Active</span>
+        <button class="btn btn-secondary btn-sm">Configure</button>
+      </div>
+    </div>
+
+    <!-- Gold accent card -->
+    <div class="card card-accent-gold">
+      <div class="card-hd">
+        <div class="card-title">Push to Webhook</div>
+        <div class="card-desc">Highlight rows, click Push. Instant delivery — no 15-minute polling delay.</div>
+      </div>
+      <div class="card-body">
+        <span class="badge badge-secondary">Module 2</span>
+      </div>
+      <div class="card-ft">
+        <span class="badge badge-default">New</span>
+        <button class="btn btn-primary btn-sm">Enable</button>
+      </div>
+    </div>
+
+    <!-- Rust accent card (error / problem state) -->
+    <div class="card card-accent-rust">
+      <div class="card-hd">
+        <div class="card-title">Sync Failed</div>
+        <div class="card-desc">Last attempt 3 minutes ago. Sheet permissions may have changed.</div>
+      </div>
+      <div class="card-body">
+        <div style="font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu)">
+          Error code: <span style="color:var(--ru)">PERMISSION_DENIED</span>
+        </div>
+      </div>
+      <div class="card-ft">
+        <span class="badge badge-destructive"><i class="ri-error-warning-line" style="font-size:10px"></i> Failed</span>
+        <button class="btn btn-outline btn-sm">Retry</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Typography ── -->
+<section class="section" id="type">
+  <div class="section-hd">05 · Typography Scale</div>
+
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">52px · Display<br>Bricolage 700</div>
+      <div class="type-sample" style="font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:700;line-height:1;letter-spacing:-.02em">Sync <span style="color:var(--go)">faster.</span></div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">32px · H2<br>Bricolage 700</div>
+      <div class="type-sample" style="font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-.02em">How it <span style="color:var(--go)">works</span></div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">22px · H3<br>Bricolage 600</div>
+      <div class="type-sample" style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;line-height:1.25;letter-spacing:-.01em">Column Mapping</div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">15px · Body<br>Barlow 400</div>
+      <div class="type-sample" style="font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6">One Zapier task processes your entire JSON array. 500 rows, 1 task. Build automations without the billing ceiling.</div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">13px · Small body<br>Barlow 400</div>
+      <div class="type-sample" style="font-family:'Barlow',sans-serif;font-size:13px;line-height:1.5;color:var(--mu)">Mapping rules are stored. Actual data is processed in RAM only — never logged, never persisted.</div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">11px · Label<br>Martian Mono 500</div>
+      <div class="type-sample" style="font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--go)">Founding member rate</div>
+    </div>
+  </div>
+  <div class="type-row">
+    <div class="type-row-inner">
+      <div class="type-meta">12px · Code<br>Martian Mono 400</div>
+      <div class="type-sample" style="font-family:'Martian Mono',monospace;font-size:12px;background:var(--sf2);border:1px solid var(--bd);border-radius:2px;padding:10px 14px">POST /api/sync<br><span style="color:var(--mu)">{"rows": [...500 records]}</span><br><span style="color:var(--te)">→ 200 OK · 1 task consumed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Palette ── -->
+<section class="section" id="palette">
+  <div class="section-hd">06 · Colour Palette</div>
+
+  <div class="label-sm" style="margin-bottom:12px">Current theme tokens</div>
+  <div class="palette-grid">
+    <div class="swatch"><div class="swatch-color" style="background:var(--bg)"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex" id="sw-bg">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--sf)"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex" id="sw-sf">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--sf2)"></div><div class="swatch-info"><div class="swatch-name">Surface 2</div><div class="swatch-hex" id="sw-sf2">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--tx)"></div><div class="swatch-info"><div class="swatch-name">Text</div><div class="swatch-hex" id="sw-tx">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--mu)"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-hex" id="sw-mu">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--go)"></div><div class="swatch-info"><div class="swatch-name">Gold (primary)</div><div class="swatch-hex" id="sw-go">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--ru)"></div><div class="swatch-info"><div class="swatch-name">Rust (destructive)</div><div class="swatch-hex" id="sw-ru">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--te)"></div><div class="swatch-info"><div class="swatch-name">Teal (success)</div><div class="swatch-hex" id="sw-te">–</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:var(--bd)"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-hex" id="sw-bd">–</div></div></div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Theme toggle ──────────────────────────────────────────────
+const DARK_TOKENS  = {bg:'#1a1510',sf:'#231c14',sf2:'#2c2418',bd:'#3a3020',tx:'#e8dfd0',mu:'#907e68',dm:'#7a6a58',go:'#c98d1a',ru:'#cc6030',te:'#5a9e80'};
+const LIGHT_TOKENS = {bg:'#f2ede4',sf:'#e8e1d6',sf2:'#d0c8b8',bd:'#d0c8b8',tx:'#1e1510',mu:'#6a5a48',dm:'#7a6a58',go:'#8a6010',ru:'#a83e18',te:'#2a6a4c'};
+
+const swatchIds = {bg:'sw-bg',sf:'sw-sf',sf2:'sw-sf2',tx:'sw-tx',mu:'sw-mu',go:'sw-go',ru:'sw-ru',te:'sw-te',bd:'sw-bd'};
+
+function updateSwatches(tokens) {
+  Object.entries(swatchIds).forEach(([k,id]) => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = tokens[k] || '–';
+  });
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  const btn = document.getElementById('themeBtn');
+  const icon = document.getElementById('themeIcon');
+  const lbl = document.getElementById('themeLabel');
+  if(isDark) {
+    icon.className='ri-sun-line'; lbl.textContent='Light';
+    updateSwatches(LIGHT_TOKENS);
+  } else {
+    icon.className='ri-moon-line'; lbl.textContent='Dark';
+    updateSwatches(DARK_TOKENS);
+  }
+}
+
+// Init swatches on load
+updateSwatches(DARK_TOKENS);
+
+// Smooth nav links
+document.querySelectorAll('.nav-link').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

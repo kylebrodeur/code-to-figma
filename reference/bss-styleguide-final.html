@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BulkSheetsSync — Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Martian+Mono:wght@300;400;500;600&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root,[data-theme=dark]{--bg:#1a1510;--sf:#231c14;--sf2:#2c2418;--br:#3a3020;--brh:#4e4030;--tx:#e8dfd0;--mu:#907e68;--dm:#7a6a58;--go:#c98d1a;--gd:rgba(201,141,26,.10);--gm:rgba(201,141,26,.20);--gb:rgba(201,141,26,.28);--gg:rgba(201,141,26,.055);--ru:#cc6030;--rd:rgba(204,96,48,.10);--rb:rgba(204,96,48,.26);--te:#5a9e80;--td:rgba(90,158,128,.10);--tb:rgba(90,158,128,.26)}
+[data-theme=light]{--bg:#f2ede4;--sf:#e8e1d6;--sf2:#ded6c8;--br:#ccc0ac;--brh:#b8a894;--tx:#1e1510;--mu:#6a5a48;--dm:#a89078;--go:#8a6010;--gd:rgba(136,96,16,.10);--gm:rgba(136,96,16,.20);--gb:rgba(136,96,16,.30);--gg:rgba(136,96,16,.05);--ru:#a83e18;--rd:rgba(168,62,24,.10);--rb:rgba(168,62,24,.26);--te:#2a6a4c;--td:rgba(42,106,76,.10);--tb:rgba(42,106,76,.26)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.6;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--br) 1px,transparent 1px),linear-gradient(90deg,var(--br) 1px,transparent 1px);background-size:48px 48px;opacity:.22;mask-image:radial-gradient(ellipse 90% 50% at 50% 0%,black 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 90% 50% at 50% 0%,black 0%,transparent 100%)}
+.topbar{position:sticky;top:0;z-index:100;background:var(--sf);border-bottom:1px solid var(--br);padding:0 28px;height:46px;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+.tn{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:.07em}
+.tbtn{display:flex;align-items:center;gap:8px;font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);background:none;border:1px solid var(--brh);border-radius:2px;padding:5px 12px;cursor:pointer;transition:all .2s}
+.tbtn:hover{border-color:var(--gb);color:var(--go)}
+.tt2{width:26px;height:13px;background:var(--brh);border-radius:7px;position:relative;transition:background .25s}
+.tth{position:absolute;top:2px;left:2px;width:9px;height:9px;background:var(--mu);border-radius:50%;transition:all .25s}
+[data-theme=light] .tt2{background:var(--gm)}[data-theme=light] .tth{background:var(--go);transform:translateX(13px)}
+.w{max-width:940px;margin:0 auto;padding:52px 28px 100px;position:relative;z-index:1}
+.mast{padding-bottom:44px;border-bottom:1px solid var(--br);margin-bottom:56px}
+.ey{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--mu);margin-bottom:16px}
+.mh{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:.97;margin-bottom:12px}
+.mh em{font-style:normal;color:var(--go)}
+.md{font-size:14px;color:var(--mu);max-width:480px;line-height:1.7;margin-bottom:24px}
+.prev{display:flex;gap:10px;flex-wrap:wrap}
+.pv{border-radius:4px;overflow:hidden;border:1px solid var(--brh);width:200px}
+.pvs{height:72px;padding:16px 16px 0;display:flex;flex-direction:column;justify-content:flex-end}
+.pvh{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.pvh em{font-style:normal}
+.pvn{font-family:'Martian Mono',monospace;font-size:9px;margin-top:3px}
+.pvi{padding:9px 12px}
+.pvit{font-family:'Martian Mono',monospace;font-size:10px}
+.pvih{font-family:'Martian Mono',monospace;font-size:10px;margin-top:2px}
+.pv.dk .pvs{background:#1a1510}.pv.dk .pvh{color:#e8dfd0}.pv.dk .pvh em{color:#c98d1a}.pv.dk .pvn{color:#907e68}.pv.dk .pvi{background:#231c14;border-top:1px solid #3a3020}.pv.dk .pvit{color:#e8dfd0}.pv.dk .pvih{color:#907e68}
+.pv.lt .pvs{background:#f2ede4}.pv.lt .pvh{color:#1e1510}.pv.lt .pvh em{color:#8a6010}.pv.lt .pvn{color:#6a5a48}.pv.lt .pvi{background:#e8e1d6;border-top:1px solid #ccc0ac}.pv.lt .pvit{color:#1e1510}.pv.lt .pvih{color:#6a5a48}
+.sec{margin-bottom:60px}
+.stit{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--go);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.stit::after{content:'';flex:1;height:1px;background:var(--br)}
+.sub{font-family:'Martian Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:10px;margin-top:22px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:18px}
+.sw{border-radius:4px;overflow:hidden;border:1px solid var(--brh)}
+.swb{height:54px}
+.swi{background:var(--sf);padding:9px 11px}
+.swn{font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;color:var(--tx);display:block;margin-bottom:1px}
+.swh{font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);display:block;margin-bottom:4px}
+.swu{font-size:10px;color:var(--dm);line-height:1.4}
+.obr{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid var(--brh);border-radius:4px;overflow:hidden;margin-bottom:18px}
+.obc{padding:12px 14px;background:var(--sf2)}
+.obct{font-family:'Martian Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);margin-bottom:7px}
+.obcs{font-size:13px;line-height:1.5}
+.obcn{font-family:'Martian Mono',monospace;font-size:9px;color:var(--mu);margin-top:5px}
+.trow{display:grid;grid-template-columns:180px 1fr;gap:22px;padding:24px 0;border-bottom:1px solid var(--br);align-items:start}
+.trow:last-child{border-bottom:none}
+.tm{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);line-height:1.9}
+.tm strong{color:var(--tx);font-size:11px;font-weight:500;display:block;margin-bottom:4px}
+.t1{font-family:'Bricolage Grotesque',sans-serif;font-size:64px;font-weight:800;line-height:.97;letter-spacing:-.04em}
+.t1 em{font-style:normal;color:var(--go)}
+.t2{font-family:'Bricolage Grotesque',sans-serif;font-size:40px;font-weight:700;line-height:1.06;letter-spacing:-.03em}
+.t2 em{font-style:normal;color:var(--go)}
+.t3{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;line-height:1.1;letter-spacing:-.02em}
+.tstat{font-family:'Martian Mono',monospace;font-size:32px;font-weight:600;color:var(--go);line-height:1}
+.tmono{font-family:'Martian Mono',monospace;font-size:12px;color:var(--tx);line-height:2.1}
+.tlbl{font-family:'Martian Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--mu)}
+.tbody{font-family:'Barlow',sans-serif;font-size:15px;font-weight:300;color:var(--mu);line-height:1.72}
+.cr{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.bp{font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;color:var(--bg);background:var(--go);border:none;padding:10px 18px;border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity .2s,transform .15s}
+.bp:hover{opacity:.83;transform:translateY(-1px)}
+.bs{font-family:'Martian Mono',monospace;font-size:11px;color:var(--tx);background:transparent;border:1px solid var(--brh);padding:10px 18px;border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.bs:hover{border-color:var(--gb);color:var(--go)}
+.bg2{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);background:transparent;border:none;border-bottom:1px solid var(--brh);padding:9px 2px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.bg2:hover{color:var(--tx);border-bottom-color:var(--go)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:2px}
+.tg{color:var(--go);background:var(--gd);border:1px solid var(--gb)}
+.tr2{color:var(--ru);background:var(--rd);border:1px solid var(--rb)}
+.tt3{color:var(--te);background:var(--td);border:1px solid var(--tb)}
+.td2{color:var(--mu);background:var(--sf2);border:1px solid var(--br)}
+.inp{background:var(--sf);border:1px solid var(--brh);border-radius:3px;padding:10px 13px;font-family:'Martian Mono',monospace;font-size:12px;color:var(--tx);outline:none;transition:border-color .2s,box-shadow .2s}
+.inp::placeholder{color:var(--mu)}
+.inp:focus{border-color:var(--go);box-shadow:0 0 0 3px var(--gd)}
+.inpr{display:flex;max-width:380px}
+.inpr .inp{border-right:none;border-radius:3px 0 0 3px;flex:1}
+.inpr .bp{border-radius:0 3px 3px 0}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.cc{border:1px solid var(--brh);border-radius:4px;background:var(--sf);padding:18px;transition:border-color .22s}
+.cc:hover{border-color:var(--gb)}
+.ccg{border-color:var(--gb);background:linear-gradient(140deg,var(--gg) 0%,var(--sf) 55%)}
+.ccr{border-color:var(--rb);background:linear-gradient(140deg,var(--rd) 0%,var(--sf) 55%)}
+.ci{font-size:18px;margin-bottom:9px}
+.ct{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:600;letter-spacing:-.015em;margin-bottom:5px}
+.cb{font-size:13px;color:var(--mu);line-height:1.6}
+.cblk{border:1px solid var(--brh);border-radius:4px;overflow:hidden;margin-bottom:18px}
+.cbar{background:var(--sf2);border-bottom:1px solid var(--br);padding:9px 14px;display:flex;align-items:center;gap:5px}
+.cd{width:9px;height:9px;border-radius:50%}
+.clbl{font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);margin-left:5px}
+.cbody{padding:18px 20px;font-family:'Martian Mono',monospace;font-size:12px;line-height:2.1;background:var(--sf)}
+.ck{color:#9bbfdf}.cv{color:var(--go)}.cco{color:var(--dm)}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:18px}
+.sc{background:var(--sf);border:1px solid var(--brh);padding:18px 14px;border-radius:3px}
+.sn{font-family:'Martian Mono',monospace;font-size:24px;font-weight:600;color:var(--go);line-height:1;margin-bottom:4px}
+.sl{font-size:11px;color:var(--mu)}
+.pg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.pgl{display:flex;justify-content:space-between;font-family:'Martian Mono',monospace;font-size:9px;color:var(--mu)}
+.pgt{background:var(--br);height:2px;border-radius:1px}
+.pgf{height:100%;border-radius:1px;background:var(--go)}
+.rl{border-left:3px solid var(--go);padding-left:16px;margin:16px 0}
+.rl p{font-size:14px;color:var(--mu);line-height:1.7}
+hr{border:none;border-top:1px solid var(--br);margin:48px 0}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ddb{padding:16px 18px;border-radius:4px}
+.ddd{background:var(--td);border:1px solid var(--tb)}
+.ddn{background:var(--rd);border:1px solid var(--rb)}
+.ddt{font-family:'Martian Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:10px}
+.ddd .ddt{color:var(--te)}.ddn .ddt{color:var(--ru)}
+.ddi{font-size:12px;color:var(--mu);margin-bottom:7px;padding-left:14px;position:relative;line-height:1.5}
+.ddi::before{position:absolute;left:0}
+.ddd .ddi::before{content:'✓';color:var(--te)}.ddn .ddi::before{content:'✕';color:var(--ru)}
+.ci i,.spli i{font-size:20px;line-height:1;display:block;color:var(--go)}
+
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px;margin-bottom:28px}
+.ic{border:1px solid var(--brh);border-radius:3px;background:var(--sf);overflow:hidden;transition:border-color .2s}
+.ic:hover{border-color:var(--gb)}
+.ic.hide{display:none}
+.icprev{display:flex;align-items:center;gap:14px;padding:18px 18px 14px;border-bottom:1px solid var(--br)}
+.icpi{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--br);border-radius:3px;background:var(--sf2)}
+.icmeta{padding:12px 18px 16px}
+.icn{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+.icid{font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);margin-bottom:7px}
+.icu{font-size:11px;color:var(--mu);line-height:1.5}
+.ictag{display:inline-flex;align-items:center;font-family:'Martian Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-top:8px;color:var(--go);background:var(--gd);border:1px solid var(--gb)}
+.isizes{display:flex;align-items:flex-end;gap:22px;padding:18px 0;flex-wrap:wrap;border-top:1px solid var(--br);margin-top:4px}
+.isz{display:flex;align-items:center;gap:10px}
+.iszi{display:flex;align-items:center}
+.iszl{display:flex;flex-direction:column;gap:2px}
+.iszn{font-family:'Martian Mono',monospace;font-size:11px;color:var(--tx)}
+.iszc{font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu)}
+.ifbtn{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:2px;border:1px solid var(--brh);background:transparent;color:var(--mu);cursor:pointer;transition:all .2s}
+.ifbtn:hover{border-color:var(--gb);color:var(--go)}
+.ifbtn.active{border-color:var(--go);color:var(--go);background:var(--gd)}
+
+
+/* ── Accessibility: focus-visible rings ── */
+:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+button:focus-visible,a:focus-visible,.bnav:focus-visible,.tmbtn:focus-visible,.pcbtn:focus-visible,.sbb:focus-visible,.fcfb:focus-visible,.fb:focus-visible,.hscb:focus-visible,.sbx:focus-visible,.fqq:focus-visible,.ifbtn:focus-visible{outline:2px solid var(--go);outline-offset:2px;border-radius:2px}
+input:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+input[type=range]:focus-visible{outline:2px solid var(--go);outline-offset:3px}
+
+/* ── Accessibility: reduced motion ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .ld,.hd2{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="tn">BulkSheetsSync · Style Guide v3 · Obsidian-Derived</span>
+  <button class="tbtn" onclick="toggle()" id="tb">
+    <div class="tt2"><div class="tth"></div></div>
+    <span id="tl">Light mode</span>
+  </button>
+</div>
+<div class="w">
+
+  <div class="mast">
+    <div class="ey">Brand System v3.0 · Derived from your Obsidian vault palette</div>
+    <h1 class="mh">Warm<br><em>Industrial.</em></h1>
+    <p class="md">Colors extracted directly from your Obsidian screenshots — same dark background tone, same gold links, same rust section headers, same teal content links. Extended into a full product system with a matching light inversion on warm parchment.</p>
+    <div class="prev">
+      <div class="pv dk">
+        <div class="pvs"><div class="pvh">500 <em>rows.</em></div><div class="pvn">// dark · #1a1510</div></div>
+        <div class="pvi"><div class="pvit">Dark Theme</div><div class="pvih">bg:#1a1510 · gold:#c98d1a</div></div>
+      </div>
+      <div class="pv lt">
+        <div class="pvs"><div class="pvh">500 <em>rows.</em></div><div class="pvn">// light · #f2ede4</div></div>
+        <div class="pvi"><div class="pvit">Light Theme</div><div class="pvih">bg:#f2ede4 · gold:#8a6010</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="stit">01 · Color Tokens</div>
+    <div class="obr">
+      <div class="obc"><div class="obct">From vault — link color</div><div class="obcs" style="color:#c98d1a">Octoserver – Next Step Updates</div><div class="obcn">→ --gold: #c98d1a</div></div>
+      <div class="obc"><div class="obct">From vault — section headers</div><div class="obcs" style="color:#c85a28">Free Reading Materials:</div><div class="obcn">→ --rust: #c85a28</div></div>
+      <div class="obc"><div class="obct">From vault — content links</div><div class="obcs" style="color:#5a9e80">Plant Cell Biology Basics ↗</div><div class="obcn">→ --teal: #5a9e80</div></div>
+    </div>
+    <div class="sub" style="margin-top:0">Ground — backgrounds & text</div>
+    <div class="cg">
+      <div class="sw"><div class="swb" style="background:#1a1510"></div><div class="swi"><span class="swn">--bg (dark)</span><span class="swh">#1a1510</span><span class="swu">Rich warm charcoal. Brown undertone. Matches your vault.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#231c14"></div><div class="swi"><span class="swn">--surface (dark)</span><span class="swh">#231c14</span><span class="swu">Cards, panels, inputs.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#f2ede4"></div><div class="swi"><span class="swn">--bg (light)</span><span class="swh">#f2ede4</span><span class="swu">Warm parchment. Aged paper, not white.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#e8e1d6"></div><div class="swi"><span class="swn">--surface (light)</span><span class="swh">#e8e1d6</span><span class="swu">Cards on light theme.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#e8dfd0"></div><div class="swi"><span class="swn">--text (dark)</span><span class="swh">#e8dfd0</span><span class="swu">Warm cream. Matches vault body text directly.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#1e1510;border:1px solid #555"></div><div class="swi"><span class="swn">--text (light)</span><span class="swh">#1e1510</span><span class="swu">Warm near-black.</span></div></div>
+    </div>
+    <div class="sub">Primary — gold (vault link color)</div>
+    <div class="cg">
+      <div class="sw"><div class="swb" style="background:#c98d1a"></div><div class="swi"><span class="swn">--gold (dark)</span><span class="swh">#c98d1a</span><span class="swu">CTAs, key data, active states. Direct vault match.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#8a6010"></div><div class="swi"><span class="swn">--gold (light)</span><span class="swh">#8a6010</span><span class="swu">Darkened 20% for parchment contrast.</span></div></div>
+      <div class="sw"><div class="swb" style="background:rgba(201,141,26,0.12)"></div><div class="swi"><span class="swn">--gold-dim</span><span class="swh">rgba(201,141,26,.12)</span><span class="swu">Tag fills, spotlight surfaces.</span></div></div>
+    </div>
+    <div class="sub">Secondary — rust (vault section headers)</div>
+    <div class="cg">
+      <div class="sw"><div class="swb" style="background:#cc6030"></div><div class="swi"><span class="swn">--rust (dark)</span><span class="swh">#cc6030</span><span class="swu">Problem states, cost callouts, "before" column.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#a83e18"></div><div class="swi"><span class="swn">--rust (light)</span><span class="swh">#a83e18</span><span class="swu">Darkened for parchment.</span></div></div>
+    </div>
+    <div class="sub">Tertiary — teal (vault content links)</div>
+    <div class="cg">
+      <div class="sw"><div class="swb" style="background:#5a9e80"></div><div class="swi"><span class="swn">--teal (dark)</span><span class="swh">#5a9e80</span><span class="swu">Confirmation, success, "after" states.</span></div></div>
+      <div class="sw"><div class="swb" style="background:#2a6a4c"></div><div class="swi"><span class="swn">--teal (light)</span><span class="swh">#2a6a4c</span><span class="swu">Darkened for parchment.</span></div></div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <div class="sec">
+    <div class="stit">02 · Typography Scale</div>
+    <div class="trow"><div class="tm"><strong>Hero H1</strong>Bricolage Grotesque<br>64–88px · 800w<br>-0.04em · lh 0.97<br><br>One key word/phrase in --gold. Not italic — weight + color contrast only.</div><div class="t1">500 rows.<br><em>1 task.</em></div></div>
+    <div class="trow"><div class="tm"><strong>Section H2</strong>Bricolage Grotesque<br>40–46px · 700w<br>-0.03em<br><br>Em highlights one key phrase in --gold per heading.</div><div class="t2">You're paying for<br><em>iteration.</em></div></div>
+    <div class="trow"><div class="tm"><strong>Feature / Card Title</strong>Bricolage Grotesque<br>22px · 600w<br>-0.02em<br><br>No color emphasis — hierarchy from size alone.</div><div class="t3">Inbound Visual Mapper</div></div>
+    <div class="trow"><div class="tm"><strong>Data / Metric</strong>Martian Mono<br>32px · 600w<br>color: --gold<br><br>Stats, prices, savings. The measurement voice.</div><div class="tstat">$1,739&nbsp;&nbsp;500×&nbsp;&nbsp;&lt;1s</div></div>
+    <div class="trow"><div class="tm"><strong>Mono Body</strong>Martian Mono<br>12px · 400w<br><br>Code, terminal, technical values, buttons, nav.</div><div class="tmono">tasks_billed: 1 // not 500<br>rows_written: 500<br>data_stored:&nbsp; 0</div></div>
+    <div class="trow"><div class="tm"><strong>Section Label</strong>Martian Mono<br>10px · 500w · CAPS<br>0.14em tracking<br><br>Precedes every section. Never in gold.</div><div class="tlbl">// Enterprise Security&nbsp;&nbsp;&nbsp;02 · Features</div></div>
+    <div class="trow"><div class="tm"><strong>Body Copy</strong>Barlow<br>15px · 300w<br>color: --muted<br><br>Descriptions, FAQ answers. Light weight creates hierarchy contrast with display type.</div><div class="tbody">Stateless transit — your spreadsheet data never touches a database, never gets logged, never creates GDPR liability for you or us.</div></div>
+  </div>
+
+  <hr/>
+
+  <div class="sec">
+    <div class="stit">03 · Components</div>
+    <div class="sub" style="margin-top:0">Buttons</div>
+    <div class="cr">
+      <button class="bp">Reserve My Spot →</button>
+      <button class="bs">View Pricing</button>
+      <button class="bg2">Calculate Savings ↓</button>
+    </div>
+    <div class="sub">Tags</div>
+    <div class="cr">
+      <span class="tag tg">▶ Building Now</span>
+      <span class="tag tg">Module 01</span>
+      <span class="tag tr2">✕ Native Zapier</span>
+      <span class="tag tt3">✓ BulkSheetsSync</span>
+      <span class="tag td2">// Label</span>
+    </div>
+    <div class="sub">Form Input</div>
+    <div class="inpr" style="margin-bottom:18px">
+      <input class="inp" type="email" placeholder="you@company.com"/>
+      <button class="bp">Reserve →</button>
+    </div>
+    <div class="sub">Cards</div>
+    <div class="cgrid">
+      <div class="cc"><div class="ci"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 9H21L11 24V15H4L13 0V9ZM11 11V7.22063L7.53238 13H13V17.3944L17.263 11H11Z"/></svg></div><div class="ct">Default Card</div><div class="cb">Border transitions to gold on hover. Consistent across both themes.</div></div>
+      <div class="cc ccg"><div class="ci"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg></div><div class="ct">Gold Emphasis</div><div class="cb">Founding member callouts, featured pricing tier, active CTAs.</div></div>
+      <div class="cc ccr"><div class="ci"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;color:var(--ru)" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"/></svg></div><div class="ct">Rust / Problem</div><div class="cb">"Before" comparisons, Zapier cost callouts, error surfaces.</div></div>
+    </div>
+    <div class="sub">Code Block</div>
+    <div class="cblk">
+      <div class="cbar"><span class="cd" style="background:#8b3a2a"></span><span class="cd" style="background:#8b7030"></span><span class="cd" style="background:#3a7040"></span><span class="clbl">data-pipeline.ts</span></div>
+      <div class="cbody"><span class="cco">// Payload in RAM only — never persisted</span><br><span class="ck">const</span> rows = req.body.data; <span class="cco">// never written to DB</span><br><span class="ck">const</span> mapped = <span class="cv">applyMapping</span>(rows, mapping);<br><span class="ck">await</span> sheets.<span class="cv">batchUpdate</span>(mapped);<br><span class="ck">return</span> res.<span class="cv">json</span>({ tasks: <span class="cv">1</span>, rows: mapped.length });</div>
+    </div>
+    <div class="sub">Stats</div>
+    <div class="sgrid">
+      <div class="sc"><div class="sn">500×</div><div class="sl">task reduction</div></div>
+      <div class="sc"><div class="sn">$0</div><div class="sl">data stored</div></div>
+      <div class="sc"><div class="sn">&lt;1s</div><div class="sl">push latency</div></div>
+      <div class="sc"><div class="sn">247</div><div class="sl">on waitlist</div></div>
+    </div>
+    <div class="sub">Progress Bars</div>
+    <div style="max-width:440px;margin-bottom:18px">
+      <div class="pg"><div class="pgl"><span>Founding spots</span><span>247 / 500</span></div><div class="pgt"><div class="pgf" style="width:49%"></div></div></div>
+      <div class="pg"><div class="pgl"><span>Launch progress</span><span>72%</span></div><div class="pgt"><div class="pgf" style="width:72%"></div></div></div>
+    </div>
+    <div class="sub">Rule Callout</div>
+    <div class="rl"><p>500 rows = 1 Zapier task. Not 500. That is the entire product.</p></div>
+  </div>
+
+  <hr/>
+
+  <div class="sec">
+    <div class="stit">04 · Do / Don't</div>
+    <div class="dd">
+      <div class="ddb ddd">
+        <div class="ddt">✓ Do</div>
+        <div class="ddi">One key word per H1/H2 in --gold. Exactly one.</div>
+        <div class="ddi">Keep body copy in Barlow 300w — lightness creates hierarchy</div>
+        <div class="ddi">Martian Mono for all data, buttons, labels, and nav items</div>
+        <div class="ddi">Rust for problems, teal for solutions and confirmations</div>
+        <div class="ddi">Fine grid texture — structural, not decorative</div>
+        <div class="ddi">CSS variables everywhere — hardcoded values break themes</div>
+      </div>
+      <div class="ddb ddn">
+        <div class="ddt">✕ Don't</div>
+        <div class="ddi">Use italic type — weight + color does the emphasis work here</div>
+        <div class="ddi">Use Inter, DM Sans, Space Grotesk — generic SaaS fonts</div>
+        <div class="ddi">Use acid green, purple, or cool blue — competitor territory</div>
+        <div class="ddi">Overuse gold — if everything is gold, nothing is</div>
+        <div class="ddi">Use dot-grid or noise textures — wrong era, wrong category</div>
+        <div class="ddi">Use border-radius above 4px — keep edges tight and precise</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <hr/>
+
+
+  <div class="sec">
+    <div class="stit">05 · Iconography</div>
+    <p style="font-size:13px;color:var(--mu);margin-bottom:24px;line-height:1.7">All icons from <a href="https://remixicon.com" target="_blank" style="color:var(--go);text-decoration:none">Remixicon</a> — inlined as SVG for zero CDN dependency. Use <code style="font-family:Martian Mono,monospace;font-size:11px;background:var(--sf2);padding:1px 5px;border-radius:2px">width/height</code> to scale. Always <code style="font-family:Martian Mono,monospace;font-size:11px;background:var(--sf2);padding:1px 5px;border-radius:2px">fill="currentColor"</code> so icons inherit their container's color via CSS.</p>
+    <div style="display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap" id="ifilter">
+
+      <button class="ifbtn active" onclick="filterIcons('all',this)">All</button>
+      <button class="ifbtn" onclick="filterIcons('in-use',this)">In Use</button>
+      <button class="ifbtn" onclick="filterIcons('data--sync',this)">Data & Sync</button>
+      <button class="ifbtn" onclick="filterIcons('ui--navigation',this)">UI & Navigation</button>
+      <button class="ifbtn" onclick="filterIcons('status',this)">Status</button>
+      <button class="ifbtn" onclick="filterIcons('developer',this)">Developer</button>
+      <button class="ifbtn" onclick="filterIcons('account',this)">Account</button>
+    </div>
+    <div class="igrid" id="igrid">
+
+      <div class="ic" data-group="in-use">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 9H21L11 24V15H4L13 0V9ZM11 11V7.22063L7.53238 13H13V17.3944L17.263 11H11Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 9H21L11 24V15H4L13 0V9ZM11 11V7.22063L7.53238 13H13V17.3944L17.263 11H11Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 9H21L11 24V15H4L13 0V9ZM11 11V7.22063L7.53238 13H13V17.3944L17.263 11H11Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Flashlight</div>
+          <div class="icid">flashlight-line</div>
+          <div class="icu">RAM-only processing — fast, stateless</div>
+          <div class="ictag">In Use</div>
+        </div>
+      </div>
+
+      <div class="ic" data-group="in-use">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10.7577 11.8281L18.6066 3.97919L20.0208 5.3934L18.6066 6.80761L21.0815 9.28249L19.6673 10.6967L17.1924 8.22183L15.7782 9.63604L17.8995 11.7574L16.4853 13.1716L14.364 11.0503L12.1719 13.2423C13.4581 15.1837 13.246 17.8251 11.5355 19.5355C9.58291 21.4882 6.41709 21.4882 4.46447 19.5355C2.51184 17.5829 2.51184 14.4171 4.46447 12.4645C6.17493 10.754 8.81633 10.5419 10.7577 11.8281ZM10.1213 18.1213C11.2929 16.9497 11.2929 15.0503 10.1213 13.8787C8.94975 12.7071 7.05025 12.7071 5.87868 13.8787C4.70711 15.0503 4.70711 16.9497 5.87868 18.1213C7.05025 19.2929 8.94975 19.2929 10.1213 18.1213Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10.7577 11.8281L18.6066 3.97919L20.0208 5.3934L18.6066 6.80761L21.0815 9.28249L19.6673 10.6967L17.1924 8.22183L15.7782 9.63604L17.8995 11.7574L16.4853 13.1716L14.364 11.0503L12.1719 13.2423C13.4581 15.1837 13.246 17.8251 11.5355 19.5355C9.58291 21.4882 6.41709 21.4882 4.46447 19.5355C2.51184 17.5829 2.51184 14.4171 4.46447 12.4645C6.17493 10.754 8.81633 10.5419 10.7577 11.8281ZM10.1213 18.1213C11.2929 16.9497 11.2929 15.0503 10.1213 13.8787C8.94975 12.7071 7.05025 12.7071 5.87868 13.8787C4.70711 15.0503 4.70711 16.9497 5.87868 18.1213C7.05025 19.2929 8.94975 19.2929 10.1213 18.1213Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10.7577 11.8281L18.6066 3.97919L20.0208 5.3934L18.6066 6.80761L21.0815 9.28249L19.6673 10.6967L17.1924 8.22183L15.7782 9.63604L17.8995 11.7574L16.4853 13.1716L14.364 11.0503L12.1719 13.2423C13.4581 15.1837 13.246 17.8251 11.5355 19.5355C9.58291 21.4882 6.41709 21.4882 4.46447 19.5355C2.51184 17.5829 2.51184 14.4171 4.46447 12.4645C6.17493 10.754 8.81633 10.5419 10.7577 11.8281ZM10.1213 18.1213C11.2929 16.9497 11.2929 15.0503 10.1213 13.8787C8.94975 12.7071 7.05025 12.7071 5.87868 13.8787C4.70711 15.0503 4.70711 16.9497 5.87868 18.1213C7.05025 19.2929 8.94975 19.2929 10.1213 18.1213Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Key</div>
+          <div class="icid">key-2-line</div>
+          <div class="icu">Mapping rules — the schema, not the data</div>
+          <div class="ictag">In Use</div>
+        </div>
+      </div>
+
+      <div class="ic" data-group="in-use">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Shield Check</div>
+          <div class="icid">shield-check-line</div>
+          <div class="icu">Zero data residency / GDPR compliance</div>
+          <div class="ictag">In Use</div>
+        </div>
+      </div>
+
+      <div class="ic" data-group="in-use">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Lock</div>
+          <div class="icid">lock-2-line</div>
+          <div class="icu">OAuth2 isolation, founding rate lock, pricing lock</div>
+          <div class="ictag">In Use</div>
+        </div>
+      </div>
+
+      <div class="ic" data-group="in-use">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 10.5858L14.8284 7.75736L16.2426 9.17157L13.4142 12L16.2426 14.8284L14.8284 16.2426L12 13.4142L9.17157 16.2426L7.75736 14.8284L10.5858 12L7.75736 9.17157L9.17157 7.75736L12 10.5858Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Close Circle</div>
+          <div class="icid">close-circle-line</div>
+          <div class="icu">Problem/before states, error cards</div>
+          <div class="ictag">In Use</div>
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5C5 12.8134 5.46101 13.3584 6.53047 13.8931C7.91405 14.5849 9.87677 15 12 15C14.1232 15 16.0859 14.5849 17.4695 13.8931C18.539 13.3584 19 12.8134 19 12.5V10.3287C17.35 11.3482 14.8273 12 12 12C9.17273 12 6.64996 11.3482 5 10.3287V12.5ZM19 15.3287C17.35 16.3482 14.8273 17 12 17C9.17273 17 6.64996 16.3482 5 15.3287V17.5C5 17.8134 5.46101 18.3584 6.53047 18.8931C7.91405 19.5849 9.87677 20 12 20C14.1232 20 16.0859 19.5849 17.4695 18.8931C18.539 18.3584 19 17.8134 19 17.5V15.3287ZM3 17.5V7.5C3 5.01472 7.02944 3 12 3C16.9706 3 21 5.01472 21 7.5V17.5C21 19.9853 16.9706 22 12 22C7.02944 22 3 19.9853 3 17.5ZM12 10C14.1232 10 16.0859 9.58492 17.4695 8.89313C18.539 8.3584 19 7.81342 19 7.5C19 7.18658 18.539 6.6416 17.4695 6.10687C16.0859 5.41508 14.1232 5 12 5C9.87677 5 7.91405 5.41508 6.53047 6.10687C5.46101 6.6416 5 7.18658 5 7.5C5 7.81342 5.46101 8.3584 6.53047 8.89313C7.91405 9.58492 9.87677 10 12 10Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5C5 12.8134 5.46101 13.3584 6.53047 13.8931C7.91405 14.5849 9.87677 15 12 15C14.1232 15 16.0859 14.5849 17.4695 13.8931C18.539 13.3584 19 12.8134 19 12.5V10.3287C17.35 11.3482 14.8273 12 12 12C9.17273 12 6.64996 11.3482 5 10.3287V12.5ZM19 15.3287C17.35 16.3482 14.8273 17 12 17C9.17273 17 6.64996 16.3482 5 15.3287V17.5C5 17.8134 5.46101 18.3584 6.53047 18.8931C7.91405 19.5849 9.87677 20 12 20C14.1232 20 16.0859 19.5849 17.4695 18.8931C18.539 18.3584 19 17.8134 19 17.5V15.3287ZM3 17.5V7.5C3 5.01472 7.02944 3 12 3C16.9706 3 21 5.01472 21 7.5V17.5C21 19.9853 16.9706 22 12 22C7.02944 22 3 19.9853 3 17.5ZM12 10C14.1232 10 16.0859 9.58492 17.4695 8.89313C18.539 8.3584 19 7.81342 19 7.5C19 7.18658 18.539 6.6416 17.4695 6.10687C16.0859 5.41508 14.1232 5 12 5C9.87677 5 7.91405 5.41508 6.53047 6.10687C5.46101 6.6416 5 7.18658 5 7.5C5 7.81342 5.46101 8.3584 6.53047 8.89313C7.91405 9.58492 9.87677 10 12 10Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5C5 12.8134 5.46101 13.3584 6.53047 13.8931C7.91405 14.5849 9.87677 15 12 15C14.1232 15 16.0859 14.5849 17.4695 13.8931C18.539 13.3584 19 12.8134 19 12.5V10.3287C17.35 11.3482 14.8273 12 12 12C9.17273 12 6.64996 11.3482 5 10.3287V12.5ZM19 15.3287C17.35 16.3482 14.8273 17 12 17C9.17273 17 6.64996 16.3482 5 15.3287V17.5C5 17.8134 5.46101 18.3584 6.53047 18.8931C7.91405 19.5849 9.87677 20 12 20C14.1232 20 16.0859 19.5849 17.4695 18.8931C18.539 18.3584 19 17.8134 19 17.5V15.3287ZM3 17.5V7.5C3 5.01472 7.02944 3 12 3C16.9706 3 21 5.01472 21 7.5V17.5C21 19.9853 16.9706 22 12 22C7.02944 22 3 19.9853 3 17.5ZM12 10C14.1232 10 16.0859 9.58492 17.4695 8.89313C18.539 8.3584 19 7.81342 19 7.5C19 7.18658 18.539 6.6416 17.4695 6.10687C16.0859 5.41508 14.1232 5 12 5C9.87677 5 7.91405 5.41508 6.53047 6.10687C5.46101 6.6416 5 7.18658 5 7.5C5 7.81342 5.46101 8.3584 6.53047 8.89313C7.91405 9.58492 9.87677 10 12 10Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Database</div>
+          <div class="icid">database-2-line</div>
+          <div class="icu">Data source references, credit pool</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 10V14H19V10H13ZM11 10H5V14H11V10ZM13 19H19V16H13V19ZM11 19V16H5V19H11ZM13 5V8H19V5H13ZM11 5H5V8H11V5ZM4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 10V14H19V10H13ZM11 10H5V14H11V10ZM13 19H19V16H13V19ZM11 19V16H5V19H11ZM13 5V8H19V5H13ZM11 5H5V8H11V5ZM4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 10V14H19V10H13ZM11 10H5V14H11V10ZM13 19H19V16H13V19ZM11 19V16H5V19H11ZM13 5V8H19V5H13ZM11 5H5V8H11V5ZM4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Table</div>
+          <div class="icid">table-2</div>
+          <div class="icu">Google Sheets references, row data</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.46257 4.43262C7.21556 2.91688 9.5007 2 12 2C17.5228 2 22 6.47715 22 12C22 14.1361 21.3302 16.1158 20.1892 17.7406L17 12H20C20 7.58172 16.4183 4 12 4C9.84982 4 7.89777 4.84827 6.46023 6.22842L5.46257 4.43262ZM18.5374 19.5674C16.7844 21.0831 14.4993 22 12 22C6.47715 22 2 17.5228 2 12C2 9.86386 2.66979 7.88416 3.8108 6.25944L7 12H4C4 16.4183 7.58172 20 12 20C14.1502 20 16.1022 19.1517 17.5398 17.7716L18.5374 19.5674Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.46257 4.43262C7.21556 2.91688 9.5007 2 12 2C17.5228 2 22 6.47715 22 12C22 14.1361 21.3302 16.1158 20.1892 17.7406L17 12H20C20 7.58172 16.4183 4 12 4C9.84982 4 7.89777 4.84827 6.46023 6.22842L5.46257 4.43262ZM18.5374 19.5674C16.7844 21.0831 14.4993 22 12 22C6.47715 22 2 17.5228 2 12C2 9.86386 2.66979 7.88416 3.8108 6.25944L7 12H4C4 16.4183 7.58172 20 12 20C14.1502 20 16.1022 19.1517 17.5398 17.7716L18.5374 19.5674Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5.46257 4.43262C7.21556 2.91688 9.5007 2 12 2C17.5228 2 22 6.47715 22 12C22 14.1361 21.3302 16.1158 20.1892 17.7406L17 12H20C20 7.58172 16.4183 4 12 4C9.84982 4 7.89777 4.84827 6.46023 6.22842L5.46257 4.43262ZM18.5374 19.5674C16.7844 21.0831 14.4993 22 12 22C6.47715 22 2 17.5228 2 12C2 9.86386 2.66979 7.88416 3.8108 6.25944L7 12H4C4 16.4183 7.58172 20 12 20C14.1502 20 16.1022 19.1517 17.5398 17.7716L18.5374 19.5674Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Refresh</div>
+          <div class="icid">refresh-line</div>
+          <div class="icu">Monthly credit reset, sync operations</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM7.00488 9.00275L10.0049 5.50275L13.0049 9.00275H11.0049V13.0027H9.00488V9.00275H7.00488ZM17.0049 15.0027L14.0049 18.5027L11.0049 15.0027H13.0049V11.0027H15.0049V15.0027H17.0049Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM7.00488 9.00275L10.0049 5.50275L13.0049 9.00275H11.0049V13.0027H9.00488V9.00275H7.00488ZM17.0049 15.0027L14.0049 18.5027L11.0049 15.0027H13.0049V11.0027H15.0049V15.0027H17.0049Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM7.00488 9.00275L10.0049 5.50275L13.0049 9.00275H11.0049V13.0027H9.00488V9.00275H7.00488ZM17.0049 15.0027L14.0049 18.5027L11.0049 15.0027H13.0049V11.0027H15.0049V15.0027H17.0049Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Swap</div>
+          <div class="icid">swap-line</div>
+          <div class="icu">Bi-directional data flow, module toggle</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8.86874 14.1392C8.6556 14.4912 8.55014 14.7778 8.72043 15.2253C9.1905 16.4613 8.52737 17.664 7.28097 17.9905C6.10556 18.2985 4.96035 17.526 4.72713 16.2676C4.52048 15.1537 5.38488 14.0617 6.61294 13.8877C6.67963 13.8781 6.74717 13.874 6.83351 13.8688C6.88044 13.866 6.93293 13.8628 6.99384 13.8582L8.86194 10.7257C7.687 9.55742 6.98767 8.19164 7.14246 6.49936C7.25188 5.30308 7.72226 4.26933 8.58208 3.42201C10.2288 1.79945 12.7411 1.53667 14.68 2.78212C16.5423 3.97841 17.3951 6.30867 16.6681 8.30311L14.9611 7.84C15.1895 6.73115 15.0206 5.73536 14.2727 4.88234C13.7786 4.31914 13.1446 4.02394 12.4236 3.91516C10.9783 3.69681 9.55922 4.6254 9.13816 6.04399C8.66019 7.65406 9.38355 8.96924 11.3603 9.96029C10.5311 11.3541 9.70859 12.7518 8.86874 14.1392ZM13.7838 8.27337C14.3816 9.32798 14.9886 10.3986 15.5902 11.4593C18.631 10.5186 20.9237 12.2018 21.7462 14.004C22.7396 16.1809 22.0605 18.7593 20.1094 20.1023C18.1067 21.481 15.5741 21.2454 13.7997 19.4744L15.1919 18.3094C16.9444 19.4445 18.4772 19.3911 19.6151 18.047C20.5855 16.9003 20.5644 15.1906 19.5659 14.068C18.4136 12.7726 16.8701 12.7331 15.0044 13.9767C14.2305 12.6037 13.443 11.2413 12.6936 9.85845C12.4409 9.39233 12.1618 9.12196 11.5923 9.0233C10.6411 8.85839 10.027 8.04157 9.99016 7.12642C9.95395 6.22138 10.4871 5.4033 11.3205 5.08455C12.146 4.7688 13.1148 5.02367 13.6701 5.72554C14.1239 6.29901 14.2681 6.94443 14.0293 7.65167C13.9843 7.7852 13.9304 7.91584 13.8713 8.05885C13.8431 8.12694 13.8138 8.19801 13.7838 8.27337ZM11.552 16.895H15.2126C15.2636 16.963 15.3113 17.0303 15.3579 17.0959C15.4551 17.233 15.5474 17.3632 15.6551 17.4788C16.4304 18.3077 17.7395 18.3489 18.5682 17.5795C19.4271 16.7821 19.466 15.4426 18.6544 14.6101C17.8602 13.7955 16.5029 13.7177 15.7655 14.5802C15.3176 15.1044 14.8586 15.166 14.2641 15.1567C12.7414 15.1332 11.2177 15.149 9.69524 15.149C9.79406 17.2909 8.98436 18.6255 7.37841 18.9424C5.80582 19.2528 4.3575 18.4504 3.84759 16.9864C3.26842 15.3229 3.98467 13.9925 6.05421 12.9366C5.89847 12.3725 5.74115 11.8016 5.58541 11.236C3.32977 11.7276 1.63749 13.916 1.8122 16.378C1.96652 18.5514 3.71968 20.4815 5.86369 20.8273C7.02819 21.0153 8.12233 20.82 9.13741 20.2442C10.4433 19.5032 11.2011 18.3381 11.552 16.895Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8.86874 14.1392C8.6556 14.4912 8.55014 14.7778 8.72043 15.2253C9.1905 16.4613 8.52737 17.664 7.28097 17.9905C6.10556 18.2985 4.96035 17.526 4.72713 16.2676C4.52048 15.1537 5.38488 14.0617 6.61294 13.8877C6.67963 13.8781 6.74717 13.874 6.83351 13.8688C6.88044 13.866 6.93293 13.8628 6.99384 13.8582L8.86194 10.7257C7.687 9.55742 6.98767 8.19164 7.14246 6.49936C7.25188 5.30308 7.72226 4.26933 8.58208 3.42201C10.2288 1.79945 12.7411 1.53667 14.68 2.78212C16.5423 3.97841 17.3951 6.30867 16.6681 8.30311L14.9611 7.84C15.1895 6.73115 15.0206 5.73536 14.2727 4.88234C13.7786 4.31914 13.1446 4.02394 12.4236 3.91516C10.9783 3.69681 9.55922 4.6254 9.13816 6.04399C8.66019 7.65406 9.38355 8.96924 11.3603 9.96029C10.5311 11.3541 9.70859 12.7518 8.86874 14.1392ZM13.7838 8.27337C14.3816 9.32798 14.9886 10.3986 15.5902 11.4593C18.631 10.5186 20.9237 12.2018 21.7462 14.004C22.7396 16.1809 22.0605 18.7593 20.1094 20.1023C18.1067 21.481 15.5741 21.2454 13.7997 19.4744L15.1919 18.3094C16.9444 19.4445 18.4772 19.3911 19.6151 18.047C20.5855 16.9003 20.5644 15.1906 19.5659 14.068C18.4136 12.7726 16.8701 12.7331 15.0044 13.9767C14.2305 12.6037 13.443 11.2413 12.6936 9.85845C12.4409 9.39233 12.1618 9.12196 11.5923 9.0233C10.6411 8.85839 10.027 8.04157 9.99016 7.12642C9.95395 6.22138 10.4871 5.4033 11.3205 5.08455C12.146 4.7688 13.1148 5.02367 13.6701 5.72554C14.1239 6.29901 14.2681 6.94443 14.0293 7.65167C13.9843 7.7852 13.9304 7.91584 13.8713 8.05885C13.8431 8.12694 13.8138 8.19801 13.7838 8.27337ZM11.552 16.895H15.2126C15.2636 16.963 15.3113 17.0303 15.3579 17.0959C15.4551 17.233 15.5474 17.3632 15.6551 17.4788C16.4304 18.3077 17.7395 18.3489 18.5682 17.5795C19.4271 16.7821 19.466 15.4426 18.6544 14.6101C17.8602 13.7955 16.5029 13.7177 15.7655 14.5802C15.3176 15.1044 14.8586 15.166 14.2641 15.1567C12.7414 15.1332 11.2177 15.149 9.69524 15.149C9.79406 17.2909 8.98436 18.6255 7.37841 18.9424C5.80582 19.2528 4.3575 18.4504 3.84759 16.9864C3.26842 15.3229 3.98467 13.9925 6.05421 12.9366C5.89847 12.3725 5.74115 11.8016 5.58541 11.236C3.32977 11.7276 1.63749 13.916 1.8122 16.378C1.96652 18.5514 3.71968 20.4815 5.86369 20.8273C7.02819 21.0153 8.12233 20.82 9.13741 20.2442C10.4433 19.5032 11.2011 18.3381 11.552 16.895Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8.86874 14.1392C8.6556 14.4912 8.55014 14.7778 8.72043 15.2253C9.1905 16.4613 8.52737 17.664 7.28097 17.9905C6.10556 18.2985 4.96035 17.526 4.72713 16.2676C4.52048 15.1537 5.38488 14.0617 6.61294 13.8877C6.67963 13.8781 6.74717 13.874 6.83351 13.8688C6.88044 13.866 6.93293 13.8628 6.99384 13.8582L8.86194 10.7257C7.687 9.55742 6.98767 8.19164 7.14246 6.49936C7.25188 5.30308 7.72226 4.26933 8.58208 3.42201C10.2288 1.79945 12.7411 1.53667 14.68 2.78212C16.5423 3.97841 17.3951 6.30867 16.6681 8.30311L14.9611 7.84C15.1895 6.73115 15.0206 5.73536 14.2727 4.88234C13.7786 4.31914 13.1446 4.02394 12.4236 3.91516C10.9783 3.69681 9.55922 4.6254 9.13816 6.04399C8.66019 7.65406 9.38355 8.96924 11.3603 9.96029C10.5311 11.3541 9.70859 12.7518 8.86874 14.1392ZM13.7838 8.27337C14.3816 9.32798 14.9886 10.3986 15.5902 11.4593C18.631 10.5186 20.9237 12.2018 21.7462 14.004C22.7396 16.1809 22.0605 18.7593 20.1094 20.1023C18.1067 21.481 15.5741 21.2454 13.7997 19.4744L15.1919 18.3094C16.9444 19.4445 18.4772 19.3911 19.6151 18.047C20.5855 16.9003 20.5644 15.1906 19.5659 14.068C18.4136 12.7726 16.8701 12.7331 15.0044 13.9767C14.2305 12.6037 13.443 11.2413 12.6936 9.85845C12.4409 9.39233 12.1618 9.12196 11.5923 9.0233C10.6411 8.85839 10.027 8.04157 9.99016 7.12642C9.95395 6.22138 10.4871 5.4033 11.3205 5.08455C12.146 4.7688 13.1148 5.02367 13.6701 5.72554C14.1239 6.29901 14.2681 6.94443 14.0293 7.65167C13.9843 7.7852 13.9304 7.91584 13.8713 8.05885C13.8431 8.12694 13.8138 8.19801 13.7838 8.27337ZM11.552 16.895H15.2126C15.2636 16.963 15.3113 17.0303 15.3579 17.0959C15.4551 17.233 15.5474 17.3632 15.6551 17.4788C16.4304 18.3077 17.7395 18.3489 18.5682 17.5795C19.4271 16.7821 19.466 15.4426 18.6544 14.6101C17.8602 13.7955 16.5029 13.7177 15.7655 14.5802C15.3176 15.1044 14.8586 15.166 14.2641 15.1567C12.7414 15.1332 11.2177 15.149 9.69524 15.149C9.79406 17.2909 8.98436 18.6255 7.37841 18.9424C5.80582 19.2528 4.3575 18.4504 3.84759 16.9864C3.26842 15.3229 3.98467 13.9925 6.05421 12.9366C5.89847 12.3725 5.74115 11.8016 5.58541 11.236C3.32977 11.7276 1.63749 13.916 1.8122 16.378C1.96652 18.5514 3.71968 20.4815 5.86369 20.8273C7.02819 21.0153 8.12233 20.82 9.13741 20.2442C10.4433 19.5032 11.2011 18.3381 11.552 16.895Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Webhook</div>
+          <div class="icid">webhook-line</div>
+          <div class="icu">Outbound webhook endpoints</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="data--sync">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.0833 15.1999L21.2854 15.9212C21.5221 16.0633 21.5989 16.3704 21.4569 16.6072C21.4146 16.6776 21.3557 16.7365 21.2854 16.7787L12.5144 22.0412C12.1977 22.2313 11.8021 22.2313 11.4854 22.0412L2.71451 16.7787C2.47772 16.6366 2.40093 16.3295 2.54301 16.0927C2.58523 16.0223 2.64413 15.9634 2.71451 15.9212L3.9166 15.1999L11.9999 20.0499L20.0833 15.1999ZM20.0833 10.4999L21.2854 11.2212C21.5221 11.3633 21.5989 11.6704 21.4569 11.9072C21.4146 11.9776 21.3557 12.0365 21.2854 12.0787L11.9999 17.6499L2.71451 12.0787C2.47772 11.9366 2.40093 11.6295 2.54301 11.3927C2.58523 11.3223 2.64413 11.2634 2.71451 11.2212L3.9166 10.4999L11.9999 15.3499L20.0833 10.4999ZM12.5144 1.30864L21.2854 6.5712C21.5221 6.71327 21.5989 7.0204 21.4569 7.25719C21.4146 7.32757 21.3557 7.38647 21.2854 7.42869L11.9999 12.9999L2.71451 7.42869C2.47772 7.28662 2.40093 6.97949 2.54301 6.7427C2.58523 6.67232 2.64413 6.61343 2.71451 6.5712L11.4854 1.30864C11.8021 1.11864 12.1977 1.11864 12.5144 1.30864ZM11.9999 3.33233L5.88723 6.99995L11.9999 10.6676L18.1126 6.99995L11.9999 3.33233Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.0833 15.1999L21.2854 15.9212C21.5221 16.0633 21.5989 16.3704 21.4569 16.6072C21.4146 16.6776 21.3557 16.7365 21.2854 16.7787L12.5144 22.0412C12.1977 22.2313 11.8021 22.2313 11.4854 22.0412L2.71451 16.7787C2.47772 16.6366 2.40093 16.3295 2.54301 16.0927C2.58523 16.0223 2.64413 15.9634 2.71451 15.9212L3.9166 15.1999L11.9999 20.0499L20.0833 15.1999ZM20.0833 10.4999L21.2854 11.2212C21.5221 11.3633 21.5989 11.6704 21.4569 11.9072C21.4146 11.9776 21.3557 12.0365 21.2854 12.0787L11.9999 17.6499L2.71451 12.0787C2.47772 11.9366 2.40093 11.6295 2.54301 11.3927C2.58523 11.3223 2.64413 11.2634 2.71451 11.2212L3.9166 10.4999L11.9999 15.3499L20.0833 10.4999ZM12.5144 1.30864L21.2854 6.5712C21.5221 6.71327 21.5989 7.0204 21.4569 7.25719C21.4146 7.32757 21.3557 7.38647 21.2854 7.42869L11.9999 12.9999L2.71451 7.42869C2.47772 7.28662 2.40093 6.97949 2.54301 6.7427C2.58523 6.67232 2.64413 6.61343 2.71451 6.5712L11.4854 1.30864C11.8021 1.11864 12.1977 1.11864 12.5144 1.30864ZM11.9999 3.33233L5.88723 6.99995L11.9999 10.6676L18.1126 6.99995L11.9999 3.33233Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.0833 15.1999L21.2854 15.9212C21.5221 16.0633 21.5989 16.3704 21.4569 16.6072C21.4146 16.6776 21.3557 16.7365 21.2854 16.7787L12.5144 22.0412C12.1977 22.2313 11.8021 22.2313 11.4854 22.0412L2.71451 16.7787C2.47772 16.6366 2.40093 16.3295 2.54301 16.0927C2.58523 16.0223 2.64413 15.9634 2.71451 15.9212L3.9166 15.1999L11.9999 20.0499L20.0833 15.1999ZM20.0833 10.4999L21.2854 11.2212C21.5221 11.3633 21.5989 11.6704 21.4569 11.9072C21.4146 11.9776 21.3557 12.0365 21.2854 12.0787L11.9999 17.6499L2.71451 12.0787C2.47772 11.9366 2.40093 11.6295 2.54301 11.3927C2.58523 11.3223 2.64413 11.2634 2.71451 11.2212L3.9166 10.4999L11.9999 15.3499L20.0833 10.4999ZM12.5144 1.30864L21.2854 6.5712C21.5221 6.71327 21.5989 7.0204 21.4569 7.25719C21.4146 7.32757 21.3557 7.38647 21.2854 7.42869L11.9999 12.9999L2.71451 7.42869C2.47772 7.28662 2.40093 6.97949 2.54301 6.7427C2.58523 6.67232 2.64413 6.61343 2.71451 6.5712L11.4854 1.30864C11.8021 1.11864 12.1977 1.11864 12.5144 1.30864ZM11.9999 3.33233L5.88723 6.99995L11.9999 10.6676L18.1126 6.99995L11.9999 3.33233Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Stack</div>
+          <div class="icid">stack-line</div>
+          <div class="icu">Batch / bulk payload concept</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="ui--navigation">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Arrow Right</div>
+          <div class="icid">arrow-right-line</div>
+          <div class="icu">CTA buttons, directional flow</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="ui--navigation">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Chevron Right</div>
+          <div class="icid">arrow-right-s-line</div>
+          <div class="icu">Inline lists, breadcrumbs</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="ui--navigation">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19L18.9999 6.413L11.2071 14.2071L9.79289 12.7929L17.5849 5H13V3H21Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19L18.9999 6.413L11.2071 14.2071L9.79289 12.7929L17.5849 5H13V3H21Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19L18.9999 6.413L11.2071 14.2071L9.79289 12.7929L17.5849 5H13V3H21Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">External Link</div>
+          <div class="icid">external-link-line</div>
+          <div class="icu">Docs, Zapier marketplace links</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="ui--navigation">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.9998 5.00011L4.99991 4.99997L4.99988 6.99997L11.9998 7.00008L11.9999 17.1719L8.05015 13.2222L6.63594 14.6364L12.9999 21.0004L19.3639 14.6364L17.9496 13.2222L13.9999 17.172L13.9998 5.00011Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.9998 5.00011L4.99991 4.99997L4.99988 6.99997L11.9998 7.00008L11.9999 17.1719L8.05015 13.2222L6.63594 14.6364L12.9999 21.0004L19.3639 14.6364L17.9496 13.2222L13.9999 17.172L13.9998 5.00011Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.9998 5.00011L4.99991 4.99997L4.99988 6.99997L11.9998 7.00008L11.9999 17.1719L8.05015 13.2222L6.63594 14.6364L12.9999 21.0004L19.3639 14.6364L17.9496 13.2222L13.9999 17.172L13.9998 5.00011Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Corner Down</div>
+          <div class="icid">corner-right-down-line</div>
+          <div class="icu">Pipeline flow diagrams, step connectors</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="ui--navigation">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 21.5C4.067 21.5 2.5 19.933 2.5 18C2.5 16.067 4.067 14.5 6 14.5C7.5852 14.5 8.92427 15.5539 9.35481 16.9992L15 16.9994V15L17 14.9994V9.24339L14.757 6.99938H9V9.00003H3V3.00003H9V4.99939H14.757L18 1.75739L22.2426 6.00003L19 9.24139V14.9994L21 15V21H15V18.9994L9.35499 19.0003C8.92464 20.4459 7.58543 21.5 6 21.5ZM6 16.5C5.17157 16.5 4.5 17.1716 4.5 18C4.5 18.8285 5.17157 19.5 6 19.5C6.82843 19.5 7.5 18.8285 7.5 18C7.5 17.1716 6.82843 16.5 6 16.5ZM19 17H17V19H19V17ZM18 4.58581L16.5858 6.00003L18 7.41424L19.4142 6.00003L18 4.58581ZM7 5.00003H5V7.00003H7V5.00003Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 21.5C4.067 21.5 2.5 19.933 2.5 18C2.5 16.067 4.067 14.5 6 14.5C7.5852 14.5 8.92427 15.5539 9.35481 16.9992L15 16.9994V15L17 14.9994V9.24339L14.757 6.99938H9V9.00003H3V3.00003H9V4.99939H14.757L18 1.75739L22.2426 6.00003L19 9.24139V14.9994L21 15V21H15V18.9994L9.35499 19.0003C8.92464 20.4459 7.58543 21.5 6 21.5ZM6 16.5C5.17157 16.5 4.5 17.1716 4.5 18C4.5 18.8285 5.17157 19.5 6 19.5C6.82843 19.5 7.5 18.8285 7.5 18C7.5 17.1716 6.82843 16.5 6 16.5ZM19 17H17V19H19V17ZM18 4.58581L16.5858 6.00003L18 7.41424L19.4142 6.00003L18 4.58581ZM7 5.00003H5V7.00003H7V5.00003Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 21.5C4.067 21.5 2.5 19.933 2.5 18C2.5 16.067 4.067 14.5 6 14.5C7.5852 14.5 8.92427 15.5539 9.35481 16.9992L15 16.9994V15L17 14.9994V9.24339L14.757 6.99938H9V9.00003H3V3.00003H9V4.99939H14.757L18 1.75739L22.2426 6.00003L19 9.24139V14.9994L21 15V21H15V18.9994L9.35499 19.0003C8.92464 20.4459 7.58543 21.5 6 21.5ZM6 16.5C5.17157 16.5 4.5 17.1716 4.5 18C4.5 18.8285 5.17157 19.5 6 19.5C6.82843 19.5 7.5 18.8285 7.5 18C7.5 17.1716 6.82843 16.5 6 16.5ZM19 17H17V19H19V17ZM18 4.58581L16.5858 6.00003L18 7.41424L19.4142 6.00003L18 4.58581ZM7 5.00003H5V7.00003H7V5.00003Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Flow Chart</div>
+          <div class="icid">flow-chart</div>
+          <div class="icu">Zapier workflow diagrams</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="status">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM17.4571 9.45711L16.0429 8.04289L11 13.0858L8.20711 10.2929L6.79289 11.7071L11 15.9142L17.4571 9.45711Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Check Circle</div>
+          <div class="icid">checkbox-circle-line</div>
+          <div class="icu">Success state, confirmed writes</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="status">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Error Warning</div>
+          <div class="icid">error-warning-line</div>
+          <div class="icu">Failed batch, API error state</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="status">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Clock</div>
+          <div class="icid">time-line</div>
+          <div class="icu">Polling delay (15-min problem callout)</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="developer">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M24 12L18.3431 17.6569L16.9289 16.2426L21.1716 12L16.9289 7.75736L18.3431 6.34315L24 12ZM2.82843 12L7.07107 16.2426L5.65685 17.6569L0 12L5.65685 6.34315L7.07107 7.75736L2.82843 12ZM9.78845 21H7.66009L14.2116 3H16.3399L9.78845 21Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M24 12L18.3431 17.6569L16.9289 16.2426L21.1716 12L16.9289 7.75736L18.3431 6.34315L24 12ZM2.82843 12L7.07107 16.2426L5.65685 17.6569L0 12L5.65685 6.34315L7.07107 7.75736L2.82843 12ZM9.78845 21H7.66009L14.2116 3H16.3399L9.78845 21Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M24 12L18.3431 17.6569L16.9289 16.2426L21.1716 12L16.9289 7.75736L18.3431 6.34315L24 12ZM2.82843 12L7.07107 16.2426L5.65685 17.6569L0 12L5.65685 6.34315L7.07107 7.75736L2.82843 12ZM9.78845 21H7.66009L14.2116 3H16.3399L9.78845 21Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Code</div>
+          <div class="icid">code-s-slash-line</div>
+          <div class="icu">API docs, code block labels</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="developer">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.10508 8.78991C7.45179 10.0635 8.61653 11 10 11H14C16.4703 11 18.5222 12.7915 18.9274 15.1461C20.1303 15.5367 21 16.6668 21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.7334 15.7849 15.6501 16.8949 15.2101C16.5482 13.9365 15.3835 13 14 13H10C8.87439 13 7.83566 12.6281 7 12.0004V15.1707C8.16519 15.5825 9 16.6938 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.26661 8.21506 8.34988 7.10508 8.78991ZM6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7ZM6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19ZM18 19C18.5523 19 19 18.5523 19 18C19 17.4477 18.5523 17 18 17C17.4477 17 17 17.4477 17 18C17 18.5523 17.4477 19 18 19Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.10508 8.78991C7.45179 10.0635 8.61653 11 10 11H14C16.4703 11 18.5222 12.7915 18.9274 15.1461C20.1303 15.5367 21 16.6668 21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.7334 15.7849 15.6501 16.8949 15.2101C16.5482 13.9365 15.3835 13 14 13H10C8.87439 13 7.83566 12.6281 7 12.0004V15.1707C8.16519 15.5825 9 16.6938 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.26661 8.21506 8.34988 7.10508 8.78991ZM6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7ZM6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19ZM18 19C18.5523 19 19 18.5523 19 18C19 17.4477 18.5523 17 18 17C17.4477 17 17 17.4477 17 18C17 18.5523 17.4477 19 18 19Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.10508 8.78991C7.45179 10.0635 8.61653 11 10 11H14C16.4703 11 18.5222 12.7915 18.9274 15.1461C20.1303 15.5367 21 16.6668 21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.7334 15.7849 15.6501 16.8949 15.2101C16.5482 13.9365 15.3835 13 14 13H10C8.87439 13 7.83566 12.6281 7 12.0004V15.1707C8.16519 15.5825 9 16.6938 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.26661 8.21506 8.34988 7.10508 8.78991ZM6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7ZM6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19ZM18 19C18.5523 19 19 18.5523 19 18C19 17.4477 18.5523 17 18 17C17.4477 17 17 17.4477 17 18C17 18.5523 17.4477 19 18 19Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Git Merge</div>
+          <div class="icid">git-merge-line</div>
+          <div class="icu">Array merge / mapping concept</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="developer">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM8 7H16V9H8V7ZM8 11H16V13H8V11ZM8 15H13V17H8V15Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM8 7H16V9H8V7ZM8 11H16V13H8V11ZM8 15H13V17H8V15Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22ZM19 20V4H5V20H19ZM8 7H16V9H8V7ZM8 11H16V13H8V11ZM8 15H13V17H8V15Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">File List</div>
+          <div class="icid">file-list-2-line</div>
+          <div class="icu">Mapping profile reference, config docs</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="account">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Mail</div>
+          <div class="icid">mail-line</div>
+          <div class="icu">Email share, waitlist confirmation</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="account">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">User</div>
+          <div class="icid">user-line</div>
+          <div class="icu">Account, dashboard nav</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="account">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21.7267 2.95694L16.2734 22.0432C16.1225 22.5716 15.7979 22.5956 15.5563 22.1126L11 13L1.9229 9.36919C1.41322 9.16532 1.41953 8.86022 1.95695 8.68108L21.0432 2.31901C21.5716 2.14285 21.8747 2.43866 21.7267 2.95694ZM19.0353 5.09647L6.81221 9.17085L12.4488 11.4255L15.4895 17.5068L19.0353 5.09647Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21.7267 2.95694L16.2734 22.0432C16.1225 22.5716 15.7979 22.5956 15.5563 22.1126L11 13L1.9229 9.36919C1.41322 9.16532 1.41953 8.86022 1.95695 8.68108L21.0432 2.31901C21.5716 2.14285 21.8747 2.43866 21.7267 2.95694ZM19.0353 5.09647L6.81221 9.17085L12.4488 11.4255L15.4895 17.5068L19.0353 5.09647Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21.7267 2.95694L16.2734 22.0432C16.1225 22.5716 15.7979 22.5956 15.5563 22.1126L11 13L1.9229 9.36919C1.41322 9.16532 1.41953 8.86022 1.95695 8.68108L21.0432 2.31901C21.5716 2.14285 21.8747 2.43866 21.7267 2.95694ZM19.0353 5.09647L6.81221 9.17085L12.4488 11.4255L15.4895 17.5068L19.0353 5.09647Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Send</div>
+          <div class="icid">send-plane-line</div>
+          <div class="icu">Outbound push action button</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="account">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2 13H8V21H2V13ZM16 8H22V21H16V8ZM9 3H15V21H9V3ZM4 15V19H6V15H4ZM11 5V19H13V5H11ZM18 10V19H20V10H18Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2 13H8V21H2V13ZM16 8H22V21H16V8ZM9 3H15V21H9V3ZM4 15V19H6V15H4ZM11 5V19H13V5H11ZM18 10V19H20V10H18Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2 13H8V21H2V13ZM16 8H22V21H16V8ZM9 3H15V21H9V3ZM4 15V19H6V15H4ZM11 5V19H13V5H11ZM18 10V19H20V10H18Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Bar Chart</div>
+          <div class="icid">bar-chart-2-line</div>
+          <div class="icu">ROI calculator, savings metrics</div>
+          
+        </div>
+      </div>
+
+      <div class="ic" data-group="account">
+        <div class="icprev">
+          <div class="icpi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 19H20V12H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V12H4V19ZM13 9V16H11V9H6L12 3L18 9H13Z"/></svg></div>
+          <div class="icpi" style="color:var(--tx)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 19H20V12H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V12H4V19ZM13 9V16H11V9H6L12 3L18 9H13Z"/></svg></div>
+          <div class="icpi" style="color:var(--mu)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 19H20V12H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V12H4V19ZM13 9V16H11V9H6L12 3L18 9H13Z"/></svg></div>
+        </div>
+        <div class="icmeta">
+          <div class="icn">Upload</div>
+          <div class="icid">upload-2-line</div>
+          <div class="icu">Push to webhook action</div>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">Sizing reference</div>
+    <div class="isizes">
+
+      <div class="isz"><div class="iszi" style="color:var(--go)"><svg width="12px" height="12px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="iszl"><span class="iszn">12px</span><span class="iszc">Label / inline</span></div></div>
+      <div class="isz"><div class="iszi" style="color:var(--go)"><svg width="16px" height="16px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="iszl"><span class="iszn">16px</span><span class="iszc">Body text inline</span></div></div>
+      <div class="isz"><div class="iszi" style="color:var(--go)"><svg width="20px" height="20px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="iszl"><span class="iszn">20px</span><span class="iszc">Card icon</span></div></div>
+      <div class="isz"><div class="iszi" style="color:var(--go)"><svg width="24px" height="24px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="iszl"><span class="iszn">24px</span><span class="iszc">Feature header</span></div></div>
+      <div class="isz"><div class="iszi" style="color:var(--go)"><svg width="32px" height="32px" style="display:block" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="iszl"><span class="iszn">32px</span><span class="iszc">Section lead</span></div></div>
+    </div>
+  </div>
+</div>
+<script>
+
+function filterIcons(group, btn) {
+  document.querySelectorAll('.ifbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ic').forEach(el => {
+    if (group === 'all' || el.dataset.group === group) {
+      el.classList.remove('hide');
+    } else {
+      el.classList.add('hide');
+    }
+  });
+}
+
+function toggle(){
+  const h=document.documentElement,g=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',g);
+  document.getElementById('tl').textContent=g==='light'?'Dark mode':'Light mode';
+}
+</script>
+</body>
+</html>
