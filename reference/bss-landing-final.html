@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BulkSheetsSync — 500 rows = 1 Zapier task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Martian+Mono:wght@300;400;500;600&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root,[data-theme=dark]{--bg:#1a1510;--sf:#231c14;--sf2:#2c2418;--br:#3a3020;--brh:#4e4030;--tx:#e8dfd0;--mu:#907e68;--dm:#7a6a58;--go:#c98d1a;--gd:rgba(201,141,26,.10);--gm:rgba(201,141,26,.20);--gb:rgba(201,141,26,.28);--gg:rgba(201,141,26,.055);--ru:#cc6030;--rd:rgba(204,96,48,.10);--rb:rgba(204,96,48,.26);--te:#5a9e80;--td:rgba(90,158,128,.10);--tb:rgba(90,158,128,.26)}
+[data-theme=light]{--bg:#f2ede4;--sf:#e8e1d6;--sf2:#ded6c8;--br:#ccc0ac;--brh:#b8a894;--tx:#1e1510;--mu:#6a5a48;--dm:#a89078;--go:#8a6010;--gd:rgba(136,96,16,.10);--gm:rgba(136,96,16,.20);--gb:rgba(136,96,16,.30);--gg:rgba(136,96,16,.05);--ru:#a83e18;--rd:rgba(168,62,24,.10);--rb:rgba(168,62,24,.26);--te:#2a6a4c;--td:rgba(42,106,76,.10);--tb:rgba(42,106,76,.26)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--br) 1px,transparent 1px),linear-gradient(90deg,var(--br) 1px,transparent 1px);background-size:48px 48px;opacity:.2;mask-image:radial-gradient(ellipse 80% 45% at 50% 0%,black 0%,transparent 100%);-webkit-mask-image:radial-gradient(ellipse 80% 45% at 50% 0%,black 0%,transparent 100%)}
+.con{max-width:1040px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+.tag{display:inline-flex;align-items:center;gap:4px;font-family:'Martian Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:2px}
+.tg{color:var(--go);background:var(--gd);border:1px solid var(--gb)}
+.tr{color:var(--ru);background:var(--rd);border:1px solid var(--rb)}
+.tt{color:var(--te);background:var(--td);border:1px solid var(--tb)}
+.sl{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sl::before{content:'//';color:var(--dm);font-size:12px}
+h2{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,3.8vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.03em;margin-bottom:12px}
+h2 em{font-style:normal;color:var(--go)}
+.ss{font-size:15px;color:var(--mu);max-width:520px;line-height:1.72}
+section{padding:88px 0;position:relative;z-index:1}
+section+section{border-top:1px solid var(--br)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(26,21,16,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--br);transition:background .3s}
+[data-theme=light] nav{background:rgba(242,237,228,.93)}
+.ni{display:flex;align-items:center;justify-content:space-between;max-width:1040px;margin:0 auto;padding:0 28px;height:52px}
+.logo{font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:var(--tx);text-decoration:none;display:flex;align-items:center;gap:9px;letter-spacing:-.03em}
+.ld{width:7px;height:7px;background:var(--go);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.nr{display:flex;align-items:center;gap:16px}
+.nl{display:flex;gap:20px}
+.nl a{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);text-decoration:none;transition:color .2s;letter-spacing:.04em}
+.nl a:hover{color:var(--tx)}
+.tmbtn{display:flex;align-items:center;gap:6px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);background:none;border:1px solid var(--brh);border-radius:2px;padding:5px 10px;min-height:44px;cursor:pointer;transition:all .2s}
+.tmbtn:hover{border-color:var(--gb);color:var(--go)}
+.bnav{font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;color:var(--bg);background:var(--go);border:none;padding:8px 14px;border-radius:2px;min-height:44px;cursor:pointer;text-decoration:none;transition:opacity .2s;white-space:nowrap}
+.bnav:hover{opacity:.82}
+.ns{font-family:'Martian Mono',monospace;font-size:11px;color:var(--go);display:none}
+
+/* HERO */
+#hero{padding:140px 0 80px;position:relative;overflow:hidden}
+.hglow{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:800px;height:440px;background:radial-gradient(ellipse at center top,var(--gg) 0%,transparent 65%);pointer-events:none}
+.hpill{display:inline-flex;align-items:center;gap:11px;flex-wrap:wrap;border:1px solid var(--brh);border-radius:2px;background:var(--sf);padding:6px 13px;font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);margin-bottom:28px}
+.hlv{color:var(--go);display:flex;align-items:center;gap:6px}
+.hd2{width:5px;height:5px;background:var(--go);border-radius:50%;animation:pulse 1.6s infinite}
+.hsep{color:var(--dm)}
+.h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(44px,7.5vw,88px);font-weight:800;line-height:.96;letter-spacing:-.045em;margin-bottom:24px;max-width:780px}
+.h1 em{font-style:normal;color:var(--go)}
+.hsub{font-size:17px;color:var(--mu);line-height:1.68;max-width:520px;margin-bottom:38px}
+.flbl{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:8px;display:block}
+.frow{display:flex;max-width:500px;margin-bottom:10px}
+.fi{flex:1;background:var(--sf);border:1px solid var(--brh);border-right:none;border-radius:3px 0 0 3px;padding:13px 16px;font-family:'Martian Mono',monospace;font-size:12px;color:var(--tx);min-height:44px;outline:none;transition:border-color .2s}
+.fi::placeholder{color:var(--mu)}
+.fi:focus{border-color:var(--go)}
+.fb{background:var(--go);color:var(--bg);border:none;border-radius:0 3px 3px 0;padding:13px 20px;font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;min-height:44px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.fb:hover{opacity:.83}
+.fb:disabled{opacity:.45;cursor:not-allowed}
+.ffine{font-family:'Martian Mono',monospace;font-size:11px;color:var(--dm)}
+.ffine span{color:var(--go)}
+.hsucc{display:none;max-width:500px;border:1px solid var(--gb);border-radius:4px;background:linear-gradient(140deg,var(--gg) 0%,var(--sf) 60%);padding:24px;margin-bottom:14px}
+.hsp{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:3px}
+.hsn{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;color:var(--go);line-height:1;margin-bottom:5px;letter-spacing:-.03em}
+.hss{font-size:13px;color:var(--mu);margin-bottom:18px}
+.hsrl{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);margin-bottom:7px}
+.hsrr{display:flex;margin-bottom:7px}
+.hsri{flex:1;background:rgba(0,0,0,.2);border:1px solid var(--brh);border-right:none;border-radius:2px 0 0 2px;padding:8px 11px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);outline:none}
+[data-theme=light] .hsri{background:rgba(0,0,0,.05)}
+.hscb{background:var(--sf2);border:1px solid var(--brh);border-radius:0 2px 2px 0;padding:8px 12px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--tx);min-height:44px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.hscb:hover,.hscb.cp{border-color:var(--gb);color:var(--go);background:var(--gd)}
+.hssh{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.hsa{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu);background:var(--sf2);border:1px solid var(--brh);border-radius:2px;padding:5px 10px;cursor:pointer;text-decoration:none;transition:all .2s}
+.hsa:hover{color:var(--tx)}
+.hsnudge{font-family:'Martian Mono',monospace;font-size:10px;color:var(--dm);margin-top:9px}
+.hstats{display:flex;gap:36px;margin-top:52px;padding-top:36px;border-top:1px solid var(--br);flex-wrap:wrap}
+.hst .n{font-family:'Martian Mono',monospace;font-size:26px;font-weight:600;color:var(--go);display:block}
+.hst .l{font-size:11px;color:var(--mu);margin-top:3px}
+.term{margin-top:52px;border:1px solid var(--brh);border-radius:4px;overflow:hidden;background:var(--sf)}
+.tbar{background:var(--sf2);padding:10px 16px;display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--br)}
+.tc{width:10px;height:10px;border-radius:50%}
+.ttl{margin-left:7px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu)}
+.tbody2{padding:20px 24px}
+.tl{font-family:'Martian Mono',monospace;font-size:12px;line-height:2.2}
+.tco{color:var(--dm)}.tk{color:#9bbfdf}.tv{color:var(--go)}.tru{color:var(--ru)}
+
+/* LAUNCH */
+#launch{background:var(--sf)}
+.lpg{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:44px}
+.lpi{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--br)}
+.lpi:last-child{border-bottom:none}
+.lpc{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.lpn{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Martian Mono',monospace;font-size:9px;font-weight:600}
+.lpn.dn{background:var(--go);color:var(--bg)}.lpn.nw{background:var(--gd);border:1.5px solid var(--go);color:var(--go);animation:pulse 1.6s infinite}.lpn.sn{background:transparent;border:1.5px solid var(--dm);color:var(--dm)}
+.lpl{width:1px;flex:1;min-height:16px;margin:4px 0}
+.lpl.dn{background:var(--gb)}.lpl.dm{background:var(--br)}
+.lpco{flex:1;padding-top:2px}
+.lpit{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;margin-bottom:4px}
+.lpit.dn{color:var(--tx)}.lpit.nw{color:var(--go)}.lpit.sn{color:var(--mu)}
+.lpid{font-size:13px;color:var(--mu);line-height:1.6}
+.lpdt{font-family:'Martian Mono',monospace;font-size:9px;margin-top:5px}
+.lpdt.dn{color:var(--dm)}.lpdt.nw{color:var(--go)}.lpdt.sn{color:var(--dm)}
+.cntb{border:1px solid var(--brh);border-radius:4px;padding:24px;background:var(--bg);margin-bottom:16px}
+.cbl{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:8px}
+.cbn{font-family:'Bricolage Grotesque',sans-serif;font-size:52px;font-weight:800;color:var(--tx);line-height:1;margin-bottom:10px;letter-spacing:-.03em}
+.cbt{background:var(--br);height:2px;border-radius:1px;margin-bottom:7px}
+.cbf{height:100%;border-radius:1px;background:var(--go);transition:width 1.4s cubic-bezier(.16,1,.3,1);width:0}
+.cbc{display:flex;justify-content:space-between;font-family:'Martian Mono',monospace;font-size:9px;color:var(--dm)}
+.fcard{border:1px solid var(--gb);border-radius:4px;padding:22px 24px;background:linear-gradient(140deg,var(--gg) 0%,transparent 55%)}
+.fcl{font-family:'Martian Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--go);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.fcp{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+.fco{font-family:'Martian Mono',monospace;font-size:18px;color:var(--dm);text-decoration:line-through}
+.fcn{font-family:'Bricolage Grotesque',sans-serif;font-size:42px;font-weight:800;color:var(--go);line-height:1;letter-spacing:-.03em}
+.fcpe{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu)}
+.fcd{font-size:13px;color:var(--mu);line-height:1.65}
+.fcd strong{color:var(--tx);font-weight:500}
+
+/* PROBLEM */
+.psg{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:44px;border:1px solid var(--brh);border-radius:4px;overflow:hidden}
+.psc{padding:30px}
+.psc.bad{background:rgba(204,96,48,.04);border-right:1px solid var(--br)}
+.psc.good{background:rgba(201,141,26,.04)}
+.psrl{margin-bottom:20px}
+.psr{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--br);font-family:'Martian Mono',monospace;font-size:11px;line-height:1.55}
+.psr:last-child{border-bottom:none}
+.psk{color:var(--mu);font-size:9px;display:block;margin-bottom:2px;letter-spacing:.07em;text-transform:uppercase}
+.psv{color:var(--tx)}.bv{color:var(--ru)}.gv{color:var(--go)}
+.crow{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap}
+.cc2{flex:1;min-width:160px;border:1px solid var(--brh);border-radius:3px;padding:18px}
+.cc2.bad{border-color:var(--rb);background:var(--rd)}.cc2.good{border-color:var(--gb);background:var(--gd)}
+.ccl{font-family:'Martian Mono',monospace;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em}
+.cca{font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.025em;margin:7px 0 4px}
+.cc2.bad .cca{color:var(--ru)}.cc2.good .cca{color:var(--go)}
+.ccn{font-size:13px;color:var(--mu)}
+
+/* ROI */
+.roiw{margin-top:44px;border:1px solid var(--brh);border-radius:4px;overflow:hidden}
+.roii{padding:36px}
+.rsll{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.rsl{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu)}
+.rsv{font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:700;color:var(--go);letter-spacing:-.025em}
+input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:var(--brh);border-radius:1px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;background:var(--go);border-radius:50%;border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 2px var(--go);transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.rorg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:36px;background:var(--br);border:1px solid var(--brh);border-radius:3px;overflow:hidden}
+.roc{background:var(--sf);padding:20px 16px}
+.rcl{font-family:'Martian Mono',monospace;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.09em;margin-bottom:9px}
+.rcv{font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.025em;line-height:1}
+.rcv.ru{color:var(--ru)}.rcv.go{color:var(--go)}.rcv.pl{color:var(--tx)}
+.rcs{font-size:11px;color:var(--mu);margin-top:5px}
+.rverd{margin-top:22px;padding:14px 18px;background:var(--gd);border:1px solid var(--gb);border-radius:3px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--go);line-height:1.7}
+.rverd span{color:var(--tx)}
+
+/* FEATURES */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px}
+.fp{border:1px solid var(--brh);border-radius:4px;overflow:hidden;transition:border-color .22s}
+.fp:hover{border-color:var(--gb)}
+.fph{padding:24px 26px;border-bottom:1px solid var(--br);background:var(--sf)}
+.fpd{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.fpt{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:7px}
+.fps{font-size:13px;color:var(--mu);line-height:1.55}
+.fflow{display:flex;align-items:center;gap:6px;padding:11px 26px;background:var(--bg);border-bottom:1px solid var(--br);overflow-x:auto;white-space:nowrap}
+.fn{padding:4px 9px;border:1px solid var(--brh);border-radius:2px;font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu)}
+.fn.on{border-color:var(--gb);color:var(--go);background:var(--gd)}
+.fa{color:var(--dm);font-size:11px;flex-shrink:0}
+.fpb{padding:22px 26px}
+.fpi{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--br);align-items:flex-start}
+.fpi:last-child{border-bottom:none;padding-bottom:0}
+.fpbt{width:5px;height:5px;background:var(--go);border-radius:50%;margin-top:6px;flex-shrink:0}
+.fpit{font-size:13px;font-weight:500;margin-bottom:3px;color:var(--tx)}
+.fpid{font-size:13px;color:var(--mu);line-height:1.6}
+.il{font-family:'Martian Mono',monospace;font-size:11px;color:var(--go);background:var(--gd);padding:1px 5px;border-radius:2px}
+
+/* SECURITY */
+.sg2{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;margin-top:44px}
+.sps{display:flex;flex-direction:column;gap:2px}
+.spl{border:1px solid var(--brh);border-radius:3px;padding:18px 22px;background:var(--sf);transition:border-color .2s}
+.spl:hover{border-color:var(--gb)}
+.spli{font-size:22px;line-height:1;margin-bottom:10px;color:var(--go)}
+.splt{font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:600;letter-spacing:-.015em;margin-bottom:5px}
+.spld{font-size:13px;color:var(--mu);line-height:1.65}
+.zbadge{display:inline-flex;align-items:center;gap:7px;margin-top:16px;border:1px solid var(--gb);background:var(--gd);border-radius:2px;padding:8px 14px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--go)}
+.sc2{border:1px solid var(--brh);border-radius:4px;overflow:hidden;position:sticky;top:62px}
+.scb{background:var(--sf2);padding:9px 14px;border-bottom:1px solid var(--br);font-family:'Martian Mono',monospace;font-size:9px;color:var(--mu);display:flex;gap:5px;align-items:center}
+.scd{width:9px;height:9px;border-radius:50%}
+.scb2{padding:20px 22px;font-family:'Martian Mono',monospace;font-size:12px;line-height:2.1;background:var(--sf)}
+.sco{color:var(--dm)}.sck{color:#9bbfdf}.scv{color:var(--go)}
+
+/* PRICING */
+.pcg{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:44px}
+.pc{border:1px solid var(--brh);border-radius:4px;padding:26px 22px;background:var(--sf);position:relative;display:flex;flex-direction:column;transition:border-color .2s}
+.pc.ft{border-color:var(--gb);background:linear-gradient(155deg,var(--gg) 0%,var(--sf) 55%)}
+.pc.ltd{border-color:var(--tb);background:linear-gradient(155deg,var(--td) 0%,var(--sf) 55%)}
+.pcbadge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:'Martian Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pcbadge.go{background:var(--go);color:var(--bg)}.pcbadge.te{background:var(--te);color:var(--bg)}
+.pct{font-family:'Martian Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:16px}
+.pcp{display:flex;align-items:baseline;gap:3px;margin-bottom:4px}
+.pcd{font-family:'Martian Mono',monospace;font-size:16px;color:var(--mu);margin-top:3px}
+.pcn{font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:800;line-height:1;letter-spacing:-.04em}
+.pcpe{font-family:'Martian Mono',monospace;font-size:11px;color:var(--mu)}
+.pcw{font-family:'Martian Mono',monospace;font-size:11px;color:var(--dm);text-decoration:line-through;margin-left:5px}
+.pcsb{font-size:12px;color:var(--mu);margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--br);line-height:1.55}
+.pcsb .fl{color:var(--go);font-family:'Martian Mono',monospace;font-size:9px;display:block;margin-top:4px}
+.pcfs{flex:1;display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.pf{display:flex;gap:8px;font-size:12px;align-items:flex-start}
+.pfk{flex-shrink:0;margin-top:1px}
+.pfk.on{color:var(--go)}.pfk.dm{color:var(--dm)}.pfk.te{color:var(--te)}
+.pcbtn{font-family:'Martian Mono',monospace;font-size:11px;font-weight:500;padding:10px 12px;border-radius:3px;min-height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-align:center;text-decoration:none;transition:all .2s;border:1px solid var(--brh);color:var(--tx);background:transparent;display:block}
+.pcbtn:hover{border-color:var(--gb);color:var(--go)}
+.pcbtn.go{background:var(--go);color:var(--bg);border-color:var(--go)}.pcbtn.go:hover{opacity:.84}
+.pcbtn.te{background:var(--te);color:var(--bg);border-color:var(--te)}.pcbtn.te:hover{opacity:.84}
+.pnote{margin-top:18px;padding:14px 16px;background:var(--sf);border:1px solid var(--brh);border-radius:3px;font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);line-height:2.1}
+.pnote strong{color:var(--tx)}
+
+/* FAQ */
+.faq{margin-top:44px;display:flex;flex-direction:column;gap:2px}
+.fqi{border:1px solid var(--brh);border-radius:3px;overflow:hidden;transition:border-color .2s}
+.fqi.op{border-color:var(--gb)}
+.fqq{width:100%;text-align:left;background:var(--sf);border:none;cursor:pointer;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.fqqt{font-family:'Martian Mono',monospace;font-size:11px;color:var(--tx);text-align:left;line-height:1.5}
+.fqar{color:var(--mu);font-size:18px;transition:transform .25s,color .2s;flex-shrink:0}
+.fqi.op .fqar{transform:rotate(45deg);color:var(--go)}
+.fqa{max-height:0;overflow:hidden;transition:max-height .32s ease;background:var(--bg)}
+.fqai{padding:0 22px 20px;font-size:14px;color:var(--mu);line-height:1.8;border-top:1px solid var(--br)}
+.fqi.op .fqa{max-height:280px}
+.ci2{font-family:'Martian Mono',monospace;font-size:11px;color:var(--go);background:var(--gd);padding:1px 5px;border-radius:2px}
+
+/* FOOTER CTA */
+#fcta{padding:80px 0}
+.fci{text-align:center;padding:64px 24px;background:radial-gradient(ellipse at center,var(--gg) 0%,transparent 65%);border:1px solid var(--brh);border-radius:6px}
+.fch{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(28px,5vw,58px);font-weight:800;letter-spacing:-.035em;line-height:1.02;margin-bottom:16px}
+.fch em{font-style:normal;color:var(--go)}
+.fcs{font-size:15px;color:var(--mu);margin-bottom:28px}
+.fcf{display:flex;max-width:460px;margin:0 auto 11px}
+.fcfi{flex:1;background:var(--sf);border:1px solid var(--brh);border-right:none;border-radius:3px 0 0 3px;padding:12px 14px;font-family:'Martian Mono',monospace;font-size:12px;color:var(--tx);min-height:44px;outline:none;transition:border-color .2s}
+.fcfi::placeholder{color:var(--mu)}
+.fcfi:focus{border-color:var(--go)}
+.fcfb{background:var(--go);color:var(--bg);border:none;border-radius:0 3px 3px 0;padding:12px 18px;font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;min-height:44px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.fcfb:hover{opacity:.84}
+.fcn2{font-family:'Martian Mono',monospace;font-size:9px;color:var(--dm)}
+
+/* STICKY */
+.sb{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(26,21,16,.97);backdrop-filter:blur(18px);border-top:1px solid var(--brh);padding:11px 24px;display:flex;align-items:center;gap:20px;transform:translateY(100%);transition:transform .38s cubic-bezier(.16,1,.3,1)}
+[data-theme=light] .sb{background:rgba(242,237,228,.97)}
+.sb.show{transform:translateY(0)}.sb.gone{display:none}
+.sbtt{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;color:var(--go);letter-spacing:-.01em}
+.sbst{font-family:'Martian Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
+.sbf{display:flex;flex:1;max-width:340px}
+.sbi{flex:1;background:var(--sf2);border:1px solid var(--brh);border-right:none;border-radius:2px 0 0 2px;padding:8px 12px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--tx);min-height:44px;outline:none;transition:border-color .2s}
+.sbi::placeholder{color:var(--mu)}
+.sbi:focus{border-color:var(--go)}
+.sbb{background:var(--go);color:var(--bg);border:none;border-radius:0 2px 2px 0;padding:8px 14px;font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;min-height:44px;cursor:pointer;transition:opacity .2s}
+.sbb:hover{opacity:.84}
+.sbsg{font-family:'Martian Mono',monospace;font-size:11px;color:var(--go);display:none}
+.sbx{color:var(--mu);cursor:pointer;font-size:20px;background:none;border:none;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;transition:color .2s}
+.sbx:hover{color:var(--tx)}
+
+footer{border-top:1px solid var(--br);padding:28px 0}
+.fi2{max-width:1040px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+footer span,footer a{font-family:'Martian Mono',monospace;font-size:10px;color:var(--dm);text-decoration:none}
+footer a:hover{color:var(--mu)}
+.flinks{display:flex;gap:18px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fu{opacity:0;animation:fadeUp .55s ease both}
+.d1{animation-delay:.05s}.d2{animation-delay:.14s}.d3{animation-delay:.25s}.d4{animation-delay:.36s}.d5{animation-delay:.48s}.d6{animation-delay:.62s}
+
+@media(max-width:860px){.psg,.lpg,.sg2,.fg{grid-template-columns:1fr}.psc.bad{border-right:none;border-bottom:1px solid var(--br)}.pcg{grid-template-columns:1fr 1fr}.rorg{grid-template-columns:1fr}.nl{display:none}}
+@media(max-width:540px){.pcg{grid-template-columns:1fr}.sb{flex-direction:column;align-items:stretch}.sbf{max-width:100%}}
+
+/* ── Accessibility: focus-visible rings ── */
+:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+button:focus-visible,a:focus-visible,.bnav:focus-visible,.tmbtn:focus-visible,.pcbtn:focus-visible,.sbb:focus-visible,.fcfb:focus-visible,.fb:focus-visible,.hscb:focus-visible,.sbx:focus-visible,.fqq:focus-visible,.ifbtn:focus-visible{outline:2px solid var(--go);outline-offset:2px;border-radius:2px}
+input:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+input[type=range]:focus-visible{outline:2px solid var(--go);outline-offset:3px}
+
+/* ── Accessibility: reduced motion ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .ld,.hd2{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="ni">
+    <a href="#" class="logo"><span class="ld"></span>BulkSheetsSync</a>
+    <div class="nr">
+      <div class="nl">
+        <a href="#launch">Status</a>
+        <a href="#problem">Problem</a>
+        <a href="#roi">ROI Calc</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <button class="tmbtn" onclick="toggleTheme()" id="tmbtn">
+        <span id="tmicon">☀</span>
+        <span id="tmlbl">Light</span>
+      </button>
+      <a href="#hero" class="bnav" id="navcta">Join Waitlist →</a>
+      <span class="ns" id="navsgn">✓ You're in</span>
+    </div>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hglow"></div>
+  <div class="con">
+    <div class="hpill fu d1">
+      <span class="hlv"><span class="hd2"></span>Building now</span>
+      <span class="hsep">·</span><span>Q3 2025 launch</span>
+      <span class="hsep">·</span>
+      <span>Founding spots: <strong style="color:var(--tx)" id="hspots">253</strong> remaining</span>
+    </div>
+    <h1 class="h1 fu d2">500 rows.<br><em>1 task.</em><br>Not 500.</h1>
+    <p class="hsub fu d3">Zapier's Loop action bills you per iteration. Send a 500-record Shopify webhook, pay for 500 tasks. BulkSheetsSync processes entire JSON arrays in a single API call — bi-directionally.</p>
+    <div class="fu d4" id="heroform">
+      <label class="flbl" for="hemail">Work email — founding rate locked on signup</label>
+      <div class="frow">
+        <input class="fi" id="hemail" type="email" placeholder="you@company.com" autocomplete="email"/>
+        <button class="fb" id="hbtn" onclick="doSignup('hemail','hbtn')">Reserve My Spot →</button>
+      </div>
+      <div class="ffine">Lock Full Suite at <span>$49/yr</span> (launches $79). No payment now.</div>
+    </div>
+    <div class="hsucc fu" id="herosucc">
+      <div class="hsp">Your waitlist position</div>
+      <div class="hsn" id="hpos">#—</div>
+      <div class="hss">Founding member rate locked at $49/yr — permanently.</div>
+      <div class="hsrl">Share your link · each referral moves you up 5 spots</div>
+      <div class="hsrr">
+        <input class="hsri" id="href2" type="text" readonly aria-label="Your referral link"/>
+        <button class="hscb" id="hcp" onclick="doCopy('href2','hcp')">Copy</button>
+      </div>
+      <div class="hssh">
+        <a href="#" class="hsa" id="sx" target="_blank">𝕏 Share</a>
+        <a href="#" class="hsa" id="sli" target="_blank">in LinkedIn</a>
+        <a href="#" class="hsa" id="sem" target="_blank">✉ Email</a>
+      </div>
+      <div class="hsnudge">Top 50 get beta access 4 weeks early + personal onboarding call.</div>
+    </div>
+    <div class="hstats fu d5">
+      <div class="hst"><span class="n">500×</span><span class="l">task reduction</span></div>
+      <div class="hst"><span class="n">$0</span><span class="l">data stored · ever</span></div>
+      <div class="hst"><span class="n">&lt;1s</span><span class="l">push latency</span></div>
+      <div class="hst"><span class="n" id="ctrhero">247</span><span class="l">on waitlist</span></div>
+    </div>
+    <div class="term fu d6">
+      <div class="tbar"><span class="tc" style="background:#8b3a2a"></span><span class="tc" style="background:#8b7030"></span><span class="tc" style="background:#3a7040"></span><span class="ttl">POST → BulkSheetsSync · 500 Shopify orders</span></div>
+      <div class="tbody2">
+        <div class="tl"><span class="tco">// Zapier native — Loop action</span></div>
+        <div class="tl"><span class="tk">tasks_billed</span>: <span class="tru" style="font-weight:600">500</span>&nbsp;&nbsp;<span class="tco">// $0.60 overage. Every time.</span></div>
+        <div class="tl">&nbsp;</div>
+        <div class="tl"><span class="tco">// BulkSheetsSync — one POST, full array</span></div>
+        <div class="tl"><span class="tk">tasks_billed</span>: <span class="tv" style="font-weight:600">1</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tco">// always. regardless of payload size.</span></div>
+        <div class="tl"><span class="tk">rows_written</span>: <span class="tv">500</span>&nbsp;&nbsp;<span class="tco">// confirmed in same response</span></div>
+        <div class="tl"><span class="tk">data_stored</span>:&nbsp;<span class="tru">0</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tco">// RAM only — instantly discarded</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="launch" style="background:var(--sf)">
+  <div class="con">
+    <div class="sl">Build Status</div>
+    <h2>Where we are.<br>Where we're <em>going.</em></h2>
+    <p class="ss">Building in public. Real progress, not a marketing slide.</p>
+    <div class="lpg">
+      <div>
+        <div class="lpi"><div class="lpc"><div class="lpn dn">✓</div><div class="lpl dn"></div></div><div class="lpco"><div class="lpit dn">Core inbound API — array processing engine</div><div class="lpid">Receives bulk JSON, applies mapping rules in memory, writes to Sheets via batchUpdate. 10k rows per call.</div><div class="lpdt dn">Shipped</div></div></div>
+        <div class="lpi"><div class="lpc"><div class="lpn dn">✓</div><div class="lpl dn"></div></div><div class="lpco"><div class="lpit dn">Visual Mapper dashboard</div><div class="lpid">Drag-and-drop JSON key → Sheet column UI. Nested path support, multiple profiles, append/overwrite/upsert.</div><div class="lpdt dn">Shipped</div></div></div>
+        <div class="lpi"><div class="lpc"><div class="lpn dn">✓</div><div class="lpl dn"></div></div><div class="lpco"><div class="lpit dn">Zapier custom action — published</div><div class="lpid">Available as a Zapier custom action. Passes entire payload array as a single task.</div><div class="lpdt dn">Shipped</div></div></div>
+        <div class="lpi"><div class="lpc"><div class="lpn nw">▶</div><div class="lpl dm"></div></div><div class="lpco"><div class="lpit nw">Google Workspace Add-on — marketplace review</div><div class="lpid">Outbound Add-on submitted. Adds "Push to Webhook" sidebar. Review: 2–3 weeks.</div><div class="lpdt nw">In progress · Est. May 2025</div></div></div>
+        <div class="lpi"><div class="lpc"><div class="lpn sn">○</div><div class="lpl dm"></div></div><div class="lpco"><div class="lpit sn">Billing + credit management</div><div class="lpid">PAYG credit tracking, subscription management, usage dashboard.</div><div class="lpdt sn">Target: Jun 2025</div></div></div>
+        <div class="lpi"><div class="lpc"><div class="lpn sn">○</div></div><div class="lpco"><div class="lpit sn">Public launch</div><div class="lpid">Waitlist notified first. Founding member pricing activated.</div><div class="lpdt sn">Target: Q3 2025</div></div></div>
+      </div>
+      <div>
+        <div class="cntb">
+          <div class="cbl">Waitlist signups</div>
+          <div class="cbn" id="ctrlp">—</div>
+          <div class="cbt"><div class="cbf" id="lpfill"></div></div>
+          <div class="cbc"><span>0</span><span id="lpsl">247 / 500 founding spots</span><span>500</span></div>
+        </div>
+        <div class="fcard">
+          <div class="fcl"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg> Founding Member Rate</div>
+          <div class="fcp"><span class="fco">$79</span><span class="fcn">$49</span><span class="fcpe">/yr forever</span></div>
+          <div class="fcd">Locked permanently at signup. <strong>No price increases ever apply to founding members.</strong> Includes both modules, 100k rows/mo, all future Full Suite features. No payment until launch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="con">
+    <div class="sl">The Zapier Task Trap</div>
+    <h2>You're not paying for automation.<br>You're paying for <em>iteration.</em></h2>
+    <p class="ss">Loop action charges one task per row. For bulk data, this silently upgrades your plan without warning.</p>
+    <div class="psg">
+      <div class="psc bad">
+        <div class="psrl"><span class="tag tr">✕ Native Zapier</span></div>
+        <div class="psr"><span style="color:var(--ru);flex-shrink:0">✕</span><div><span class="psk">Architecture</span><span class="psv bv">Loop action — one task per row, always</span></div></div>
+        <div class="psr"><span style="color:var(--ru);flex-shrink:0">✕</span><div><span class="psk">500 Shopify orders</span><span class="psv bv">= 500 tasks consumed</span></div></div>
+        <div class="psr"><span style="color:var(--ru);flex-shrink:0">✕</span><div><span class="psk">Starter cap (750 tasks)</span><span class="psv bv">Blown in a single webhook</span></div></div>
+        <div class="psr"><span style="color:var(--ru);flex-shrink:0">✕</span><div><span class="psk">Required tier for bulk</span><span class="psv bv">Professional ($149/mo) minimum</span></div></div>
+        <div class="psr"><span style="color:var(--ru);flex-shrink:0">✕</span><div><span class="psk">Outbound latency</span><span class="psv bv">Polling only. Up to 15-min delay.</span></div></div>
+      </div>
+      <div class="psc good">
+        <div class="psrl"><span class="tag tg">✓ BulkSheetsSync</span></div>
+        <div class="psr"><span style="color:var(--go);flex-shrink:0">✓</span><div><span class="psk">Architecture</span><span class="psv gv">Array-aware — entire payload, one API call</span></div></div>
+        <div class="psr"><span style="color:var(--go);flex-shrink:0">✓</span><div><span class="psk">500 Shopify orders</span><span class="psv gv">= 1 task consumed</span></div></div>
+        <div class="psr"><span style="color:var(--go);flex-shrink:0">✓</span><div><span class="psk">Starter cap (750 tasks)</span><span class="psv gv">749 tasks remaining after that webhook</span></div></div>
+        <div class="psr"><span style="color:var(--go);flex-shrink:0">✓</span><div><span class="psk">Required tier for bulk</span><span class="psv gv">Stay on Starter. We handle the bulk.</span></div></div>
+        <div class="psr"><span style="color:var(--go);flex-shrink:0">✓</span><div><span class="psk">Outbound latency</span><span class="psv gv">Instant push. Highlight rows → click Push.</span></div></div>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="cc2 bad"><span class="ccl">Native Zapier — 50k rows/mo</span><div class="cca">$149<span style="font-size:15px;color:var(--mu)">/mo</span></div><p class="ccn">Professional forced. $1,788/year.</p></div>
+      <div class="cc2 good"><span class="ccl">BulkSheetsSync — 100k rows/mo</span><div class="cca">$49<span style="font-size:15px;color:var(--mu)">/yr</span></div><p class="ccn">Founding rate. Stay on Zapier Starter.</p></div>
+      <div class="cc2" style="border-color:var(--brh);background:var(--sf)"><span class="ccl">Annual savings</span><div class="cca" style="color:var(--go)">$1,739</div><p class="ccn">3,549% ROI at founding pricing.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="roi">
+  <div class="con">
+    <div class="sl">ROI Calculator</div>
+    <h2>What does <em>your</em> Zapier bill cost?</h2>
+    <p class="ss">Drag to your monthly row volume. See the exact tier Zapier forces you onto — and what you save.</p>
+    <div class="roiw">
+      <div class="roii">
+        <div class="rsll"><span class="rsl">Rows processed per month</span><span class="rsv" id="rowdisp">25,000 rows</span></div>
+        <input type="range" id="rslider" min="1000" max="500000" step="1000" value="25000"/>
+        <div class="rorg">
+          <div class="roc"><div class="rcl">Zapier tasks consumed</div><div class="rcv ru" id="ztasks">25,000</div><div class="rcs">1 per row (Loop)</div></div>
+          <div class="roc"><div class="rcl">Required Zapier tier</div><div class="rcv ru" id="ztier">Professional</div><div class="rcs" id="zcost">$149/mo · $1,788/yr</div></div>
+          <div class="roc"><div class="rcl">Annual savings</div><div class="rcv go" id="savings">$1,739</div><div class="rcs" id="savesub">vs. Full Suite founding</div></div>
+        </div>
+        <div class="rverd" id="verdict">▸ <span>Verdict:</span> At 25,000 rows/mo you need <strong style="color:var(--ru)">Professional</strong> at $149/mo. BulkSheetsSync Full Suite founding: $49/yr. Break even in <strong style="color:var(--go)">11 days</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="con">
+    <div class="sl">Two Modules. Both Directions.</div>
+    <h2>Inbound. Outbound.<br><em>Zero loops.</em></h2>
+    <p class="ss">A complete bi-directional bridge between Zapier and Google Sheets. Each module is independently useful. Together they replace an entire category of ETL tooling.</p>
+    <div class="fg">
+      <div class="fp">
+        <div class="fph">
+          <div class="fpd"><span class="tag tg">Module 01</span> Zapier → Sheets</div>
+          <div class="fpt">Inbound Visual Mapper</div>
+          <div class="fps">Catch bulk JSON arrays in Zapier. Map them to your Sheet visually. No formulas. No code.</div>
+        </div>
+        <div class="fflow"><span class="fn on">Zapier Trigger</span><span class="fa">→</span><span class="fn on">BSS Action</span><span class="fa">→</span><span class="fn">Mapper UI</span><span class="fa">→</span><span class="fn on">Google Sheet</span></div>
+        <div class="fpb">
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Drag-and-drop JSON → column mapping</div><div class="fpid">Paste a sample payload, drag JSON keys onto Sheet headers. Mapping rules persist — every future webhook uses the same schema automatically.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Nested object flattening</div><div class="fpid">Access <span class="il">order.customer.email</span> directly in the mapper. Deep paths, zero manual parsing.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Append, overwrite, or upsert</div><div class="fpid">Choose how each sync writes. Upsert on a key column, overwrite a range, or append. Configurable per profile.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">1 Zapier task. Always.</div><div class="fpid">50 rows or 50,000 — the action fires once. Task count stays flat while data volume scales.</div></div></div>
+        </div>
+      </div>
+      <div class="fp">
+        <div class="fph">
+          <div class="fpd"><span class="tag tg">Module 02</span> Sheets → Zapier</div>
+          <div class="fpt">Outbound Bulk Push</div>
+          <div class="fps">Highlight rows, click Push. Hits your Zapier webhook in under a second — no 15-minute polling wait.</div>
+        </div>
+        <div class="fflow"><span class="fn on">Google Sheet</span><span class="fa">→</span><span class="fn on">Add-on</span><span class="fa">→</span><span class="fn on">BSS API</span><span class="fa">→</span><span class="fn">Zapier Webhook</span></div>
+        <div class="fpb">
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Instant, not polled</div><div class="fpid">Native Zapier Sheets triggers poll every 15 minutes. This Add-on pushes on-demand — triggered by you, delivered in milliseconds.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Highlight any selection</div><div class="fpid">Select 1 row or 10,000. Packages selection as structured JSON. Column headers become JSON keys automatically.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Multi-destination routing</div><div class="fpid">Configure multiple webhook endpoints per sheet. Route different selections to different Zaps from one sidebar.</div></div></div>
+          <div class="fpi"><div class="fpbt"></div><div><div class="fpit">Google Workspace Marketplace</div><div class="fpid">Installs in 30 seconds. No IT approval required for most plans. Works in browser and desktop Sheets.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="security">
+  <div class="con">
+    <div class="sl">Zero Data Residency</div>
+    <h2>We process your data.<br>We <em>never store it.</em></h2>
+    <p class="ss">Stateless transit architecture. Your spreadsheet data never touches a database, never gets logged, never creates GDPR liability.</p>
+    <div class="sg2">
+      <div class="sps">
+        <div class="spl"><div class="spli"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 9H21L11 24V15H4L13 0V9ZM11 11V7.22063L7.53238 13H13V17.3944L17.263 11H11Z"/></svg></div><div class="splt">RAM-Only Processing</div><div class="spld">Your JSON payload is received, transformed, and forwarded entirely in memory. The moment the response is sent, the data is gone. No write path to any database for payload data.</div></div>
+        <div class="spl"><div class="spli"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10.7577 11.8281L18.6066 3.97919L20.0208 5.3934L18.6066 6.80761L21.0815 9.28249L19.6673 10.6967L17.1924 8.22183L15.7782 9.63604L17.8995 11.7574L16.4853 13.1716L14.364 11.0503L12.1719 13.2423C13.4581 15.1837 13.246 17.8251 11.5355 19.5355C9.58291 21.4882 6.41709 21.4882 4.46447 19.5355C2.51184 17.5829 2.51184 14.4171 4.46447 12.4645C6.17493 10.754 8.81633 10.5419 10.7577 11.8281ZM10.1213 18.1213C11.2929 16.9497 11.2929 15.0503 10.1213 13.8787C8.94975 12.7071 7.05025 12.7071 5.87868 13.8787C4.70711 15.0503 4.70711 16.9497 5.87868 18.1213C7.05025 19.2929 8.94975 19.2929 10.1213 18.1213Z"/></svg></div><div class="splt">We Store Mapping Rules, Nothing Else</div><div class="spld">The only thing persisted is your column mapping schema — the structural instructions for how to rearrange data. A recipe, not the ingredients.</div></div>
+        <div class="spl"><div class="spli"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L20.2169 2.82598C20.6745 2.92766 21 3.33347 21 3.80217V13.7889C21 15.795 19.9974 17.6684 18.3282 18.7812L12 23L5.6718 18.7812C4.00261 17.6684 3 15.795 3 13.7889V3.80217C3 3.33347 3.32553 2.92766 3.78307 2.82598L12 1ZM12 3.04879L5 4.60434V13.7889C5 15.1263 5.6684 16.3752 6.7812 17.1171L12 20.5963L17.2188 17.1171C18.3316 16.3752 19 15.1263 19 13.7889V4.60434L12 3.04879ZM16.4524 8.22183L17.8666 9.63604L11.5026 16L7.25999 11.7574L8.67421 10.3431L11.5019 13.1709L16.4524 8.22183Z"/></svg></div><div class="splt">Zero Data Residency Risk</div><div class="spld">No GDPR Article 28 processor liability. No SOC 2 scope creep. If your legal team asks "where does the data live?" — the honest answer is: it doesn't.</div></div>
+        <div class="spl"><div class="spli"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg></div><div class="splt">OAuth2 Credential Isolation</div><div class="spld">Google Sheets tokens scoped per-user, never logged. Zapier webhook URLs stored encrypted at rest.</div></div>
+        <div class="zbadge">✓ Stateless Transit — Zero payload persistence by design</div>
+      </div>
+      <div class="sc2">
+        <div class="scb"><span class="scd" style="background:#8b3a2a"></span><span class="scd" style="background:#8b7030"></span><span class="scd" style="background:#3a7040"></span><span style="margin-left:7px">data-pipeline.ts</span></div>
+        <div class="scb2">
+<span class="sco">// What our inbound handler does</span><br>
+<span class="sck">async function</span> <span class="scv">handleBulkInbound</span>(req, res) {<br>
+&nbsp;&nbsp;<span class="sco">// 1. Load mapping rules only</span><br>
+&nbsp;&nbsp;<span class="sck">const</span> mapping = <span class="scv">await</span> db.getMapping(req.mappingId);<br>
+&nbsp;&nbsp;<span class="sco">// 2. Payload lives ONLY in RAM</span><br>
+&nbsp;&nbsp;<span class="sck">const</span> rows = req.body.data; <span class="sco">// ← never written to DB</span><br>
+&nbsp;&nbsp;<span class="sco">// 3. Transform in memory</span><br>
+&nbsp;&nbsp;<span class="sck">const</span> mapped = <span class="scv">applyMapping</span>(rows, mapping);<br>
+&nbsp;&nbsp;<span class="sco">// 4. Write to Sheets via OAuth</span><br>
+&nbsp;&nbsp;<span class="scv">await</span> sheets.<span class="scv">batchUpdate</span>(mapped);<br>
+&nbsp;&nbsp;<span class="sco">// GC clears payload on function return</span><br>
+&nbsp;&nbsp;<span class="sck">return</span> res.<span class="scv">json</span>({ tasks: <span class="scv">1</span>, rows: mapped.length });<br>
+} <span class="sco">// Zero persistence. Zero liability.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="con">
+    <div class="sl">Pricing</div>
+    <h2>Founding rates lock today.<br><em>Public rates live at launch.</em></h2>
+    <p class="ss">Every tier priced against the Zapier task cost it replaces. The math is deliberately obvious.</p>
+    <div class="pcg">
+      <div class="pc">
+        <div class="pct">Free</div>
+        <div class="pcp"><span class="pcd">$</span><span class="pcn">0</span></div>
+        <div class="pcsb">500 lifetime rows. No card required.</div>
+        <div class="pcfs">
+          <div class="pf"><span class="pfk on">✓</span> 500 lifetime row credits</div>
+          <div class="pf"><span class="pfk on">✓</span> Inbound Visual Mapper</div>
+          <div class="pf"><span class="pfk on">✓</span> Outbound Add-on access</div>
+          <div class="pf"><span class="pfk dm">–</span> <span style="color:var(--dm)">Credits don't reset monthly</span></div>
+        </div>
+        <a href="#hero" class="pcbtn">Join Waitlist</a>
+      </div>
+      <div class="pc">
+        <div class="pct">Pay-As-You-Go</div>
+        <div class="pcp"><span class="pcd">$</span><span class="pcn">19</span></div>
+        <div class="pcsb">10,000 row credits. Never expire.</div>
+        <div class="pcfs">
+          <div class="pf"><span class="pfk on">✓</span> 10,000 row credits</div>
+          <div class="pf"><span class="pfk on">✓</span> Credits never expire</div>
+          <div class="pf"><span class="pfk on">✓</span> Inbound + Outbound</div>
+          <div class="pf"><span class="pfk on">✓</span> One-time migrations</div>
+        </div>
+        <a href="#hero" class="pcbtn">Join Waitlist</a>
+      </div>
+      <div class="pc ft">
+        <div class="pcbadge go">Founding Rate</div>
+        <div class="pct">Full Suite</div>
+        <div class="pcp"><span class="pcd">$</span><span class="pcn">49</span><span class="pcpe">/yr</span><span class="pcw">$79</span></div>
+        <div class="pcsb">100k rows/mo. Both modules.<span class="fl"><svg width="1.15em" height="1.15em" style="vertical-align:-3px;flex-shrink:0;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 8V7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7V8H20C20.5523 8 21 8.44772 21 9V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V9C3 8.44772 3.44772 8 4 8H6ZM19 10H5V20H19V10ZM11 15.7324C10.4022 15.3866 10 14.7403 10 14C10 12.8954 10.8954 12 12 12C13.1046 12 14 12.8954 14 14C14 14.7403 13.5978 15.3866 13 15.7324V18H11V15.7324ZM8 8H16V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V8Z"/></svg> Locked permanently at signup</span></div>
+        <div class="pcfs">
+          <div class="pf"><span class="pfk on">✓</span> 100,000 rows/mo (resets monthly)</div>
+          <div class="pf"><span class="pfk on">✓</span> Inbound Visual Mapper</div>
+          <div class="pf"><span class="pfk on">✓</span> Outbound Bulk Push Add-on</div>
+          <div class="pf"><span class="pfk on">✓</span> Unlimited mapping profiles</div>
+          <div class="pf"><span class="pfk on">✓</span> Priority email support</div>
+        </div>
+        <a href="#hero" class="pcbtn go">Reserve Founding Spot →</a>
+      </div>
+      <div class="pc ltd">
+        <div class="pcbadge te">Agency LTD</div>
+        <div class="pct">Agency Master</div>
+        <div class="pcp"><span class="pcd">$</span><span class="pcn">349</span><span class="pcpe">once</span></div>
+        <div class="pcsb">Unlimited fair-use. All client accounts.</div>
+        <div class="pcfs">
+          <div class="pf"><span class="pfk te">✓</span> Unlimited rows (fair-use)</div>
+          <div class="pf"><span class="pfk te">✓</span> Unlimited client workspaces</div>
+          <div class="pf"><span class="pfk te">✓</span> All future modules included</div>
+          <div class="pf"><span class="pfk te">✓</span> White-label mapping dashboard</div>
+          <div class="pf"><span class="pfk te">✓</span> Dedicated Slack support</div>
+        </div>
+        <a href="#hero" class="pcbtn te">Reserve Agency Spot →</a>
+      </div>
+    </div>
+    <div class="pnote"><strong>// Full Suite vs Zapier Professional:</strong> $49 vs $1,788/yr — keep $1,739&nbsp;&nbsp;<strong>// Agency LTD break-even:</strong> 7 years or 1 retainer client&nbsp;&nbsp;<strong>// Effective monthly:</strong> $4.08/mo founding</div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="con">
+    <div class="sl">Technical FAQ</div>
+    <h2>Questions your RevOps lead<br>is going to <em>ask anyway.</em></h2>
+    <div class="faq">
+      <div class="fqi" onclick="toggleFaq(this)"><button class="fqq" aria-expanded="false"><span class="fqqt">Do you store my spreadsheet data or payload contents?</span><span class="fqar">+</span></button><div class="fqa"><div class="fqai">No. Your actual row data and JSON payloads are processed entirely in RAM and immediately discarded after the operation completes. The only thing persisted is your mapping configuration — the structural rules describing which JSON keys map to which columns. No payload contents, no row values, no webhook body data is ever logged.</div></div></div>
+      <div class="fqi" onclick="toggleFaq(this)"><button class="fqq" aria-expanded="false"><span class="fqqt">How do PAYG credits work? What counts as one "row"?</span><span class="fqar">+</span></button><div class="fqa"><div class="fqai">One row credit = one row written to Google Sheets (Inbound) or one row sent in an Outbound push. A 200-object payload consumes 200 credits. Credits deduct only on confirmed success — failed operations caused by our errors are refunded. The <span class="ci2">GET /v1/account/credits</span> endpoint returns your balance in real time. PAYG credits never expire.</div></div></div>
+      <div class="fqi" onclick="toggleFaq(this)"><button class="fqq" aria-expanded="false"><span class="fqqt">Do I need a paid Zapier account?</span><span class="fqar">+</span></button><div class="fqa"><div class="fqai">Yes — both modules require at minimum Zapier Starter ($19.99/mo) because custom actions and webhook triggers are paid Zapier features. The entire value prop is that we eliminate the task multiplication that would otherwise force you onto Professional ($149/mo) or Team ($449/mo). Starter is sufficient for the vast majority of use cases.</div></div></div>
+      <div class="fqi" onclick="toggleFaq(this)"><button class="fqq" aria-expanded="false"><span class="fqqt">What happens if a payload partially fails? Is there rollback?</span><span class="fqar">+</span></button><div class="fqa"><div class="fqai">We use the Google Sheets <span class="ci2">batchUpdate</span> API, which is atomic at the batch level — the entire write either succeeds or fails. No partial inserts. If the Sheets API returns an error, the whole batch rolls back. Row credits are only deducted on confirmed success.</div></div></div>
+      <div class="fqi" onclick="toggleFaq(this)"><button class="fqq" aria-expanded="false"><span class="fqqt">What does "founding rate locked forever" actually mean?</span><span class="fqar">+</span></button><div class="fqa"><div class="fqai">No catch. Your $49/yr rate is stored against your account at signup. If we raise to $79, $99, or $149 — your billing stays at $49 indefinitely. The only scenario where this wouldn't hold is shutting the product down entirely. Early signups validate the product before we spend on marketing, and that's worth more than the $30/yr delta.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="fcta">
+  <div class="con">
+    <div class="fci">
+      <div class="fch">Stop paying Zapier<br>for <em>counting rows.</em></div>
+      <p class="fcs">Founding rate: $49/yr, locked permanently. 253 spots remaining.</p>
+      <div class="fcf">
+        <input class="fcfi" id="femail" type="email" placeholder="you@company.com" aria-label="Email address for waitlist"/>
+        <button class="fcfb" onclick="doSignup('femail','fbtn')" id="fbtn">Reserve Spot →</button>
+      </div>
+      <div class="fcn2">No payment now · No spam · Founding rate locked at signup</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fi2">
+    <span>© 2025 BulkSheetsSync. Built for people who read Zapier invoices.</span>
+    <div class="flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Docs</a><a href="#">Status</a></div>
+  </div>
+</footer>
+
+<div class="sb" id="sbar">
+  <div><div class="sbtt">$49/yr → $79 at launch.</div><div class="sbst">Lock founding rate. No payment required.</div></div>
+  <div class="sbf"><input class="sbi" id="sbemail" type="email" placeholder="your@email.com" aria-label="Email address for waitlist"/><button class="sbb" onclick="doSignup('sbemail','sbbtn')" id="sbbtn">Reserve →</button></div>
+  <span class="sbsg" id="sbsgn">✓ On the list — <span id="sbpos"></span></span>
+  <button class="sbx" onclick="dismissBar()">×</button>
+</div>
+
+<script>
+const SEED=247,CAP=500,BASE=window.location.href.split('?')[0];
+let dismissed=false,signedup=false;
+
+const TIERS=[{name:'Free',tasks:100,mo:0,yr:0},{name:'Starter',tasks:750,mo:20,yr:240},{name:'Professional',tasks:2000,mo:49,yr:588},{name:'Team',tasks:50000,mo:149,yr:1788},{name:'Enterprise',tasks:100000,mo:599,yr:7188}];
+const getTier=r=>TIERS.find(t=>r<=t.tasks)||TIERS[TIERS.length-1];
+const fmt=n=>n.toLocaleString('en-US');
+
+function updateROI(){
+  const rows=parseInt(document.getElementById('rslider').value);
+  document.getElementById('rowdisp').textContent=fmt(rows)+' rows';
+  document.getElementById('ztasks').textContent=fmt(rows);
+  const t=getTier(rows);
+  document.getElementById('ztier').textContent=t.name;
+  document.getElementById('zcost').textContent=t.mo===0?'Free tier':'$'+t.mo+'/mo · $'+t.yr+'/yr';
+  const bss=rows<=10000?19:49,bssL=rows<=10000?'PAYG $19':'Full Suite $49/yr founding';
+  const save=t.yr-bss;
+  if(save>0){
+    document.getElementById('savings').textContent='$'+fmt(save);
+    document.getElementById('savings').className='rcv go';
+    document.getElementById('savesub').textContent='vs. '+bssL;
+    const days=Math.ceil((bss/Math.max(t.yr,1))*365);
+    document.getElementById('verdict').innerHTML='▸ <span>Verdict:</span> At '+fmt(rows)+' rows/mo you need <strong style="color:var(--ru)">'+t.name+'</strong> at $'+t.mo+'/mo. BSS '+bssL+'. Break even in <strong style="color:var(--go)">'+days+' days</strong>.';
+  } else {
+    document.getElementById('savings').textContent='N/A';
+    document.getElementById('savings').className='rcv pl';
+    document.getElementById('savesub').textContent='Zapier free may cover this volume';
+    document.getElementById('verdict').innerHTML='▸ <span>Verdict:</span> At '+fmt(rows)+' rows/mo Zapier free may still cover you. Try BulkSheetsSync free — 500 lifetime rows, no card.';
+  }
+  const pct=((rows-1000)/(500000-1000))*100;
+  document.getElementById('rslider').style.background='linear-gradient(to right,var(--go) '+pct+'%,var(--brh) '+pct+'%)';
+}
+const sl=document.getElementById('rslider');
+if(sl){sl.addEventListener('input',updateROI);updateROI();}
+
+function toggleFaq(el){const was=el.classList.contains('op');document.querySelectorAll('.fqi').forEach(i=>{i.classList.remove('op');const b=i.querySelector('.fqq');if(b)b.setAttribute('aria-expanded','false');});if(!was){el.classList.add('op');const b=el.querySelector('.fqq');if(b)b.setAttribute('aria-expanded','true');}}
+
+function animCount(id,target,dur=1200){
+  const el=document.getElementById(id);if(!el)return;
+  const from=Math.max(0,target-50),t0=performance.now();
+  const step=now=>{const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(from+(target-from)*e).toLocaleString();if(p<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);
+}
+function updateBars(n){
+  const pct=Math.min((n/CAP)*100,100);
+  setTimeout(()=>{const f=document.getElementById('lpfill');if(f)f.style.width=pct+'%';},500);
+  const sl2=document.getElementById('lpsl');if(sl2)sl2.textContent=n+' / '+CAP+' founding spots';
+  const hs=document.getElementById('hspots');if(hs)hs.textContent=Math.max(0,CAP-n).toLocaleString();
+}
+
+const genRef=()=>Math.random().toString(36).substr(2,8).toUpperCase();
+const getPos=r=>SEED+1+(r.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%28);
+
+function buildShares(link){
+  const m=encodeURIComponent('Zapier charges per row in a Loop. BulkSheetsSync fixes that — 500 rows = 1 task. Founding rate: '+link);
+  const sx=document.getElementById('sx');if(sx)sx.href='https://twitter.com/intent/tweet?text='+m;
+  const sli=document.getElementById('sli');if(sli)sli.href='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(link);
+  const sem=document.getElementById('sem');if(sem)sem.href='mailto:?subject='+encodeURIComponent('Stop paying Zapier per-row')+'&body='+encodeURIComponent('Check this out: '+link);
+}
+
+function showSuccess(refId,pos){
+  signedup=true;
+  const link=BASE+'?ref='+refId;
+  const hf=document.getElementById('heroform'),hs=document.getElementById('herosucc');
+  if(hf&&hs){hf.style.display='none';hs.style.display='block';hs.style.animation='fadeUp .5s ease both';}
+  const hp=document.getElementById('hpos');if(hp)hp.textContent='#'+pos;
+  const hr=document.getElementById('href2');if(hr)hr.value=link;
+  const fb=document.getElementById('fbtn'),fi=document.getElementById('femail');
+  if(fb){fb.textContent='✓ You\'re on the list';fb.style.background='var(--sf2)';fb.style.color='var(--go)';fb.disabled=true;}
+  if(fi){fi.disabled=true;fi.placeholder='Already signed up!';}
+  const nc=document.getElementById('navcta'),ns=document.getElementById('navsgn');
+  if(nc)nc.style.display='none';if(ns)ns.style.display='inline';
+  const sbf=document.querySelector('.sbf'),sbs=document.getElementById('sbsgn'),sbp=document.getElementById('sbpos');
+  if(sbf)sbf.style.display='none';if(sbs)sbs.style.display='inline';if(sbp)sbp.textContent='#'+pos;
+  animCount('ctrhero',SEED+1);animCount('ctrlp',SEED+1);updateBars(SEED+1);
+  buildShares(link);
+}
+
+function doSignup(iid,bid){
+  if(signedup){document.getElementById('hero').scrollIntoView({behavior:'smooth'});return;}
+  const inp=document.getElementById(iid),btn=document.getElementById(bid);
+  const email=inp?inp.value.trim():'';
+  if(!email||!email.includes('@')||!email.includes('.')){
+    if(inp){inp.style.borderColor='var(--ru)';inp.focus();setTimeout(()=>inp.style.borderColor='',1400);}return;
+  }
+  if(btn){btn.disabled=true;btn.textContent='Reserving...';}
+  setTimeout(()=>{
+    const refId=genRef(),pos=getPos(refId);
+    sessionStorage.setItem('bss_up',JSON.stringify({email,refId,pos}));
+    showSuccess(refId,pos);
+    document.getElementById('hero').scrollIntoView({behavior:'smooth'});
+  },900);
+}
+
+[['hemail','hbtn'],['femail','fbtn'],['sbemail','sbbtn']].forEach(([i,b])=>{
+  const el=document.getElementById(i);if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter')doSignup(i,b);});
+});
+
+function doCopy(iid,bid){
+  const val=document.getElementById(iid).value,btn=document.getElementById(bid);
+  const done=()=>{btn.textContent='Copied ✓';btn.classList.add('cp');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('cp');},2000);};
+  navigator.clipboard?navigator.clipboard.writeText(val).then(done).catch(done):done();
+}
+
+function dismissBar(){dismissed=true;const b=document.getElementById('sbar');if(b){b.style.transform='translateY(100%)';setTimeout(()=>b.classList.add('gone'),400);}}
+
+window.addEventListener('scroll',()=>{
+  if(dismissed)return;
+  const b=document.getElementById('sbar');if(!b)return;
+  document.getElementById('hero').getBoundingClientRect().bottom<0?b.classList.add('show'):b.classList.remove('show');
+},{passive:true});
+
+function toggleTheme(){
+  const h=document.documentElement,g=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',g);
+  document.getElementById('tmicon').textContent=g==='light'?'☾':'☀';
+  document.getElementById('tmlbl').textContent=g==='light'?'Dark':'Light';
+}
+
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}
+}),{threshold:.07});
+document.querySelectorAll('section > .con > *').forEach(el=>{
+  if(!el.classList.contains('fu')&&!el.classList.contains('hglow')){
+    el.style.opacity='0';el.style.transform='translateY(12px)';
+    el.style.transition='opacity .55s ease,transform .55s ease';obs.observe(el);
+  }
+});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const p=new URLSearchParams(window.location.search).get('ref');
+  if(p)sessionStorage.setItem('bss_ref',p);
+  const saved=sessionStorage.getItem('bss_up');
+  if(saved){const{refId,pos}=JSON.parse(saved);showSuccess(refId,pos);}
+  else{setTimeout(()=>{animCount('ctrhero',SEED);animCount('ctrlp',SEED);updateBars(SEED);},500);}
+});
+</script>
+</body>
+</html>
