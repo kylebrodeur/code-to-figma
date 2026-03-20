@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils'
 type CardAccent = 'gold' | 'rust' | 'teal'
 
 const accentClass: Record<CardAccent, string> = {
-  gold: 'border-l-2 border-l-primary',
-  rust: 'border-l-2 border-l-destructive',
-  teal: 'border-l-2 border-l-success',
+  gold: 'border-primary/[0.28] bg-[linear-gradient(140deg,rgba(201,141,26,0.055)_0%,var(--color-card)_55%)]',
+  rust: 'border-destructive/[0.26] bg-[linear-gradient(140deg,rgba(204,96,48,0.10)_0%,var(--color-card)_55%)]',
+  teal: 'border-success/[0.26] bg-[linear-gradient(140deg,rgba(90,158,128,0.10)_0%,var(--color-card)_55%)]',
 }
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +16,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, accent, ...props }, ref) => (
   <div
     className={cn(
-      'bg-card text-card-foreground rounded-md border border-border',
+      'bg-card text-card-foreground border border-input transition-colors hover:border-primary/[0.28]',
       accent && accentClass[accent],
       className,
     )}

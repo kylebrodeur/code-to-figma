@@ -18,7 +18,7 @@ const TooltipContent = React.forwardRef<
     <BaseTooltip.Positioner sideOffset={6}>
       <BaseTooltip.Popup
         className={cn(
-          'z-50 rounded-sm bg-foreground px-2 py-1 text-xs font-mono text-background shadow-md',
+          'z-50 bg-foreground px-2 py-1 text-xs font-mono text-background shadow-md',
           'data-[ending-style]:opacity-0 data-[starting-style]:opacity-0 transition-opacity duration-150',
           className,
         )}

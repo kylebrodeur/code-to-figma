@@ -26,7 +26,7 @@
   --border:            30  20% 74%;   /* #ccc0ac */
   --input:             30  18% 64%;   /* #b8a894 */
   --ring:              38  85% 29%;   /* focus ring — same as primary */
-  --radius:            4px;
+  --radius:            0px;
   --chart-1:           38  85% 29%;
   --chart-2:           150 43% 29%;
   --chart-3:           16  74% 38%;
@@ -96,9 +96,9 @@
   --font-body:      var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
   --font-mono:      var(--font-martian-mono), ui-monospace, monospace;
 
-  --radius-sm:  2px;
-  --radius-md:  4px;
-  --radius-lg:  4px;
+  --radius-sm:  0px;
+  --radius-md:  0px;
+  --radius-lg:  0px;
   --radius-full:9999px;
 }
 
@@ -111,6 +111,12 @@ html {
 * {
   font-style: normal !important; /* Rule: no italics ever */
   border-color: hsl(var(--border));
+  border-radius: 0 !important;
+}
+
+/* Circular decorative dots only */
+.bss-dot {
+  border-radius: 50% !important;
 }
 
 body {

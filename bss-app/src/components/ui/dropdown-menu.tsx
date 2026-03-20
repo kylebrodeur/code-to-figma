@@ -18,7 +18,7 @@ const DropdownMenuContent = React.forwardRef<
     <BaseMenu.Positioner sideOffset={4}>
       <BaseMenu.Popup
         className={cn(
-          'z-50 min-w-[10rem] overflow-hidden rounded-md border border-border bg-popover p-1 shadow-lg',
+          'z-50 min-w-[10rem] overflow-hidden border border-border bg-popover p-1 shadow-lg',
           'data-[ending-style]:opacity-0 data-[ending-style]:scale-95',
           'data-[starting-style]:opacity-0 data-[starting-style]:scale-95',
           'origin-[var(--transform-origin)] transition-all duration-150',
@@ -38,7 +38,7 @@ const DropdownMenuItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseMenu.Item
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm font-mono',
+      'relative flex cursor-default select-none items-center px-2 py-1.5 text-sm font-mono',
       'text-foreground outline-none transition-colors',
       'hover:bg-accent focus:bg-accent',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',

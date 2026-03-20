@@ -36,7 +36,7 @@ export function PricingCard({
   return (
     <div
       className={cn(
-        'relative rounded-md border p-6 flex flex-col gap-6',
+        'relative border p-6 flex flex-col gap-6',
         featured ? 'border-primary bg-card' : 'border-border bg-card',
         className,
       )}

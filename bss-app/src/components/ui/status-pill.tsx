@@ -17,12 +17,12 @@ export function StatusPill({
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-mono text-xs text-muted-foreground',
+        'inline-flex items-center gap-2 border border-border bg-card px-4 py-2 font-mono text-xs text-muted-foreground',
         className,
       )}
       {...props}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+      <span className="bss-dot h-1.5 w-1.5 bg-success animate-pulse" />
       <span className="text-foreground font-medium">{status}</span>
       {timeline && (
         <>

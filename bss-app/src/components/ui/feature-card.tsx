@@ -19,7 +19,7 @@ export interface FeatureCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function FeatureCard({ className, title, flowSteps, features, ...props }: FeatureCardProps) {
   return (
     <div
-      className={cn('rounded-md border border-border bg-card p-6 flex flex-col gap-4', className)}
+      className={cn('border border-border bg-card p-6 flex flex-col gap-4', className)}
       {...props}
     >
       <h3 className="font-display font-semibold text-base text-foreground">{title}</h3>
@@ -28,7 +28,7 @@ export function FeatureCard({ className, title, flowSteps, features, ...props }:
         <div className="flex items-center gap-0 overflow-x-auto pb-1">
           {flowSteps.map((step, i) => (
             <React.Fragment key={i}>
-              <span className="shrink-0 rounded-sm bg-secondary px-2 py-0.5 font-mono text-xs text-foreground whitespace-nowrap">
+              <span className="shrink-0 bg-secondary px-2 py-0.5 font-mono text-xs text-foreground whitespace-nowrap">
                 {step.label}
               </span>
               {i < flowSteps.length - 1 && (

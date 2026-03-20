@@ -29,14 +29,14 @@ export function TerminalBlock({
 }: TerminalBlockProps) {
   return (
     <div
-      className={cn('rounded-md border border-border bg-background overflow-hidden', className)}
+      className={cn('border border-border bg-background overflow-hidden', className)}
       {...props}
     >
       {/* Titlebar */}
       <div className="flex items-center gap-1.5 border-b border-border bg-card px-4 py-2.5">
-        <span className="h-3 w-3 rounded-full bg-destructive" />
-        <span className="h-3 w-3 rounded-full bg-primary" />
-        <span className="h-3 w-3 rounded-full bg-success" />
+        <span className="bss-dot h-3 w-3 bg-destructive" />
+        <span className="bss-dot h-3 w-3 bg-primary" />
+        <span className="bss-dot h-3 w-3 bg-success" />
         {title && <span className="ml-3 text-xs font-mono text-muted-foreground">{title}</span>}
       </div>
       {/* Content */}

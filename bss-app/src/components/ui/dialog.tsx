@@ -37,7 +37,7 @@ const DialogContent = React.forwardRef<
     <BaseDialog.Popup
       className={cn(
         'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
-        'w-full max-w-lg bg-card border border-border rounded-md shadow-xl p-6',
+        'w-full max-w-lg bg-card border border-border shadow-xl p-6',
         'data-[ending-style]:opacity-0 data-[ending-style]:scale-95',
         'data-[starting-style]:opacity-0 data-[starting-style]:scale-95',
         'transition-all duration-200',

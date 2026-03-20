@@ -12,7 +12,7 @@ const SelectTrigger = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.Trigger
     className={cn(
-      'flex h-11 w-full items-center justify-between rounded-md border border-input bg-secondary px-3',
+      'flex h-11 w-full items-center justify-between border border-input bg-secondary px-3',
       'text-sm font-mono text-foreground',
       'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
       'disabled:cursor-not-allowed disabled:opacity-50',
@@ -37,7 +37,7 @@ const SelectContent = React.forwardRef<
     <BaseSelect.Positioner sideOffset={4}>
       <BaseSelect.Popup
         className={cn(
-          'z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-popover shadow-lg',
+          'z-50 min-w-[8rem] overflow-hidden border border-border bg-popover shadow-lg',
           'data-[ending-style]:opacity-0 data-[ending-style]:scale-95',
           'data-[starting-style]:opacity-0 data-[starting-style]:scale-95',
           'origin-[var(--transform-origin)] transition-all duration-150',
@@ -59,7 +59,7 @@ const SelectItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Item
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm font-mono',
+      'relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm font-mono',
       'text-foreground outline-none transition-colors',
       'hover:bg-accent focus:bg-accent',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',

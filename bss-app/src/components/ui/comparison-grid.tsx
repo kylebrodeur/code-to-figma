@@ -22,7 +22,7 @@ export function ComparisonGrid({
   return (
     <div
       className={cn(
-        'grid grid-cols-2 gap-0.5 rounded-md overflow-hidden border border-border',
+        'grid grid-cols-2 gap-0.5 overflow-hidden border border-border',
         className,
       )}
       {...props}
