@@ -1,24 +1,24 @@
 {
-  "name": "bss-design-builder",
+  "name": "code-to-figma",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "description": "Monorepo for code-to-figma: Sync React components to Figma designs",
   "scripts": {
-    "build": "node esbuild.config.mjs",
-    "watch": "node esbuild.config.mjs --watch",
-    "typecheck": "tsc --noEmit",
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "check": "biome check --write ."
+    "build": "turbo run build",
+    "build:cli": "pnpm --filter @kylebrodeur/code-to-figma build",
+    "build:plugin": "pnpm --filter @kylebrodeur/code-to-figma-plugin build",
+    "dev:cli": "pnpm --filter @kylebrodeur/code-to-figma dev",
+    "dev:plugin": "pnpm --filter @kylebrodeur/code-to-figma-plugin watch",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
-    "@figma/plugin-typings": "latest",
-    "esbuild": "^0.25.0",
-    "lefthook": "^1.10.0",
-    "typescript": "^5.8.0"
+    "@changesets/cli": "^2.27.0",
+    "turbo": "^2.0.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "lefthook", "@biomejs/biome"]
-  }
+  "packageManager": "pnpm@9.0.0"
 }

@@ -1,6 +1,2 @@
 packages:
-  - 'bss-app'
-
-ignoredBuiltDependencies:
-  - esbuild
-  - lefthook
+  - 'packages/*'
