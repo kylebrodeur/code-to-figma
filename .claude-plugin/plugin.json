@@ -1,0 +1,24 @@
+{
+  "name": "code-to-figma",
+  "version": "0.1.0",
+  "description": "Sync React components to Figma designs. Parses React/TSX, resolves Tailwind classes, generates Figma-compatible JSON for the Figma plugin.",
+  "author": {
+    "name": "kylebrodeur"
+  },
+  "repository": "https://github.com/kylebrodeur/code-to-figma",
+  "homepage": "https://github.com/kylebrodeur/code-to-figma",
+  "license": "MIT",
+  "keywords": [
+    "figma",
+    "react",
+    "design-system",
+    "cli",
+    "code-to-design",
+    "tailwind",
+    "component-sync",
+    "design-tokens"
+  ],
+  "skills": {
+    "code-to-figma": "./skill"
+  }
+}
