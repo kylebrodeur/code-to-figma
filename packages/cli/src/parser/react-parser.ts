@@ -1,5 +1,6 @@
 import { parse as babelParse } from "@babel/parser";
-import traverse from "@babel/traverse";
+import traverseModule from "@babel/traverse";
+const traverse = (traverseModule as any).default || traverseModule;
 import type { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { readFileSync } from "fs";
@@ -135,7 +136,7 @@ export async function parseComponent(
 
 function isComponentFunction(node: t.FunctionDeclaration): boolean {
   return (
-    node.id !== null &&
+    node.id != null &&
     isComponentName(node.id.name)
   );
 }

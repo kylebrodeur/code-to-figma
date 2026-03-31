@@ -1,6 +1,1 @@
-export {
-  generateFigmaJson,
-  type FigmaNode,
-  type FigmaComponent,
-  type FigmaVariant,
-} from "./figma-generator.js";
+export { generateFigmaJson } from "./figma-generator.js";

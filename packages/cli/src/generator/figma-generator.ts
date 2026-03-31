@@ -203,9 +203,9 @@ function generateFigmaStyles(
     },
     typography: {
       fontFamily: styles.typography.fontFamily || "Inter",
-      fontSize: parseSize(styles.typography.fontSize) || 16,
+      fontSize: (parseSize(styles.typography.fontSize) as number) || 16,
       fontWeight: parseWeight(styles.typography.fontWeight) || 400,
-      lineHeight: parseSize(styles.typography.lineHeight) || "AUTO",
+      lineHeight: parseSize(styles.typography.lineHeight) as any,
       letterSpacing: 0,
     },
   };
@@ -242,7 +242,7 @@ function extractTokenNames(
     styles.layout.gap,
     styles.layout.padding,
     styles.typography.fontSize,
-  ].filter(Boolean);
+  ].filter(Boolean) as string[];
   
   for (const cls of allClasses) {
     const token = mapClassToToken(cls, config);
