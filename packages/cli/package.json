@@ -10,7 +10,7 @@
     "directory": "packages/cli"
   },
   "bugs": "https://github.com/kylebrodeur/code-to-figma/issues",
-  "homepage": "https://github.com/kylebrodeur/code-to-figma#readme",
+  "homepage": "https://www.npmjs.com/package/@kylebrodeur/code-to-figma",
   "keywords": [
     "figma",
     "react",
@@ -18,7 +18,16 @@
     "cli",
     "code-to-design",
     "tailwind",
-    "component-sync"
+    "tailwindcss",
+    "tailwind-v4",
+    "shadcn",
+    "shadcn-ui",
+    "radix-ui",
+    "base-ui",
+    "figma-variables",
+    "component-sync",
+    "design-tokens",
+    "figma-plugin"
   ],
   "type": "module",
   "main": "./dist/index.js",
