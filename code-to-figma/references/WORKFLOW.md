@@ -48,12 +48,8 @@ code-to-figma scan src/components/Button.tsx
 
 ## Step 3: RESOLVE — Convert to Figma
 
-**Tailwind resolution:**
-```bash
-code-to-figma scan Button.tsx --resolve-tailwind
-```
+Resolution happens automatically during `scan`. No extra flag needed — Tailwind classes are resolved inline:
 
-**Conversions:**
 | Tailwind | Figma Value |
 |----------|-------------|
 | `bg-blue-500` | `{ r: 0.231, g: 0.510, b: 0.965, a: 1 }` |

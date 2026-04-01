@@ -227,10 +227,10 @@ function Button() {
 | Solution | Status | Notes |
 |----------|--------|-------|
 | Tailwind CSS | ✅ Full | v3, v4 supported |
-| CSS Modules | ✅ Partial | Static imports only |
+| CSS Modules | ❌ No | Class names are opaque strings; no CSS value resolution |
 | Styled Components | ❌ No | CSS-in-JS |
 | Emotion | ❌ No | CSS-in-JS |
-| Linaria | ⚠️ Limited | If extracts to CSS |
+| Linaria | ❌ No | CSS-in-JS (static extraction not implemented) |
 
 ---
 

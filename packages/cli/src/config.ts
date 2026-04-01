@@ -59,5 +59,64 @@ export function createConfig(config: Partial<Config>): Config {
 
 export function writeConfig(config: Config): void {
   const configPath = resolve(process.cwd(), ".code-to-figma.json");
-  writeFileSync(configPath, JSON.stringify(config, null, 2));
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+}
+
+/**
+ * Read the raw config JSON from disk (no defaultConfig merge), merge the
+ * provided tokenMapping entries into it, and write it back.
+ * Creates `.code-to-figma.json` with just the token mapping if no file exists.
+ */
+export function mergeTokenMapping(entries: Record<string, string>): void {
+  const configPath = resolve(process.cwd(), ".code-to-figma.json");
+  let raw: Record<string, unknown> = {};
+  if (existsSync(configPath)) {
+    try {
+      raw = JSON.parse(readFileSync(configPath, "utf-8"));
+    } catch {
+      // Malformed file — start fresh but preserve by merging into object
+    }
+  }
+  const existing = (raw.tokenMapping as Record<string, string> | undefined) ?? {};
+  raw.tokenMapping = { ...existing, ...entries };
+  writeFileSync(configPath, JSON.stringify(raw, null, 2) + "\n");
+}
+
+/**
+ * Remove specific token mapping keys from the config file.
+ */
+export function removeTokenMappings(keys: string[]): number {
+  const configPath = resolve(process.cwd(), ".code-to-figma.json");
+  if (!existsSync(configPath)) return 0;
+  let raw: Record<string, unknown> = {};
+  try {
+    raw = JSON.parse(readFileSync(configPath, "utf-8"));
+  } catch {
+    return 0;
+  }
+  const existing = (raw.tokenMapping as Record<string, string> | undefined) ?? {};
+  let removed = 0;
+  for (const key of keys) {
+    if (key in existing) {
+      delete existing[key];
+      removed++;
+    }
+  }
+  raw.tokenMapping = existing;
+  writeFileSync(configPath, JSON.stringify(raw, null, 2) + "\n");
+  return removed;
+}
+
+/**
+ * Read only the tokenMapping from the config file (no defaultConfig merge).
+ */
+export function readTokenMapping(): Record<string, string> {
+  const configPath = resolve(process.cwd(), ".code-to-figma.json");
+  if (!existsSync(configPath)) return {};
+  try {
+    const raw = JSON.parse(readFileSync(configPath, "utf-8")) as Record<string, unknown>;
+    return (raw.tokenMapping as Record<string, string>) ?? {};
+  } catch {
+    return {};
+  }
 }

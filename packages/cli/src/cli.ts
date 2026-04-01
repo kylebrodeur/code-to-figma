@@ -6,6 +6,7 @@ import { scanFile } from "./commands/scan.js";
 import { readFromFigma } from "./commands/read.js";
 import { watchFiles } from "./commands/watch.js";
 import { pluginOutput } from "./commands/plugin-output.js";
+import { addToken, removeToken, listTokens, clearTokens } from "./commands/token.js";
 import { loadConfig } from "./config.js";
 
 const program = new Command();
@@ -60,6 +61,43 @@ program
   .action(async (options) => {
     console.log(pc.cyan("Generating plugin output..."));
     await pluginOutput({ input: options.input, output: options.output });
+  });
+
+// ─── token ────────────────────────────────────────────────────────────────────
+
+const tokenCmd = program
+  .command("token")
+  .description("Manage token mappings in .code-to-figma.json");
+
+tokenCmd
+  .command("add")
+  .description("Add or update a token mapping")
+  .requiredOption("-k, --key <cssVar>", "CSS variable or class name (e.g. --color-primary, bg-brand)")
+  .requiredOption("-p, --path <figmaPath>", "Figma variable path (e.g. color/primary, brand/500)")
+  .action((opts: { key: string; path: string }) => {
+    addToken(opts.key, opts.path);
+  });
+
+tokenCmd
+  .command("remove")
+  .description("Remove a token mapping by its CSS var or class name")
+  .requiredOption("-k, --key <cssVar>", "CSS variable or class name to remove")
+  .action((opts: { key: string }) => {
+    removeToken(opts.key);
+  });
+
+tokenCmd
+  .command("list")
+  .description("List all token mappings in the config")
+  .action(() => {
+    listTokens();
+  });
+
+tokenCmd
+  .command("clear")
+  .description("Remove all token mappings from the config")
+  .action(() => {
+    clearTokens();
   });
 
 program.parse();

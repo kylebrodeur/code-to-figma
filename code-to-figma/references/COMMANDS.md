@@ -128,7 +128,66 @@ code-to-figma watch "src/components/**/*.tsx" -o .figma
 
 ---
 
-## Configuration File
+### `token`
+
+Manage token mappings in `.code-to-figma.json`. All subcommands merge into the existing config — no other fields are overwritten.
+
+#### `token add`
+
+Add or update a token mapping.
+
+```bash
+code-to-figma token add -k <cssVar> -p <figmaPath>
+```
+
+**Options:**
+- `-k, --key <cssVar>` — CSS variable or class name (required)
+- `-p, --path <figmaPath>` — Figma variable path (required)
+
+**Examples:**
+```bash
+# CSS custom property (Tailwind v4)
+code-to-figma token add -k "--color-primary" -p "color/primary"
+
+# Tailwind semantic class (Tailwind v3 / shadcn)
+code-to-figma token add -k "bg-brand" -p "brand/500"
+```
+
+#### `token remove`
+
+Remove a single token mapping.
+
+```bash
+code-to-figma token remove -k <cssVar>
+```
+
+**Options:**
+- `-k, --key <cssVar>` — Key to remove (required)
+
+**Example:**
+```bash
+code-to-figma token remove -k "--color-primary"
+```
+
+#### `token list`
+
+Print all current token mappings.
+
+```bash
+code-to-figma token list
+```
+
+#### `token clear`
+
+Remove all token mappings from the config.
+
+```bash
+code-to-figma token clear
+```
+
+---
+
+
 
 `.code-to-figma.json`:
 

@@ -135,6 +135,7 @@ code-to-figma read --file-key ABC123 -o figma-read.json
   "outputDir": ".figma",
   "framework": "react",
   "styling": "tailwind",
+  "adapter": "tailwind-v3",
   "tokenMapping": {
     "--color-primary": "brand/primary",
     "--space-4": "spacing/4"
@@ -155,6 +156,7 @@ code-to-figma read --file-key ABC123 -o figma-read.json
 | `outputDir` | `".figma"` | Where `.figma.json` files are written |
 | `framework` | `"react"` | Parser mode (`react` only currently) |
 | `styling` | `"tailwind"` | Styling system to resolve |
+| `adapter` | auto | Explicit adapter override: `tailwind-v3`, `tailwind-v4`, `shadcn`, `shadcn-v4`, `radix`, `base-ui` |
 | `tokenMapping` | `{}` | Map CSS custom properties to Figma token paths |
 | `parserOptions.extractVariantsFromProps` | `true` | Detect variant prop unions |
 | `parserOptions.detectClassNameUtilities` | `true` | Parse Tailwind `className` strings |
@@ -222,12 +224,12 @@ pnpm typecheck
 
 ```bash
 # Install globally
-npm install -g code-to-figma
+npm install -g @kylebrodeur/code-to-figma
 
 # Or use npx
-npx code-to-figma init
-npx code-to-figma scan src/components/Button.tsx
-npx code-to-figma plugin-output -i .figma -o plugin-data.json
+npx @kylebrodeur/code-to-figma init
+npx @kylebrodeur/code-to-figma scan src/components/Button.tsx
+npx @kylebrodeur/code-to-figma plugin-output -i .figma -o plugin-data.json
 ```
 
 ## Architecture
@@ -268,8 +270,10 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
 | `scan <file>` | Parse component to `.figma.json` |
 | `scan --watch` | Watch and re-scan on change |
 | `read` | Read components/styles from Figma via REST API |
-| `plugin-output` | Generate plugin-compatible JSON bundle |
-
+| `plugin-output` | Generate plugin-compatible JSON bundle || `token add -k <key> -p <path>` | Add or update a token mapping |
+| `token remove -k <key>` | Remove a token mapping |
+| `token list` | List all token mappings |
+| `token clear` | Remove all token mappings |
 ## Configuration
 
 `.code-to-figma.json`:
@@ -285,12 +289,15 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
   "outputDir": ".figma",
   "framework": "react",
   "styling": "tailwind",
+  "adapter": "tailwind-v3",
   "parserOptions": {
     "extractVariantsFromProps": true,
     "detectClassNameUtilities": true
   }
 }
 ```
+
+> **Tip:** Token mappings can be managed without editing this file — use `code-to-figma token add -k "--color-primary" -p "color/primary"`.
 
 ## Integration with ux-collab
 
@@ -299,7 +306,7 @@ Add to your `.ux-collab.md`:
 ```yaml
 codeToFigma:
   enabled: true
-  cliCommand: "npx code-to-figma"
+  cliCommand: "npx @kylebrodeur/code-to-figma"
   outputDir: ".figma"
   onBuild: true
 ```

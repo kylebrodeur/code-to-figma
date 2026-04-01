@@ -66,6 +66,10 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 | `scan --watch` | Re-scan on save |
 | `plugin-output` | Bundle `.figma.json` files → `plugin-data.json` |
 | `read --file-key <key>` | Read from Figma REST API |
+| `token add <cssVar> <figmaPath>` | Add or update a token mapping |
+| `token remove <cssVar>` | Remove a token mapping |
+| `token list` | Show all current token mappings |
+| `token clear` | Remove all token mappings |
 
 ## Supported Patterns
 
@@ -90,6 +94,115 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 | CSS-in-JS (styled, emotion) | ❌ | Not supported |
 
 See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
+
+## Generating Token Mappings
+
+`tokenMapping` tells the plugin how to resolve CSS class names or CSS custom properties into Figma Variable paths. Without it, color fills and spacing will appear as hardcoded values with no Figma Variable link.
+
+### How token mappings work
+
+```jsonc
+// .code-to-figma.json
+{
+  "tokenMapping": {
+    // CSS custom property (Tailwind v4)       → Figma variable path
+    "--color-primary": "color/primary",
+    "--color-brand-500": "brand/500",
+
+    // Tailwind v3 semantic class               → Figma variable path
+    "bg-primary": "color/primary",
+    "text-brand": "color/brand"
+  }
+}
+```
+
+The key is whatever appears in `className` (or a CSS var reference like `bg-(--color-primary)`).  
+The value is the Figma Variable path (`collection/variable` or just `variable`).
+
+### CLI commands
+
+```bash
+# Add a mapping
+code-to-figma token add -k "--color-primary" -p "color/primary"
+code-to-figma token add -k "bg-brand" -p "brand/500"
+
+# Review what's mapped
+code-to-figma token list
+
+# Remove a single entry
+code-to-figma token remove -k "--color-primary"
+
+# Wipe all entries
+code-to-figma token clear
+```
+
+> `token add` merges into the existing config file. No other fields are overwritten.
+
+### Common patterns
+
+#### Tailwind v4 CSS custom properties → Figma paths
+
+| CSS var in className | Figma path | Example usage |
+|---|---|---|
+| `--color-primary` | `color/primary` | `bg-(--color-primary)` |
+| `--color-brand-500` | `brand/500` | `text-(--color-brand-500)` |
+| `--color-surface` | `color/surface` | `bg-(--color-surface)` |
+| `--radius-md` | `radius/md` | `rounded-(--radius-md)` |
+| `--spacing-4` | `spacing/4` | `p-(--spacing-4)` |
+
+#### Tailwind v3 semantic classes → Figma paths
+
+| Tailwind class | Figma path | Notes |
+|---|---|---|
+| `bg-primary` | `color/primary` | shadcn/ui default |
+| `bg-secondary` | `color/secondary` | shadcn/ui default |
+| `bg-destructive` | `color/destructive` | shadcn/ui default |
+| `bg-muted` | `color/muted` | shadcn/ui default |
+| `bg-accent` | `color/accent` | shadcn/ui default |
+| `text-primary` | `color/primary-foreground` | shadcn foreground |
+| `text-muted-foreground` | `color/muted-foreground` | shadcn foreground |
+| `border-border` | `color/border` | shadcn border |
+| `ring-ring` | `color/ring` | shadcn focus ring |
+
+#### shadcn/ui full token set (run these to bootstrap)
+
+```bash
+code-to-figma token add -k "bg-background" -p "color/background"
+code-to-figma token add -k "bg-foreground" -p "color/foreground"
+code-to-figma token add -k "bg-card" -p "color/card"
+code-to-figma token add -k "bg-primary" -p "color/primary"
+code-to-figma token add -k "bg-primary-foreground" -p "color/primary-foreground"
+code-to-figma token add -k "bg-secondary" -p "color/secondary"
+code-to-figma token add -k "bg-secondary-foreground" -p "color/secondary-foreground"
+code-to-figma token add -k "bg-muted" -p "color/muted"
+code-to-figma token add -k "bg-muted-foreground" -p "color/muted-foreground"
+code-to-figma token add -k "bg-accent" -p "color/accent"
+code-to-figma token add -k "bg-destructive" -p "color/destructive"
+code-to-figma token add -k "border-border" -p "color/border"
+code-to-figma token add -k "ring-ring" -p "color/ring"
+```
+
+### Agent workflow for generating mappings
+
+When a user asks to set up token mappings or says colors aren't resolving in Figma:
+
+1. **Identify the styling system** — ask or infer from `package.json` / `tailwind.config.*`
+2. **Find custom tokens in use:**
+   - Tailwind v4: grep for `bg-(--`, `text-(--`, `border-(--` in component files
+   - Tailwind v3: check `tailwind.config` `theme.extend.colors` / `theme.extend.backgroundColor`
+   - shadcn: look for `globals.css` CSS variable definitions under `:root`
+3. **Generate the `token add` commands** — one per entry, using the table above as a guide
+4. **Run the commands** (or paste the block into a terminal)
+5. **Verify with `code-to-figma token list`**
+
+Example agent dialogue:
+> "I can see you're using shadcn/ui with these semantic colors in your Button: `bg-primary`, `bg-destructive`, `text-primary-foreground`. Here are the token-add commands to map them:"
+> ```bash
+> code-to-figma token add -k "bg-primary" -p "color/primary"
+> code-to-figma token add -k "bg-destructive" -p "color/destructive"
+> code-to-figma token add -k "text-primary-foreground" -p "color/primary-foreground"
+> ```
+> "Run these, then re-scan your component. The Figma plugin will bind those fills to Figma Variables automatically."
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 {
   "name": "@kylebrodeur/code-to-figma",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI tool for syncing React components to Figma designs",
   "author": "Kyle Brodeur",
   "license": "MIT",
