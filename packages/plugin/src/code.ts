@@ -194,7 +194,7 @@ async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
   const fontFamilies: string[] = [data.styles.typography.fontFamily || 'Inter'];
   await loadFonts(fontFamilies);
 
-  if (data.type === 'COMPONENT_SET' && data.variants.length > 1) {
+  if (data.type === 'COMPONENT_SET') {
     // Create a wrapper frame for the component set
     const wrapper = vCol(data.name, 20);
     wrapper.paddingTop = 20;

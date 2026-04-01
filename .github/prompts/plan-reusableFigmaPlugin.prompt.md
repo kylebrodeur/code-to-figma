@@ -84,7 +84,28 @@ These patterns throw `Syntax error: Unexpected token` in Figma's sandbox:
 | Arrow functions in filters at top-level | `function(n){...}` |
 | Template literals with special chars | Plain string concat |
 
-## Further Considerations
-1. **Figma variable creation** — Should the plugin create variable collections from the `tokens` array? Recommend yes when tokens are non-empty.
-2. **Component set handling** — `FigmaJsonOutput.type` already distinguishes `COMPONENT_SET` vs `COMPONENT`. Plugin should handle both — single frame for COMPONENT, variant set for COMPONENT_SET.
-3. **Font fallback** — BSS hardcodes 3 families (`Bricolage Grotesque`, `Barlow`, `Martian Mono`). Generic plugin should try `loadFontAsync` from JSON font info, fall back to Inter if unavailable.
+## Further Considerations — Resolved
+
+### 1. Figma Variable Creation ⟶ Phase 5
+`tokens: string[]` currently holds Figma path names only (e.g. `"brand/primary"`) — populated when `tokenMapping` is configured. The Figma Variables API requires actual values (`{r,g,b,a}`, `number`, `string`). Creating variables from names alone would produce empty, useless entries.
+
+**To implement properly requires a contract change:**
+1. CLI: extend `tokens` from `string[]` to `{ name: string; value: string | number | { r:number; g:number; b:number; a:number }; type: 'COLOR' | 'FLOAT' | 'STRING' }[]`
+2. CLI: resolve Tailwind color classes to `{r,g,b,a}` in `extractTokenNames()`
+3. Plugin: create a `VariableCollection` per component with one variable per token entry
+
+Deferred to **Phase 5**. No code change now — tokens remain informational.
+
+### 2. Component Set Handling ✅ Fixed
+Bug fixed: `buildComponent()` was branching on `data.type === 'COMPONENT_SET' && data.variants.length > 1`, causing a single-variant COMPONENT_SET to be rendered as a bare frame (losing the wrapper). Corrected to `data.type === 'COMPONENT_SET'`.
+
+### 3. Font Fallback ✅ Already Done
+`loadFonts()` pre-loads families with silent try/catch per font. `buildVariantFrame()` has a try/catch around `createText()` that retries with Inter/Regular if the requested font isn't installed. No changes needed.
+
+---
+
+## Phase 5: Figma Variable Collections (Future)
+- Extend `FigmaJsonOutput.tokens` to `TokenEntry[]` with `{ name, value, type }`
+- CLI: resolve Tailwind color classes → `{r,g,b,a}` when computing tokens
+- Plugin: `createVariableCollection(data.name)` + one variable per token entry
+- Only run when `data.tokens.length > 0`
