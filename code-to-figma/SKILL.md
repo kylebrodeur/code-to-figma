@@ -87,11 +87,11 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 | Frame size from font-size + padding | ✅ | Inferred, not hardcoded |
 | Figma Variable Collections | ✅ | `tokenMapping` in config → COLOR/FLOAT variables created on import |
 | Tailwind v4 CSS-var syntax | ✅ | `bg-(--color-primary)` matched to `tokenMapping` |
+| CSS-in-JS (styled, emotion) | ❌ | Not supported |
 | Watch mode with unlink cleanup | ✅ | Removes `.figma.json` when source is deleted |
-| `FIGMA_ACCESS_TOKEN` env var | ✅ | Fallback for `read` command |
 | Dynamic `className` expressions | ⚠️ | `{isActive ? 'x' : 'y'}` not resolved |
 | `cn()` / `clsx()` with boolean conditions | ⚠️ | Unconditional args only |
-| CSS-in-JS (styled, emotion) | ❌ | Not supported |
+| CSS Modules | ✅ | `import styles from './Button.module.css'` + `className={styles.button}` |
 
 See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
 

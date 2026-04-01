@@ -178,9 +178,9 @@ code-to-figma read --file-key ABC123 -o figma-read.json
 | `interface Props` + `type Props` — prop type inference | ✅ Full |
 | Watch mode (`--watch`) with unlink cleanup | ✅ Full |
 | `FIGMA_ACCESS_TOKEN` env var for `read` command | ✅ Full |
+| CSS Modules (`import styles from './Btn.module.css'` + `className={styles.button}`) | ✅ Full |
 | Dynamic `className` expressions (conditional ternaries) | ⚠️ Limited (static quasis only) |
-| `cn()` / `clsx()` with boolean conditions | ⚠️ Limited (unconditional args only) |
-| CSS Modules / styled-components | ❌ Not supported |
+| CSS-in-JS (styled-components, emotion) | ❌ Not supported |
 
 See [`../../code-to-figma/references/SUPPORTED.md`](../../code-to-figma/references/SUPPORTED.md) for detailed examples.
 

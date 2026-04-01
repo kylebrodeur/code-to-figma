@@ -3,7 +3,9 @@ import traverseModule from "@babel/traverse";
 const traverse = (traverseModule as any).default || traverseModule;
 import type { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
+import { resolve, dirname } from "path";
+import postcss from "postcss";
 import type { Config } from "../config.js";
 
 export interface ParsedComponent {
@@ -80,9 +82,23 @@ export async function parseComponent(
   let styles: ExtractedStyles = { layout: {}, visual: {}, typography: {} };
   const jsxStructure: JSXNode[] = [];
   const propUnionTypes: Record<string, string[]> = {};
+  // Map from local binding name (e.g. "styles") → absolute path to .module.css
+  const cssModuleImports = new Map<string, string>();
 
   // Traverse AST to find component
   traverse(ast, {
+    // Track CSS Module imports: `import styles from './Button.module.css'`
+    ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
+      const src = path.node.source.value;
+      if (!src.endsWith(".module.css") && !src.endsWith(".module.scss")) return;
+      const absPath = resolve(dirname(filePath), src.replace(/\.module\.scss$/, ".module.css"));
+      const defaultSpec = path.node.specifiers.find((s): s is t.ImportDefaultSpecifier =>
+        t.isImportDefaultSpecifier(s)
+      );
+      if (defaultSpec) {
+        cssModuleImports.set(defaultSpec.local.name, absPath);
+      }
+    },
     // Collect TypeScript interface/type union literals for variant detection
     TSInterfaceDeclaration(path: NodePath<t.TSInterfaceDeclaration>) {
       path.node.body.body.forEach((member) => {
@@ -174,6 +190,27 @@ export async function parseComponent(
     JSXAttribute(path: NodePath<t.JSXAttribute>) {
       const attrName = t.isJSXIdentifier(path.node.name) ? path.node.name.name : "";
       if (attrName === "className") {
+        // CSS Modules: className={styles.button} or className={styles['foo-bar']}
+        const val = path.node.value;
+        if (t.isJSXExpressionContainer(val)) {
+          const expr = val.expression;
+          if (t.isMemberExpression(expr) && t.isIdentifier(expr.object)) {
+            const localName = expr.object.name;
+            const cssFile = cssModuleImports.get(localName);
+            if (cssFile) {
+              const key =
+                t.isIdentifier(expr.property)
+                  ? expr.property.name
+                  : t.isStringLiteral(expr.property)
+                  ? expr.property.value
+                  : null;
+              if (key) {
+                parseCssModuleStyles(cssFile, key, styles);
+                return;
+              }
+            }
+          }
+        }
         const classes = extractClasses(path.node.value);
         parseTailwindClasses(classes, styles, config);
       } else if (attrName === "style") {
@@ -354,6 +391,93 @@ function extractInlineStyle(
       case "borderRadius":    styles.visual.borderRadius    = strVal; break;
     }
   }
+}
+
+/**
+ * Parse a CSS Module file (`.module.css`) and extract the style properties
+ * for a specific class name, applying them to `styles`.
+ *
+ * Supports: background-color / background, color, border-radius,
+ *           font-size, font-weight, font-family, padding, gap, display.
+ *
+ * `composes` directives are ignored (those expand at build time and vary per
+ * bundler — users can still map them via tokenMapping if needed).
+ */
+function parseCssModuleStyles(
+  cssFilePath: string,
+  className: string,
+  styles: ExtractedStyles
+): void {
+  if (!existsSync(cssFilePath)) return;
+  let cssText: string;
+  try {
+    cssText = readFileSync(cssFilePath, "utf-8");
+  } catch {
+    return;
+  }
+
+  let root: postcss.Root;
+  try {
+    root = postcss.parse(cssText);
+  } catch {
+    return;
+  }
+
+  root.walkRules((rule) => {
+    // Match `.className`, `.className:hover { … }` (only the base class matters)
+    const selector = rule.selector;
+    const base = selector.split(/[:\s,[\(]+/)[0].trim();
+    if (base !== `.${className}`) return;
+
+    rule.walkDecls((decl) => {
+      const prop = decl.prop.toLowerCase().trim();
+      const val = decl.value.trim();
+
+      switch (prop) {
+        case "background-color":
+        case "background":
+          // Only store plain color values; skip gradients / none / transparent
+          if (/^(#|rgb|hsl|oklch|lch)/.test(val) || /^[a-z]+$/.test(val)) {
+            styles.visual.backgroundColor = val;
+          }
+          break;
+        case "color":
+          styles.visual.color = val;
+          break;
+        case "border-radius":
+          styles.visual.borderRadius = val;
+          break;
+        case "font-size":
+          styles.typography.fontSize = val;
+          break;
+        case "font-weight":
+          styles.typography.fontWeight = val;
+          break;
+        case "font-family":
+          styles.typography.fontFamily = val;
+          break;
+        case "padding":
+        case "padding-block":
+        case "padding-inline":
+          styles.layout.padding = val;
+          break;
+        case "gap":
+        case "row-gap":
+        case "column-gap":
+          styles.layout.gap = val;
+          break;
+        case "display":
+          styles.layout.display = val;
+          break;
+        case "flex-direction":
+          styles.layout.flexDirection = val;
+          break;
+        case "align-items":
+          styles.layout.alignItems = val;
+          break;
+      }
+    });
+  });
 }
 
 function parseTailwindClasses(

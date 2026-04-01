@@ -93,6 +93,43 @@ function Button() {
 
 Supported properties: `backgroundColor`, `color`, `fontSize`, `fontWeight`, `borderRadius`. Hex values are resolved to RGBA.
 
+### CSS Modules
+
+```tsx
+// ✅ Supported: default import + member expression className
+import styles from './Button.module.css';
+
+export function Button() {
+  return <button className={styles.button}>Click me</button>;
+}
+```
+
+```css
+/* Button.module.css */
+.button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+}
+```
+
+The parser resolves the import path relative to the component file, reads the `.module.css` file with PostCSS, and extracts the CSS declarations for the referenced class name.
+
+**Supported CSS properties:** `background-color`, `background`, `color`, `border-radius`, `font-size`, `font-weight`, `font-family`, `padding`, `gap`, `row-gap`, `column-gap`, `display`, `flex-direction`, `align-items`.
+
+**Pseudo-selectors** (`:hover`, `:focus`, etc.) are ignored — only the base class declarations are used for Figma rendering.
+
+**`composes`** directives are not followed (they expand at build time; use `tokenMapping` for shared values if needed).
+
+**Bracket notation** also works: `className={styles['button-primary']}`.
+
+**Not supported:** multiple CSS Module classes merged at runtime (`className={cn(styles.a, styles.b)}`), dynamic key access (`className={styles[variant]}`).
+
 ### Figma Variable Collections via `tokenMapping`
 
 ```json
@@ -227,7 +264,7 @@ function Button() {
 | Solution | Status | Notes |
 |----------|--------|-------|
 | Tailwind CSS | ✅ Full | v3, v4 supported |
-| CSS Modules | ❌ No | Class names are opaque strings; no CSS value resolution |
+| CSS Modules | ✅ Full | Reads `.module.css`, resolves colors/spacing/typography directly |
 | Styled Components | ❌ No | CSS-in-JS |
 | Emotion | ❌ No | CSS-in-JS |
 | Linaria | ❌ No | CSS-in-JS (static extraction not implemented) |

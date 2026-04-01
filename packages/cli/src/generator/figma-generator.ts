@@ -331,8 +331,24 @@ function mapClassToToken(
 
 function parseGap(gap: string | undefined): number {
   if (!gap) return 0;
+  // Already-resolved CSS px value (from CSS Module or inline style): "8px"
+  if (/^\d+(\.\d+)?px$/.test(gap.trim())) return Math.round(parseFloat(gap));
+  // rem/em → approximate in px (1rem ≈ 16px)
+  if (/^\d+(\.\d+)?r?em$/.test(gap.trim())) return Math.round(parseFloat(gap) * 16);
+  // Tailwind spacing scale integer (gap-2 is stored as "2", "4", etc.)
   const num = parseInt(gap.replace(/\D/g, ""), 10);
   return isNaN(num) ? 0 : num * 4; // Tailwind spacing scale
+}
+
+/** Parse a single CSS length string to px (returns undefined for unresolvable). */
+function parseLengthPx(val: string): number | undefined {
+  const trimmed = val.trim();
+  if (/^\d+(\.\d+)?px$/.test(trimmed)) return Math.round(parseFloat(trimmed));
+  if (/^\d+(\.\d+)?r?em$/.test(trimmed)) return Math.round(parseFloat(trimmed) * 16);
+  // Tailwind scale bare number
+  const n = parseInt(trimmed.replace(/\D/g, ""), 10);
+  if (!isNaN(n)) return n * 4;
+  return undefined;
 }
 
 function parseSize(size: string | undefined): number | "AUTO" {
@@ -396,13 +412,25 @@ function inferFrameSize(
 }
 
 function inferPadding(styles: ExtractedStyles): FigmaPadding {
-  const padding = styles.layout.padding || "";
-  const value = parseGap(padding) || 12;
-  
-  return {
-    top: value,
-    right: value,
-    bottom: value,
-    left: value,
-  };
+  const raw = (styles.layout.padding || "").trim();
+
+  // CSS shorthand with explicit px values: "8px 16px", "8px 16px 4px 12px", "8px"
+  const parts = raw.split(/\s+/);
+  if (parts.length >= 1 && /px$/.test(parts[0])) {
+    const nums = parts.map((p) => parseLengthPx(p) ?? 12);
+    if (nums.length === 1) {
+      return { top: nums[0], right: nums[0], bottom: nums[0], left: nums[0] };
+    }
+    if (nums.length === 2) {
+      return { top: nums[0], right: nums[1], bottom: nums[0], left: nums[1] };
+    }
+    if (nums.length === 4) {
+      return { top: nums[0], right: nums[1], bottom: nums[2], left: nums[3] };
+    }
+    return { top: nums[0], right: nums[1] ?? nums[0], bottom: nums[2] ?? nums[0], left: nums[3] ?? nums[1] ?? nums[0] };
+  }
+
+  // Tailwind class like "p-4", "px-4 py-2"
+  const value = parseGap(raw) || 12;
+  return { top: value, right: value, bottom: value, left: value };
 }
