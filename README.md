@@ -94,8 +94,8 @@ code-to-figma/
 │       ├── code.js
 │       ├── ui.html
 │       └── manifest.json
-├── skill/
-│   └── SKILL.md      # Pi agent skill definition
+├── code-to-figma/
+│   └── SKILL.md      # Agent skill definition (Agent Skills, Claude Code, GitHub Copilot)
 └── README.md         # This file
 ```
 
@@ -119,7 +119,7 @@ pnpm dev:plugin # Watch plugin
 ## Documentation
 
 - [CLI README](./packages/cli/README.md) - Full CLI documentation
-- [SKILL.md](./skill/SKILL.md) - Agent integration guide
+- [SKILL.md](./code-to-figma/SKILL.md) - Agent integration guide
 - [docs/RECOMMENDATIONS.md](./docs/RECOMMENDATIONS.md) - Architecture decisions
 
 ## Why This Exists

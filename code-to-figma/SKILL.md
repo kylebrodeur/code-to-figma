@@ -128,7 +128,7 @@ Add to your Copilot configuration:
 {
   "agents": [{
     "name": "code-to-figma",
-    "skills": ["skill/SKILL.md"]
+    "skills": ["code-to-figma/SKILL.md"]
   }]
 }
 ```

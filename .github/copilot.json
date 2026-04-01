@@ -4,7 +4,7 @@
       "name": "code-to-figma",
       "description": "Sync React components to Figma designs. Use when: syncing code to Figma, generating design documentation from components, or keeping Figma in sync with implementation. Supports React/TSX with Tailwind CSS.",
       "skills": [
-        "skill/SKILL.md"
+        "code-to-figma/SKILL.md"
       ],
       "triggers": [
         "sync to figma",
