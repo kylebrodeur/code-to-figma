@@ -1,12 +1,19 @@
 import type { Config } from "../config.js";
 import type { ParsedComponent, Variant, ExtractedStyles } from "../parser/react-parser.js";
 
+export interface FigmaToken {
+  name: string;                                   // e.g. "brand/primary"
+  type: "COLOR" | "FLOAT" | "STRING";             // Figma variable type
+  value: { r: number; g: number; b: number; a: number } | number | string;
+  source: string;                                // originating CSS class, e.g. "bg-blue-600"
+}
+
 export interface FigmaJsonOutput {
   name: string;
   type: "COMPONENT_SET" | "COMPONENT";
   variants: FigmaVariant[];
   styles: FigmaStyle;
-  tokens: string[];
+  tokens: FigmaToken[];
   props: FigmaProp[];
   autoLayout: FigmaAutoLayout;
 }
@@ -232,24 +239,44 @@ function generateAutoLayout(
 function extractTokenNames(
   styles: ExtractedStyles,
   config: Config
-): string[] {
-  const tokens: string[] = [];
-  
-  // Map CSS classes to design tokens
-  const allClasses = [
+): FigmaToken[] {
+  const tokens: FigmaToken[] = [];
+  const seen = new Set<string>();
+
+  // Color tokens from background and text color classes
+  const colorClasses = [
     styles.visual.backgroundColor,
     styles.visual.color,
+  ].filter(Boolean) as string[];
+
+  for (const cls of colorClasses) {
+    const tokenName = mapClassToToken(cls, config);
+    if (tokenName && !seen.has(tokenName)) {
+      seen.add(tokenName);
+      const color = mapTokenToColor(cls, config);
+      if (color) {
+        tokens.push({ name: tokenName, type: "COLOR", value: color, source: cls });
+      }
+    }
+  }
+
+  // Spacing/sizing tokens from layout classes
+  const spacingClasses = [
     styles.layout.gap,
     styles.layout.padding,
-    styles.typography.fontSize,
   ].filter(Boolean) as string[];
-  
-  for (const cls of allClasses) {
-    const token = mapClassToToken(cls, config);
-    if (token) tokens.push(token);
+
+  for (const cls of spacingClasses) {
+    const tokenName = mapClassToToken(cls, config);
+    if (tokenName && !seen.has(tokenName)) {
+      seen.add(tokenName);
+      const num = parseInt(cls.replace(/\D/g, ""), 10);
+      const val = isNaN(num) ? 0 : num * 4;
+      tokens.push({ name: tokenName, type: "FLOAT", value: val, source: cls });
+    }
   }
-  
-  return [...new Set(tokens)];
+
+  return tokens;
 }
 
 function mapTokenToColor(

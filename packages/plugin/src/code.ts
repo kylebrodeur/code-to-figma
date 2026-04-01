@@ -6,7 +6,7 @@ import {
 } from './primitives';
 import type {
   FigmaJsonOutput, FigmaVariant, FigmaFill, FigmaStroke,
-  FigmaEffect, FigmaAutoLayout, FigmaPadding, PluginMessage, UIMessage,
+  FigmaEffect, FigmaAutoLayout, FigmaPadding, PluginMessage, UIMessage, FigmaToken,
 } from './types';
 
 const PAGE_NAME = 'code-to-figma';
@@ -180,6 +180,28 @@ async function buildVariantFrame(
   return frame;
 }
 
+// ── CREATE FIGMA VARIABLES ──
+async function maybeCreateVariables(data: FigmaJsonOutput): Promise<void> {
+  if (!data.tokens || data.tokens.length === 0) return;
+
+  // Remove existing collection with same name to avoid duplicates
+  const existing = figma.variables.getLocalVariableCollections()
+    .find((c) => c.name === data.name);
+  if (existing) existing.remove();
+
+  const collection = figma.variables.createVariableCollection(data.name);
+  const modeId = collection.modes[0].modeId;
+
+  for (const token of data.tokens) {
+    try {
+      const variable = figma.variables.createVariable(token.name, collection, token.type);
+      variable.setValueForMode(modeId, token.value as VariableValue);
+    } catch (_e) {
+      // Skip invalid tokens silently
+    }
+  }
+}
+
 // ── BUILD COMPONENT ──
 async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
   sendStatus('Building ' + data.name + '...');
@@ -189,6 +211,9 @@ async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
 
   // Clear any existing frame with this name
   clearByName(pg, data.name);
+
+  // Create Figma variable collection from tokens if present
+  await maybeCreateVariables(data);
 
   // Collect unique font families to preload
   const fontFamilies: string[] = [data.styles.typography.fontFamily || 'Inter'];

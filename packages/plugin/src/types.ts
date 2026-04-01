@@ -4,12 +4,19 @@
  * These types define the JSON contract between CLI output and plugin input.
  */
 
+export interface FigmaToken {
+  name: string;                                   // e.g. "brand/primary"
+  type: "COLOR" | "FLOAT" | "STRING";             // Figma variable type
+  value: { r: number; g: number; b: number; a: number } | number | string;
+  source: string;                                // originating CSS class, e.g. "bg-blue-600"
+}
+
 export interface FigmaJsonOutput {
   name: string;
   type: "COMPONENT_SET" | "COMPONENT";
   variants: FigmaVariant[];
   styles: FigmaStyle;
-  tokens: string[];
+  tokens: FigmaToken[];
   props: FigmaProp[];
   autoLayout: FigmaAutoLayout;
 }
