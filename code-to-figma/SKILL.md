@@ -1,11 +1,11 @@
 ---
 name: code-to-figma
 description: "Sync React components to Figma designs. Use when: 'sync component to Figma', 'generate Figma from code', 'create design system in Figma', 'export React to Figma'. Parses React/TSX with Babel AST, resolves Tailwind classes, outputs Figma-compatible JSON. Requires Node.js 18+, optional Figma plugin for rendering."
-compatibility: "Requires: Node.js 18+, @kylebrodeur/code-to-figma CLI (npm i -g or npx). Optional: Figma plugin 'Code to Figma' installed. Network: none for CLI, Figma REST API for read command only. Platforms: Agent Skills, Claude Code, GitHub Copilot."
+compatibility: "Requires: Node.js 18+, @kylebrodeur/code-to-figma CLI (npm i -g or npx). Optional: Figma Desktop with plugin loaded from packages/plugin/manifest.json. Network: none for CLI, Figma REST API for read command only. Platforms: Agent Skills, Claude Code, GitHub Copilot."
 license: MIT
 metadata:
   author: kylebrodeur
-  version: "0.1.0"
+  version: "0.2.0"
   repository: https://github.com/kylebrodeur/code-to-figma
   cli-package: "@kylebrodeur/code-to-figma"
   platforms:
@@ -16,14 +16,30 @@ metadata:
 
 # Code-to-Figma Skill
 
-Convert React components to Figma designs. Code-first workflow for design documentation.
+Convert React components to Figma designs. Parse TypeScript prop interfaces, extract Tailwind layout/style classes, and render component sets with variants directly in Figma via a local plugin.
 
 ## When to Use
 
 - **Sync to Figma:** "Sync Button component to Figma"
 - **Generate from code:** "Create Figma designs from my components"
 - **Design system docs:** "Export component library to Figma"
-- **Code-first workflow:** Build in code, then sync to Figma for review
+- **Code-first workflow:** Build in code, then sync to Figma for stakeholder review
+
+## Full Workflow
+
+```
+1. code-to-figma scan src/components/Button.tsx
+   → .figma/Button.figma.json
+
+2. code-to-figma plugin-output -i .figma -o plugin-data.json
+   → plugin-data.json  (all components bundled)
+
+3. Figma Desktop → Plugins → Development → Import plugin from manifest
+   → select packages/plugin/manifest.json
+
+4. Run plugin → Import JSON → Build selected
+   → Frames appear on page "code-to-figma"
+```
 
 ## Quick Start
 
@@ -31,54 +47,49 @@ Convert React components to Figma designs. Code-first workflow for design docume
 # Install CLI
 npm install -g @kylebrodeur/code-to-figma
 
-# Scan component
+# Scan component(s)
 code-to-figma scan src/components/Button.tsx
+code-to-figma scan "src/components/**/*.tsx"
 
 # Generate for Figma plugin
 code-to-figma plugin-output -i .figma -o plugin-data.json
 ```
 
-Then in Figma: Plugins → Code to Figma → Import JSON
+Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-data.json`.
 
-## Workflow Steps
+## Commands
 
-1. **CODE** — Identify React component
-2. **PARSE** — Extract with Babel AST
-3. **RESOLVE** — Convert Tailwind → Figma values
-4. **GENERATE** — Create .figma.json files
-5. **IMPORT** — Load in Figma via plugin
-
-See [references/WORKFLOW.md](references/WORKFLOW.md) for detailed steps.
+| Command | Purpose |
+|---------|---------|
+| `init` | Create `.code-to-figma.json` config |
+| `scan <pattern>` | Parse component(s) → `.figma.json` per file |
+| `scan --watch` | Re-scan on save |
+| `plugin-output` | Bundle `.figma.json` files → `plugin-data.json` |
+| `read --file-key <key>` | Read from Figma REST API |
 
 ## Supported Patterns
 
 | Pattern | Status | Example |
 |---------|--------|---------|
 | Static Tailwind | ✅ | `className="bg-blue-500 p-4"` |
-| Variant props | ✅ | `variant: 'primary' \| 'secondary'` |
-| Dynamic classes | ⚠️ | `className={isActive ? 'x' : 'y'}` |
-| CSS-in-JS | ❌ | `styled.button`...
+| TypeScript literal union props | ✅ | `variant: 'primary' \| 'secondary'` |
+| Arrow function + `React.FC<Props>` | ✅ | Standard function component |
+| `interface Props` + `type Props` | ✅ | Types read for variant detection |
+| Template literals (static parts) | ✅ | `` `${base} ${cls}` `` (base string extracted) |
+| Dynamic `className` expressions | ⚠️ | `{isActive ? 'x' : 'y'}` not resolved |
+| `clsx()` / `cn()` with conditions | ⚠️ | Limited to static args |
+| CSS-in-JS (styled, emotion) | ❌ | Not supported |
 
 See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
 
-## Commands
-
-| Command | Purpose |
-|---------|---------|
-| `init` | Create config |
-| `scan <file>` | Parse component |
-| `scan --watch` | Watch mode |
-| `plugin-output` | Generate plugin bundle |
-
-See [references/COMMANDS.md](references/COMMANDS.md) for full reference.
-
 ## Troubleshooting
 
-| Error | Solution |
+| Issue | Solution |
 |-------|----------|
-| "No variants detected" | Use literal unions: `'a' \| 'b'` not `string` |
-| "Tailwind not resolved" | Check config path: `--tailwind-config ./tailwind.config.ts` |
-| "Plugin error" | Validate JSON: `code-to-figma scan --validate` |
+| Variants are wrong names | Ensure `interface Props { variant: 'a' \| 'b' }` syntax (literal unions, not `string`) |
+| Empty fills in Figma | Add `tokenMapping` in config, or manually style in Figma after import |
+| Plugin not in menu | Use Figma **Desktop** (not browser); load via **Plugins → Development → Import from manifest** |
+| `fontSize` shows wrong | Fixed in v0.2 — was returning `"AUTO"` for non-numeric Tailwind classes |
 
 ## Integration
 
@@ -94,48 +105,15 @@ codeToFigma:
 
 ### Standalone
 
-Use directly in any project:
 ```bash
 npx @kylebrodeur/code-to-figma scan components/**/*.tsx
 ```
 
 ## Resources
 
+- [Root README](../README.md) — Full architecture + Quick Start
+- [CLI README](../packages/cli/README.md) — All commands + programmatic API
+- [Plugin README](../packages/plugin/README.md) — How to load + use the plugin
 - [Full Workflow](references/WORKFLOW.md)
 - [Command Reference](references/COMMANDS.md)
 - [Supported Patterns](references/SUPPORTED.md)
-- [CLI Documentation](https://github.com/kylebrodeur/code-to-figma/tree/main/packages/cli)
-- [Figma Plugin API](https://www.figma.com/plugin-docs/)
-
-## Platform Compatibility
-
-This skill works across multiple agent platforms:
-
-| Platform | Config Location | Usage |
-|----------|----------------|-------|
-| Agent Skills | Install via `npx skills add` | Standard skill loading |
-| Claude Code | `.claude-plugin/plugin.json` | Auto-loaded in Claude Code |
-| GitHub Copilot | `.github/copilot.json` | Referenced in copilot agents |
-
-### Claude Code
-
-The skill is automatically available when this repository is loaded in Claude Code via `.claude-plugin/plugin.json`.
-
-### GitHub Copilot
-
-Add to your Copilot configuration:
-```json
-{
-  "agents": [{
-    "name": "code-to-figma",
-    "skills": ["code-to-figma/SKILL.md"]
-  }]
-}
-```
-
-### Agent Skills CLI
-
-Install globally:
-```bash
-npx skills add kylebrodeur/code-to-figma@code-to-figma -g
-```

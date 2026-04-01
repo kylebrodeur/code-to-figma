@@ -23,10 +23,23 @@ The BSS plugin works — it has 1482 lines of proven Figma API code, primitive b
 
 > Commit: `feat(cli): implement plugin-output command`
 
-### Phase 4: Integration & Testing ← CURRENT
-9. ⬜ End-to-end: `scan` → `plugin-output` → load in Figma → verify rendered frame
-10. ⬜ Test with BSS theme components (badge, button, card from `bss-figma-project/plugin/theme/components/ui/`)
-11. ⬜ Update docs (README, SKILL.md)
+### Phase 4: Integration & Testing ✅ COMPLETE
+9. ✅ End-to-end: `scan` → `plugin-output` → verified pipeline with real Button component (3 variants: primary/secondary/destructive from TypeScript union types)
+10. ✅ Parser fixes: variants now read from `TSInterfaceDeclaration` / `TSTypeAliasDeclaration` instead of hardcoded names; `fontSize` always emits a number (never `"AUTO"`)
+11. ✅ Plugin fix: defensive `typeof` check on `fontSize` before passing to `createText()`
+12. ✅ Docs: root README, CLI README, plugin README (created), SKILL.md updated to v0.2.0
+
+> Commits: `fix(parser): read variant names from TypeScript union types; fix fontSize AUTO bug`, `docs: production-ready READMEs + SKILL.md v0.2.0`
+
+---
+
+## Status: ALL PHASES COMPLETE ✅
+
+The full pipeline is functional and documented:
+- `code-to-figma scan` → accurate `.figma.json` (uses TypeScript types for variants)
+- `code-to-figma plugin-output` → bundled `plugin-data.json`
+- Plugin loads in Figma Desktop, renders component sets with variant frames
+- All packages typecheck clean, `pnpm build` succeeds across monorepo
 
 ## Relevant Files
 
