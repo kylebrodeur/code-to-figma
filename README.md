@@ -74,17 +74,22 @@ Components render on a page named `code-to-figma` as auto-layout frames.
 The CLI uses Babel AST to extract:
 
 | Feature | What's extracted |
-|---------|-----------------|
+|---------|------------------|
 | **Variant props** | String literal unions (`'primary' \| 'secondary'`) → one frame per value |
 | **Component type** | `COMPONENT_SET` (has variant prop) or `COMPONENT` (single frame) |
 | **Layout** | `flex`, `flex-row/col`, `gap-*`, `p-*` Tailwind classes |
 | **Auto-layout** | Direction, gap, padding, alignment mode |
-| **Typography** | `font-*`, `text-*` (size classes), `fontFamily` |
-| **Fills** | `bg-*` Tailwind color classes → RGBA fills |
+| **Typography** | `font-*`, `text-*` size classes, `fontFamily` |
+| **Fills** | `bg-*` Tailwind classes → exact RGBA fills (22 colors × 11 shades 50–950) |
+| **Inline styles** | `style={{ backgroundColor, color, fontSize, fontWeight, borderRadius }}` |
+| **Corner radius** | `rounded-*` classes → `cornerRadius` px value per frame |
+| **Frame dimensions** | Inferred from font-size + padding; not hardcoded |
+| **`cn()`/`clsx()` classes** | Static string args extracted from `cn()`, `clsx()`, `classnames()`, `twMerge()` |
+| **Prop types** | TypeScript literal union annotations surfaced in the `props[]` array |
 | **Props list** | All destructured props with `variantProperty` flag |
 | **Design tokens** | CSS-class → Figma path via `tokenMapping` → `tokens[]` with resolved values; plugin creates a Figma Variable Collection on import |
 
-**Limitations:** Dynamic `className` expressions aren't resolved. Tailwind color classes without a `tokenMapping` entry resolve to built-in fallback colors. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
+**Limitations:** Dynamic/conditional `className` expressions aren't resolved. The built-in palette covers all 22 standard Tailwind colors at shades 50–950; custom/extended colors need `tokenMapping`. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
 
 ---
 

@@ -45,10 +45,7 @@ code-to-figma scan <filePattern> [options]
 
 **Options:**
 - `-o, --output <dir>` — Output directory (default: `.figma`)
-- `-w, --watch` — Watch for changes
-- `-t, --tailwind-config <path>` — Custom Tailwind config path
-- `-v, --validate` — Validate generated JSON
-- `--resolve-tailwind` — Resolve Tailwind classes to values
+- `-w, --watch` — Watch files for changes; removes `.figma.json` when source is deleted
 
 **Examples:**
 ```bash
@@ -123,19 +120,8 @@ code-to-figma read --file-key ABC123 -o figma-data.json
 
 ### `watch`
 
-Watch files and auto-regenerate on changes.
+Alias for `scan --watch`. Watches files and auto-regenerates `.figma.json` on save; removes the corresponding output file when a source file is deleted.
 
-```bash
-code-to-figma watch <filePattern> [options]
-```
-
-**Arguments:**
-- `filePattern` — Glob to watch
-
-**Options:**
-- Same as `scan`
-
-**Example:**
 ```bash
 code-to-figma watch "src/components/**/*.tsx" -o .figma
 ```
@@ -149,22 +135,36 @@ code-to-figma watch "src/components/**/*.tsx" -o .figma
 ```json
 {
   "figmaFileKey": "ABC123",
+  "figmaAccessToken": "figd_...",
   "componentGlob": "src/components/**/*.tsx",
   "outputDir": ".figma",
   "framework": "react",
   "styling": "tailwind",
-  "tailwindConfig": "./tailwind.config.ts",
   "tokenMapping": {
-    "--color-primary": "primary/500",
+    "--color-primary": "brand/primary",
     "--space-4": "spacing/4"
   },
   "parserOptions": {
-    "extractVariantsFromProps": ["variant", "size", "color"],
-    "resolveTailwind": true,
-    "includeJsxStructure": false
+    "extractVariantsFromProps": true,
+    "detectClassNameUtilities": true,
+    "extractSpacing": true
   }
 }
 ```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `figmaFileKey` | string | `""` | Figma file key for `read` command |
+| `figmaAccessToken` | string | `""` | Personal access token; also reads `FIGMA_ACCESS_TOKEN` env var |
+| `componentGlob` | string | `"src/components/**/*.tsx"` | Default glob for `scan` |
+| `outputDir` | string | `".figma"` | Where `.figma.json` files are written |
+| `framework` | string | `"react"` | Parser mode (`react` only currently) |
+| `styling` | string | `"tailwind"` | Adapter: `tailwind`, `tailwind-v4`, `shadcn` |
+| `adapter` | string | — | Explicit adapter override (takes priority over `styling`) |
+| `tokenMapping` | object | `{}` | Map CSS custom properties to Figma token paths |
+| `parserOptions.extractVariantsFromProps` | boolean | `true` | Detect variant prop unions |
+| `parserOptions.detectClassNameUtilities` | boolean | `true` | Parse Tailwind `className` strings |
+| `parserOptions.extractSpacing` | boolean | `true` | Extract padding/gap values |
 
 ---
 

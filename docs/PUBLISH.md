@@ -3,7 +3,7 @@
 ## Status
 
 - **Package:** `@kylebrodeur/code-to-figma` — version `0.1.1` **published to npm** ✅
-- **Test runner:** Vitest — **99 tests passing** (94 unit + 5 integration)
+- **Test runner:** Vitest — **100 tests passing** (94 unit + 6 integration)
 - **Lint/format:** Biome
 - **Security:** esbuild override applied, `pnpm audit` clean
 
@@ -11,7 +11,7 @@
 
 ## Part 1 — Testing Tasks
 
-✅ All tests implemented and passing (99 tests — 94 unit + 5 integration, commit `2eac709`).
+✅ All tests implemented and passing (100 tests — 94 unit + 6 integration, commit `d7a271d`).
 
 ---
 
@@ -21,14 +21,14 @@
 
 | Test | What to verify |
 |---|---|
-| `tailwindV3Adapter.resolveColor("bg-blue-500", config)` | returns `{r:0.23, g:0.51, b:0.96, a:1}` |
+| `tailwindV3Adapter.resolveColor("bg-blue-500", config)` | returns `{r:0.231, g:0.510, b:0.965, a:1}` (exact shade) |
 | `tailwindV3Adapter.resolveColor("text-red-600", config)` | returns red RGBA |
 | `tailwindV3Adapter.resolveColor("hover:bg-blue-500", config)` | not called with modifiers (parser strips) |
 | `tailwindV3Adapter.resolveFontSize("text-sm", config)` | returns `14` |
 | `tailwindV3Adapter.resolveFontSize("text-xl", config)` | returns `20` |
 | `tailwindV3Adapter.resolveFontWeight("font-bold", config)` | returns `700` |
 | `tailwindV3Adapter.resolveFontWeight("font-semibold", config)` | returns `600` |
-| `tailwindV4Adapter.resolveColor("bg-(--color-primary)", config)` | resolves via `config.tokenMapping` when present |
+| `tailwindV4Adapter.resolveColor("bg-(--color-primary)", config)` | resolves hex from `config.tokenMapping` when value is `#hex`; neutral placeholder otherwise |
 | `tailwindV4Adapter.resolveColor("bg-blue-500", config)` | falls through to v3 |
 | `shadcnAdapter.resolveColor("bg-primary", config)` | returns `{r:0.094, g:0.094, b:0.106, a:1}` |
 | `shadcnAdapter.resolveColor("bg-destructive", config)` | returns destructive red RGBA |
@@ -129,7 +129,7 @@ cd packages/cli && pnpm typecheck
 | `"main"` and `"exports"` set | ✅ Done | ESM-only, `.`, `./parser`, `./generator` |
 | `"engines": { "node": ">=18.0.0" }` | ✅ Done | already set |
 | `"repository"` with `directory` field | ✅ Done | points to `packages/cli` |
-| All tests pass | ✅ Done | 99 tests passing — 94 unit + 5 integration (`pnpm test`) |
+| All tests pass | ✅ Done | 100 tests passing — 94 unit + 6 integration (`pnpm test`) |
 | `pnpm build` succeeds | ✅ Done | passes, 0 errors |
 | `pnpm typecheck` passes | ✅ Done | no errors |
 | README is accurate | ✅ Done | up to date |

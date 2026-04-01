@@ -50,17 +50,48 @@ export function Button({ variant, size }: Props) {
 }
 ```
 
-### cn() Helper (Static)
+### cn() / clsx() — Static Args
 
 ```tsx
-// ✅ Works if cn() resolves to static strings
+// ✅ Static string arguments are fully extracted
 import { cn } from "@/lib/utils";
 
-function Button({ className }: { className?: string }) {
-  // If className is passed as static prop
-  return <button className={cn("bg-blue-500", className)} />;
+function Button({ variant }: { variant: 'primary' | 'secondary' }) {
+  return (
+    <button className={cn(
+      "px-4 py-2 rounded-md font-medium",
+      variant === 'primary' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+    )}>
+      Click
+    </button>
+  );
+}
+// ✅ The leading static string "px-4 py-2 rounded-md font-medium" is extracted
+// ⚠️ Conditional args (ternary, &&) are not resolved at parse time
+```
+
+Supported utility names: `cn`, `clsx`, `classnames`, `cx`, `twMerge`.
+
+### Inline Styles
+
+```tsx
+// ✅ Supported style properties extracted directly from style={{}}
+function Button() {
+  return (
+    <button style={{
+      backgroundColor: '#3b82f6',
+      color: '#ffffff',
+      fontSize: '16px',
+      fontWeight: 600,
+      borderRadius: '8px',
+    }}>
+      Click me
+    </button>
+  );
 }
 ```
+
+Supported properties: `backgroundColor`, `color`, `fontSize`, `fontWeight`, `borderRadius`. Hex values are resolved to RGBA.
 
 ### Figma Variable Collections via `tokenMapping`
 
@@ -160,19 +191,6 @@ const Button = styled.button`
 function Button(props) {
   const classes = computeClasses(props); // Runtime function
   return <button className={classes}>...</button>;
-}
-```
-
-### Inline Styles
-
-```tsx
-// ❌ Ignored
-function Button() {
-  return (
-    <button style={{ backgroundColor: 'blue' }}>
-      Click
-    </button>
-  );
 }
 ```
 

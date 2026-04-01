@@ -62,8 +62,10 @@ code-to-figma scan "src/components/**/*.tsx" --watch
 - `variants` — one entry per string-literal value in the variant union
 - `styles` — layout (flex direction, gap, padding) + typography (family, size, weight)
 - `autoLayout` — Figma auto-layout settings (mode, wrap, alignment)
-- `props` — all destructured props with `variantProperty` flag
+- `props` — all destructured props with `type` (from TS unions) and `variantProperty` flag
 - `tokens` — CSS token names found in className strings
+- `frame.cornerRadius` — from `rounded-*` classes
+- `frame.width/height` — inferred from font-size + padding
 
 **Variant detection:** The parser reads `TSInterfaceDeclaration` and `TSTypeAliasDeclaration` nodes to extract actual union literal values. For example:
 
@@ -167,12 +169,15 @@ code-to-figma read --file-key ABC123 -o figma-read.json
 | Static `className="..."` strings | ✅ Full |
 | TypeScript literal union props (`'a' \| 'b'`) | ✅ Full |
 | Template literals in `className` (static parts) | ✅ Full |
+| `cn()` / `clsx()` / `classnames()` — static string args | ✅ Full |
+| Inline `style={{ backgroundColor, color, fontSize, fontWeight, borderRadius }}` | ✅ Full |
 | Arrow function + `React.FC<Props>` | ✅ Full |
 | Function declaration components | ✅ Full |
-| `interface Props` + `type Props` | ✅ Full |
-| Watch mode (`--watch`) | ✅ Full |
-| Dynamic `className` expressions | ⚠️ Limited (static quasis only) |
-| `clsx()` / `cn()` with conditions | ⚠️ Limited |
+| `interface Props` + `type Props` — prop type inference | ✅ Full |
+| Watch mode (`--watch`) with unlink cleanup | ✅ Full |
+| `FIGMA_ACCESS_TOKEN` env var for `read` command | ✅ Full |
+| Dynamic `className` expressions (conditional ternaries) | ⚠️ Limited (static quasis only) |
+| `cn()` / `clsx()` with boolean conditions | ⚠️ Limited (unconditional args only) |
 | CSS Modules / styled-components | ❌ Not supported |
 
 See [`../../code-to-figma/references/SUPPORTED.md`](../../code-to-figma/references/SUPPORTED.md) for detailed examples.

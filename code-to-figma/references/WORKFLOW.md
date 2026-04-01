@@ -56,10 +56,13 @@ code-to-figma scan Button.tsx --resolve-tailwind
 **Conversions:**
 | Tailwind | Figma Value |
 |----------|-------------|
-| `bg-blue-500` | `{ r: 0.2, g: 0.4, b: 1, a: 1 }` |
+| `bg-blue-500` | `{ r: 0.231, g: 0.510, b: 0.965, a: 1 }` |
 | `p-4` | `padding: 16` |
 | `gap-2` | `itemSpacing: 8` |
 | `rounded-md` | `cornerRadius: 6` |
+| `rounded-lg` | `cornerRadius: 8` |
+| `rounded-full` | `cornerRadius: 9999` |
+| `text-sm` + `p-2` | `height: max(32, 14 + 8 + 8)` |
 
 ## Step 4: GENERATE — Figma JSON
 

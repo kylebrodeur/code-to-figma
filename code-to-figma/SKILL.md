@@ -5,7 +5,7 @@ compatibility: "Requires: Node.js 18+, @kylebrodeur/code-to-figma CLI (npm i -g 
 license: MIT
 metadata:
   author: kylebrodeur
-  version: "0.2.0"
+  version: "0.1.1"
   repository: https://github.com/kylebrodeur/code-to-figma
   cli-package: "@kylebrodeur/code-to-figma"
   platforms:
@@ -73,12 +73,20 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 |---------|--------|---------|
 | Static Tailwind | ✅ | `className="bg-blue-500 p-4"` |
 | TypeScript literal union props | ✅ | `variant: 'primary' \| 'secondary'` |
+| Prop type inference | ✅ | Types back-filled into `props[]` array |
 | Arrow function + `React.FC<Props>` | ✅ | Standard function component |
 | `interface Props` + `type Props` | ✅ | Types read for variant detection |
 | Template literals (static parts) | ✅ | `` `${base} ${cls}` `` (base string extracted) |
+| `cn()` / `clsx()` / `classnames()` — static args | ✅ | `cn("bg-blue-500", "p-4")` |
+| Inline `style={{}}` — color/font/radius properties | ✅ | `style={{ backgroundColor: '#3b82f6' }}` |
+| `rounded-*` → `cornerRadius` | ✅ | `rounded-lg` → 8px |
+| Frame size from font-size + padding | ✅ | Inferred, not hardcoded |
 | Figma Variable Collections | ✅ | `tokenMapping` in config → COLOR/FLOAT variables created on import |
+| Tailwind v4 CSS-var syntax | ✅ | `bg-(--color-primary)` matched to `tokenMapping` |
+| Watch mode with unlink cleanup | ✅ | Removes `.figma.json` when source is deleted |
+| `FIGMA_ACCESS_TOKEN` env var | ✅ | Fallback for `read` command |
 | Dynamic `className` expressions | ⚠️ | `{isActive ? 'x' : 'y'}` not resolved |
-| `clsx()` / `cn()` with conditions | ⚠️ | Limited to static args |
+| `cn()` / `clsx()` with boolean conditions | ⚠️ | Unconditional args only |
 | CSS-in-JS (styled, emotion) | ❌ | Not supported |
 
 See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
@@ -91,7 +99,8 @@ See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
 | Empty fills in Figma | Add `tokenMapping` in config to resolve colors; plugin will also create Figma Variables per token |
 | No Figma Variables created | Expected when `tokenMapping` is empty — add CSS-class-to-path entries in config |
 | Plugin not in menu | Use Figma **Desktop** (not browser); load via **Plugins → Development → Import from manifest** |
-| `fontSize` shows wrong | Fixed in v0.2 — was returning `"AUTO"` for non-numeric Tailwind classes |
+| `cn()`/`clsx()` classes not extracted | Only unconditional string args are extracted; conditional args (ternary, `&&`) are skipped |
+| Inline style color not resolved | Use hex strings (e.g. `'#3b82f6'`) — color keywords and `rgb()` are not parsed |
 
 ## Integration
 
