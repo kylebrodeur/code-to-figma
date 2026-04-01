@@ -1,0 +1,11 @@
+{
+  "name": "Code to Figma",
+  "id": "code-to-figma",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "src/ui.html",
+  "editorType": ["figma"],
+  "relaunchData": {
+    "default": "Import JSON from code-to-figma CLI"
+  }
+}

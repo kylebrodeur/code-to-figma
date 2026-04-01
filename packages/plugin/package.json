@@ -1,0 +1,18 @@
+{
+  "name": "@kylebrodeur/code-to-figma-plugin",
+  "version": "0.1.0",
+  "description": "Figma plugin that renders components from code-to-figma JSON",
+  "author": "Kyle Brodeur",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.100.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.0"
+  }
+}
