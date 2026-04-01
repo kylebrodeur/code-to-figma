@@ -99,6 +99,7 @@ export type PluginMessage =
   | { type: "IMPORT_JSON"; data: FigmaJsonOutput[] }
   | { type: "BUILD_COMPONENT"; name: string }
   | { type: "REMOVE_COMPONENT"; name: string }
+  | { type: "REMOVE_COMPONENTS"; names: string[] }
   | { type: "REMOVE_ALL" };
 
 export type UIMessage =

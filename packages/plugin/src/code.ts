@@ -265,6 +265,15 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
         sendDone('Removed ' + msg.name);
         break;
       }
+      case 'REMOVE_COMPONENTS': {
+        const pg = getOrCreatePage(PAGE_NAME);
+        for (const name of msg.names) {
+          clearByName(pg, name);
+        }
+        restackVertical(pg, 40);
+        sendDone('Removed ' + msg.names.length + ' component(s)');
+        break;
+      }
       case 'REMOVE_ALL': {
         const pg = getOrCreatePage(PAGE_NAME);
         const children = Array.from(pg.children);
