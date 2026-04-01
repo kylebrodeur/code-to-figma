@@ -5,6 +5,6 @@ export { loadConfig, type Config } from "./config.js";
 
 // Re-export command functions for programmatic use
 export { scanFile } from "./commands/scan.js";
-export { syncToFigma } from "./commands/sync.js";
+export { readFromFigma } from "./commands/read.js";
 export { initConfig } from "./commands/init.js";
 export { watchFiles } from "./commands/watch.js";

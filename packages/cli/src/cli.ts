@@ -3,7 +3,7 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { initConfig } from "./commands/init.js";
 import { scanFile } from "./commands/scan.js";
-import { syncToFigma } from "./commands/sync.js";
+import { readFromFigma } from "./commands/read.js";
 import { watchFiles } from "./commands/watch.js";
 import { loadConfig } from "./config.js";
 
@@ -41,13 +41,14 @@ program
   });
 
 program
-  .command("sync")
-  .description("Sync generated JSON to Figma via REST API")
-  .option("--dry-run", "Preview without uploading")
-  .option("--file-key <key>", "Figma file key")
+  .command("read")
+  .description("Read components and styles from a Figma file via REST API")
+  .requiredOption("--file-key <key>", "Figma file key")
+  .option("--node-id <id>", "Specific node ID to read")
+  .option("-o, --output <file>", "Write output to file")
   .action(async (options) => {
     const config = await loadConfig();
-    await syncToFigma({ ...config, ...options });
+    await readFromFigma({ ...config, fileKey: options.fileKey, nodeId: options.nodeId, output: options.output });
   });
 
 program

@@ -91,29 +91,32 @@ code-to-figma plugin-output -i ./design-system/.figma -o ./output/bundle.json
 
 ---
 
-### `sync`
+### `read`
 
-Upload components to Figma via REST API (Enterprise only).
+Read components and styles from a Figma file via REST API (read-only).
 
 ```bash
-code-to-figma sync [options]
+code-to-figma read [options]
 ```
 
 **Options:**
-- `-f, --file-key <key>` — Figma file key
-- `-t, --token <token>` — Figma access token (or use FIGMA_ACCESS_TOKEN env)
+- `--file-key <key>` — Figma file key (required)
+- `--node-id <id>` — Specific node ID to read
+- `-o, --output <file>` — Write output to file
 
-**Environment Variables:**
-- `FIGMA_ACCESS_TOKEN` — Figma personal access token
+**Configuration:**
+- `figmaAccessToken` in `.code-to-figma.json` or `FIGMA_ACCESS_TOKEN` env
 
 **Examples:**
 ```bash
-# Using env variable
-export FIGMA_ACCESS_TOKEN="figd_..."
-code-to-figma sync --file-key ABC123
+# Read file summary
+code-to-figma read --file-key ABC123
 
-# Inline token
-code-to-figma sync -f ABC123 -t "figd_..."
+# Read specific node
+code-to-figma read --file-key ABC123 --node-id 42:123
+
+# Save to file
+code-to-figma read --file-key ABC123 -o figma-data.json
 ```
 
 ---

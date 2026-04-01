@@ -1,7 +1,7 @@
 ---
 name: code-to-figma
 description: "Sync React components to Figma designs. Use when: 'sync component to Figma', 'generate Figma from code', 'create design system in Figma', 'export React to Figma'. Parses React/TSX with Babel AST, resolves Tailwind classes, outputs Figma-compatible JSON. Requires Node.js 18+, optional Figma plugin for rendering."
-compatibility: "Requires: Node.js 18+, @kylebrodeur/code-to-figma CLI (npm i -g or npx). Optional: Figma plugin 'Code to Figma' installed. Network: none for CLI, Figma API only for sync command. Platforms: Agent Skills, Claude Code, GitHub Copilot."
+compatibility: "Requires: Node.js 18+, @kylebrodeur/code-to-figma CLI (npm i -g or npx). Optional: Figma plugin 'Code to Figma' installed. Network: none for CLI, Figma REST API for read command only. Platforms: Agent Skills, Claude Code, GitHub Copilot."
 license: MIT
 metadata:
   author: kylebrodeur
@@ -46,7 +46,7 @@ Then in Figma: Plugins → Code to Figma → Import JSON
 2. **PARSE** — Extract with Babel AST
 3. **RESOLVE** — Convert Tailwind → Figma values
 4. **GENERATE** — Create .figma.json files
-5. **SYNC** — Import via plugin or API
+5. **IMPORT** — Load in Figma via plugin
 
 See [references/WORKFLOW.md](references/WORKFLOW.md) for detailed steps.
 
@@ -86,7 +86,7 @@ See [references/COMMANDS.md](references/COMMANDS.md) for full reference.
 
 Add to `.ux-collab.md`:
 ```yaml
-syncToFigma:
+codeToFigma:
   enabled: true
   cliCommand: "npx @kylebrodeur/code-to-figma"
   onBuild: true

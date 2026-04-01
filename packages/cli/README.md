@@ -1,6 +1,6 @@
 # Code-to-Figma
 
-CLI tool and Figma plugin for syncing React components to Figma designs.
+CLI tool and Figma plugin for converting React components to Figma designs.
 
 ## Quick Start
 
@@ -11,7 +11,7 @@ npm install -g code-to-figma
 # Or use npx
 npx code-to-figma init
 npx code-to-figma scan src/components/Button.tsx
-npx code-to-figma sync --to-figma
+npx code-to-figma plugin-output -i .figma -o plugin-data.json
 ```
 
 ## Architecture
@@ -33,7 +33,7 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
 2. code-to-figma scan → generates .figma.json
 3. Plugin imports to Figma
 4. Designers polish in Figma
-5. Future updates: re-scan → sync
+5. Future updates: re-scan → re-import in plugin
 ```
 
 ### Workflow B: Figma-First (with Code Connect)
@@ -41,7 +41,7 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
 1. Design in Figma
 2. Code Connect → generates React
 3. Implement in code
-4. (Optional) Sync back for verification
+4. (Optional) Read components via `code-to-figma read`
 ```
 
 ## Commands
@@ -51,9 +51,8 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
 | `init` | Create `.code-to-figma.json` config |
 | `scan <file>` | Parse component to `.figma.json` |
 | `scan --watch` | Watch and re-scan on change |
-| `sync` | Upload to Figma via REST API |
-| `sync --dry-run` | Preview without uploading |
-| `plugin` | Output plugin-compatible JSON |
+| `read` | Read components/styles from Figma via REST API |
+| `plugin-output` | Generate plugin-compatible JSON bundle |
 
 ## Configuration
 
@@ -82,15 +81,11 @@ React Component → Parser → Figma JSON → Figma Plugin → Figma Canvas
 Add to your `.ux-collab.md`:
 
 ```yaml
-syncToFigma:
+codeToFigma:
   enabled: true
   cliCommand: "npx code-to-figma"
   outputDir: ".figma"
-  autoSync: false
-  
-  # When to trigger
   onBuild: true
-  onVerify: false
 ```
 
 ## Figma Plugin Setup

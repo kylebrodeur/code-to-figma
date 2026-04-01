@@ -1,11 +1,11 @@
 # Code-to-Figma Workflow
 
-Detailed workflow for syncing React components to Figma.
+Detailed workflow for converting React components to Figma designs.
 
 ## Overview
 
 ```
-CODE → PARSE → RESOLVE → GENERATE → SYNC → FIGMA
+CODE → PARSE → RESOLVE → GENERATE → IMPORT → FIGMA
   ↑                                                  ↓
   └──────────── UPDATE ← COMPARE ← VERIFY ────────────┘
 ```
@@ -88,12 +88,10 @@ code-to-figma scan Button.tsx --resolve-tailwind
 }
 ```
 
-## Step 5: SYNC — Upload to Figma
-
-**Option A: Figma Plugin (Recommended)**
+## Step 5: IMPORT — Load in Figma via Plugin
 
 ```bash
-# Generate bundle
+# Generate bundle for plugin
 code-to-figma plugin-output -i .figma -o plugin-data.json
 ```
 
@@ -103,13 +101,9 @@ Plugins → Code to Figma → Import from JSON
 Select plugin-data.json
 ```
 
-**Option B: REST API (Enterprise only)**
-
-```bash
-code-to-figma sync --file-key ABC123
-```
-
-Requires `FIGMA_ACCESS_TOKEN` environment variable.
+> **Note:** The Figma REST API is read-only for design data. Creating frames
+> and components requires the Plugin API. Use `code-to-figma read` to
+> inspect an existing Figma file.
 
 ## Integration with ux-collab
 
