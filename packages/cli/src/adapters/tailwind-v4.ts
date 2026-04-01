@@ -1,6 +1,6 @@
 import type { Config } from "../config.js";
 import type { StyleAdapter, RGBA } from "./types.js";
-import { tailwindV3Adapter, resolveColorByKeyword } from "./tailwind-v3.js";
+import { tailwindV3Adapter, resolveColorByKeyword, parseHexColor } from "./tailwind-v3.js";
 
 /**
  * Tailwind v4 adapter.
@@ -26,6 +26,10 @@ export const tailwindV4Adapter: StyleAdapter = {
       // If the var is in tokenMapping, it will be picked up as a token below;
       // provide a neutral placeholder fill so the frame has a fill at all.
       if (config.tokenMapping[varName] !== undefined) {
+        const mapped = config.tokenMapping[varName];
+        const rgba = parseHexColor(mapped);
+        if (rgba) return rgba;
+        // Non-hex token name (e.g. Figma variable path) — neutral placeholder
         return { r: 0.5, g: 0.5, b: 0.5, a: 1 };
       }
       return null;

@@ -143,7 +143,7 @@ describe("generateFigmaJson — fill color", () => {
     const out = generateFigmaJson(component, defaultConfig);
     const fill = out.variants[0].frame.fills[0];
     expect(fill.type).toBe("SOLID");
-    expect(fill.color).toEqual({ r: 0.23, g: 0.51, b: 0.96, a: 1 });
+    expect(fill.color).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 
   it("no bg class produces empty fills array", () => {

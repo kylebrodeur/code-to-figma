@@ -172,9 +172,12 @@ export async function parseComponent(
 
     // Extract className/tailwind usage
     JSXAttribute(path: NodePath<t.JSXAttribute>) {
-      if (t.isJSXIdentifier(path.node.name) && path.node.name.name === "className") {
+      const attrName = t.isJSXIdentifier(path.node.name) ? path.node.name.name : "";
+      if (attrName === "className") {
         const classes = extractClasses(path.node.value);
         parseTailwindClasses(classes, styles, config);
+      } else if (attrName === "style") {
+        extractInlineStyle(path.node.value, styles);
       }
     },
 
@@ -186,6 +189,13 @@ export async function parseComponent(
   });
 
   if (!componentName) return null;
+
+  // Back-fill prop types from TypeScript union type annotations
+  for (const prop of props) {
+    if (propUnionTypes[prop.name]) {
+      prop.type = propUnionTypes[prop.name].map((v) => `"${v}"`).join(" | ");
+    }
+  }
 
   // Extract variants from props
   if (config.parserOptions.extractVariantsFromProps) {
@@ -283,11 +293,67 @@ function extractClasses(
   
   // Handle template literals (most Tailwind cases)
   if (t.isJSXExpressionContainer(value) && t.isTemplateLiteral(value.expression)) {
-    // Simple case: just concatenate
     return value.expression.quasis.map((q) => q.value.raw).join(" ");
+  }
+
+  // Handle cn() / clsx() / classnames() call expressions
+  if (t.isJSXExpressionContainer(value) && t.isCallExpression(value.expression)) {
+    return extractClassesFromCall(value.expression);
   }
   
   return "";
+}
+
+const CLASS_UTIL_NAMES = new Set(["cn", "clsx", "classnames", "cx", "twMerge", "tw"]);
+
+function extractClassesFromCall(call: t.CallExpression): string {
+  const callee = call.callee;
+  const name =
+    t.isIdentifier(callee) ? callee.name
+    : t.isMemberExpression(callee) && t.isIdentifier(callee.property) ? callee.property.name
+    : "";
+  if (!CLASS_UTIL_NAMES.has(name)) return "";
+
+  const parts: string[] = [];
+  for (const arg of call.arguments) {
+    if (t.isStringLiteral(arg)) {
+      parts.push(arg.value);
+    } else if (t.isTemplateLiteral(arg)) {
+      parts.push(arg.quasis.map((q) => q.value.raw).join(" "));
+    } else if (t.isCallExpression(arg)) {
+      // Support nested cn/clsx calls
+      const nested = extractClassesFromCall(arg);
+      if (nested) parts.push(nested);
+    }
+  }
+  return parts.join(" ");
+}
+
+function extractInlineStyle(
+  value: t.JSXAttribute["value"],
+  styles: ExtractedStyles
+): void {
+  if (!t.isJSXExpressionContainer(value)) return;
+  const expr = value.expression;
+  if (!t.isObjectExpression(expr)) return;
+
+  for (const prop of expr.properties) {
+    if (!t.isObjectProperty(prop) || !t.isIdentifier(prop.key)) continue;
+    const key = prop.key.name;
+    const strVal =
+      t.isStringLiteral(prop.value) ? prop.value.value
+      : t.isTemplateLiteral(prop.value) ? prop.value.quasis.map((q) => q.value.raw).join("")
+      : null;
+    if (strVal === null) continue;
+
+    switch (key) {
+      case "backgroundColor": styles.visual.backgroundColor = strVal; break;
+      case "color":           styles.visual.color           = strVal; break;
+      case "fontSize":        styles.typography.fontSize    = strVal; break;
+      case "fontWeight":      styles.typography.fontWeight  = strVal; break;
+      case "borderRadius":    styles.visual.borderRadius    = strVal; break;
+    }
+  }
 }
 
 function parseTailwindClasses(

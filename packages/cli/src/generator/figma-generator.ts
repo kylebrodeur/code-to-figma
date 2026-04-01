@@ -1,6 +1,7 @@
 import type { Config } from "../config.js";
 import type { ParsedComponent, Variant, ExtractedStyles } from "../parser/react-parser.js";
 import { getAdapter } from "../adapters/index.js";
+import { parseHexColor } from "../adapters/tailwind-v3.js";
 
 export interface FigmaToken {
   name: string;                                   // e.g. "brand/primary"
@@ -30,6 +31,7 @@ export interface FigmaVariant {
     effects: FigmaEffect[];
     padding?: FigmaPadding;
     gap?: number;
+    cornerRadius?: number;
   };
 }
 
@@ -158,17 +160,21 @@ function generateVariantFrame(
     ? mapTokenToColor(styles.visual.color, config)
     : { r: 0, g: 0, b: 0, a: 1 };
 
+  const { width, height } = inferFrameSize(styles, config);
+  const cornerRadius = inferCornerRadius(styles);
+
   return {
     name: variant.name,
     properties: variant.propValues,
     frame: {
-      width: 200,
-      height: 44,
+      width,
+      height,
       fills,
       strokes: [],
       effects: [],
       padding: inferPadding(styles),
       gap: parseGap(styles.layout.gap),
+      ...(cornerRadius !== undefined ? { cornerRadius } : {}),
     },
   };
 }
@@ -177,9 +183,12 @@ function generateDefaultFrame(
   styles: ExtractedStyles,
   config: Config
 ): FigmaVariant["frame"] {
+  const { width, height } = inferFrameSize(styles, config);
+  const cornerRadius = inferCornerRadius(styles);
+
   return {
-    width: 200,
-    height: 44,
+    width,
+    height,
     fills: styles.visual.backgroundColor
       ? [{
           type: "SOLID",
@@ -191,6 +200,7 @@ function generateDefaultFrame(
     effects: [],
     padding: inferPadding(styles),
     gap: parseGap(styles.layout.gap),
+    ...(cornerRadius !== undefined ? { cornerRadius } : {}),
   };
 }
 
@@ -302,6 +312,8 @@ function mapTokenToColor(
   config: Config
 ): { r: number; g: number; b: number; a: number } | null {
   if (!cssClass) return null;
+  // Inline style values (from style={{ backgroundColor: "#f00" }}) are raw hex
+  if (cssClass.startsWith("#")) return parseHexColor(cssClass);
   return getAdapter(config).resolveColor(cssClass, config);
 }
 
@@ -338,6 +350,49 @@ function parseWeight(weight: string | undefined): number {
   if (!weight) return 400;
   const num = parseInt(weight.replace(/\D/g, ""), 10);
   return isNaN(num) ? 400 : num;
+}
+
+// ---------------------------------------------------------------------------
+// Tailwind rounded-* → cornerRadius in px
+// ---------------------------------------------------------------------------
+const ROUNDED_MAP: Record<string, number> = {
+  "rounded-none": 0,
+  "rounded-sm":   2,
+  "rounded":      4,
+  "rounded-md":   6,
+  "rounded-lg":   8,
+  "rounded-xl":   12,
+  "rounded-2xl":  16,
+  "rounded-3xl":  24,
+  "rounded-full": 9999,
+};
+
+function inferCornerRadius(styles: ExtractedStyles): number | undefined {
+  const cls = styles.visual.borderRadius;
+  if (!cls) return undefined;
+  // Check exact map first
+  if (cls in ROUNDED_MAP) return ROUNDED_MAP[cls];
+  // The class may be stored as raw px value from inline style={{ borderRadius: "8px" }}
+  const px = parseInt(cls, 10);
+  if (!isNaN(px)) return px;
+  return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Infer frame dimensions from font-size + padding
+// ---------------------------------------------------------------------------
+function inferFrameSize(
+  styles: ExtractedStyles,
+  config: Config
+): { width: number; height: number } {
+  const adapter = getAdapter(config);
+  const fontSize =
+    adapter.resolveFontSize(styles.typography.fontSize || "", config) ??
+    parseSizeNum(styles.typography.fontSize, 16);
+  const pad = inferPadding(styles);
+  const height = Math.max(32, fontSize + pad.top + pad.bottom);
+  const width  = Math.max(80, fontSize * 10 + pad.left + pad.right);
+  return { width, height };
 }
 
 function inferPadding(styles: ExtractedStyles): FigmaPadding {

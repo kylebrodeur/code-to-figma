@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { tailwindV3Adapter, TAILWIND_COLORS, TAILWIND_FONT_SIZES, TAILWIND_FONT_WEIGHTS } from "../tailwind-v3.js";
+import { tailwindV3Adapter, TAILWIND_COLORS, TAILWIND_COLOR_SHADES, TAILWIND_FONT_SIZES, TAILWIND_FONT_WEIGHTS } from "../tailwind-v3.js";
 import { tailwindV4Adapter } from "../tailwind-v4.js";
 import { shadcnAdapter } from "../shadcn.js";
 import { getAdapter } from "../index.js";
@@ -25,17 +25,17 @@ const cfg = (overrides: Partial<Config> = {}): Config => ({
 describe("tailwindV3Adapter.resolveColor", () => {
   it("resolves bg-blue-500 to blue RGBA", () => {
     const result = tailwindV3Adapter.resolveColor("bg-blue-500", cfg());
-    expect(result).toEqual({ r: 0.23, g: 0.51, b: 0.96, a: 1 });
+    expect(result).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 
   it("resolves text-red-600 to red RGBA", () => {
     const result = tailwindV3Adapter.resolveColor("text-red-600", cfg());
-    expect(result).toEqual({ r: 0.94, g: 0.27, b: 0.27, a: 1 });
+    expect(result).toEqual({ r: 0.863, g: 0.149, b: 0.149, a: 1 });
   });
 
   it("resolves bg-green-500 to green RGBA", () => {
     const result = tailwindV3Adapter.resolveColor("bg-green-500", cfg());
-    expect(result).toEqual({ r: 0.13, g: 0.77, b: 0.37, a: 1 });
+    expect(result).toEqual({ r: 0.133, g: 0.773, b: 0.369, a: 1 });
   });
 
   it("resolves bg-white to white RGBA", () => {
@@ -63,7 +63,7 @@ describe("tailwindV3Adapter.resolveColor", () => {
     // hover:bg-blue-500 would be stripped by the parser — but if it did arrive
     // the adapter would still try to substring-match "blue"
     const result = tailwindV3Adapter.resolveColor("bg-blue-500", cfg());
-    expect(result).toEqual({ r: 0.23, g: 0.51, b: 0.96, a: 1 });
+    expect(result).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 });
 
@@ -138,13 +138,19 @@ describe("tailwindV4Adapter.resolveColor", () => {
 
   it("falls through to v3 for standard Tailwind classes", () => {
     const result = tailwindV4Adapter.resolveColor("bg-blue-500", cfg());
-    expect(result).toEqual({ r: 0.23, g: 0.51, b: 0.96, a: 1 });
+    expect(result).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 
   it("handles text-(--var) CSS variable syntax", () => {
     const config = cfg({ tokenMapping: { "--color-brand": "color/brand" } });
     const result = tailwindV4Adapter.resolveColor("text-(--color-brand)", config);
     expect(result).toEqual({ r: 0.5, g: 0.5, b: 0.5, a: 1 });
+  });
+
+  it("resolves hex value from tokenMapping for CSS var", () => {
+    const config = cfg({ tokenMapping: { "--color-brand": "#3b82f6" } });
+    const result = tailwindV4Adapter.resolveColor("bg-(--color-brand)", config);
+    expect(result).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 
   it("font-size falls through to v3", () => {
@@ -187,7 +193,7 @@ describe("shadcnAdapter.resolveColor", () => {
 
   it("falls through to v3 for numeric Tailwind classes", () => {
     const result = shadcnAdapter.resolveColor("bg-blue-500", cfg());
-    expect(result).toEqual({ r: 0.23, g: 0.51, b: 0.96, a: 1 });
+    expect(result).toEqual({ r: 0.231, g: 0.51, b: 0.965, a: 1 });
   });
 
   it("returns null for non-color class", () => {

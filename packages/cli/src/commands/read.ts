@@ -9,11 +9,11 @@ interface ReadOptions extends Config {
 
 export async function readFromFigma(options: ReadOptions): Promise<void> {
   const { fileKey, nodeId } = options;
-  const token = options.figmaAccessToken;
+  const token = options.figmaAccessToken ?? process.env.FIGMA_ACCESS_TOKEN;
 
   if (!token) {
     console.error(pc.red("Error: Figma access token required"));
-    console.log(pc.dim("Set figmaAccessToken in .code-to-figma.json"));
+    console.log(pc.dim("Set figmaAccessToken in .code-to-figma.json or FIGMA_ACCESS_TOKEN env var"));
     return;
   }
 
