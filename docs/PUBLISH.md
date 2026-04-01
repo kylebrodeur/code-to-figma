@@ -2,7 +2,7 @@
 
 ## Status
 
-- **Package:** `@kylebrodeur/code-to-figma` — version `0.1.0` **published to npm** ✅
+- **Package:** `@kylebrodeur/code-to-figma` — version `0.1.1` **published to npm** ✅
 - **Test runner:** Vitest — **99 tests passing** (94 unit + 5 integration)
 - **Lint/format:** Biome
 - **Security:** esbuild override applied, `pnpm audit` clean
@@ -209,5 +209,5 @@ npx code-to-figma init
 | ✅ Done | npm published — `@kylebrodeur/code-to-figma@0.1.0` live |
 | ✅ Done | CHANGELOG.md added |
 | ✅ Done | GitHub Actions CI (build + test on push) |
+| ✅ Done | Bump to `0.1.1` — keywords/homepage now live on npm |
 | 🟡 Next | Write integration tests for v0.2 features (plugin-output command, watch mode) |
-| 🟡 Next | Bump to `0.1.1` for keywords/homepage update to appear on npm |
