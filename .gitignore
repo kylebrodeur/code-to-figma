@@ -26,5 +26,8 @@ dist/
 .env.local
 .env.*.local
 
+# Turbo
+.turbo/
+
 # Misc
 *.log
