@@ -336,8 +336,10 @@ function parseTailwindClasses(
  * used as the canonical style for Figma rendering.
  *
  * Strips opacity modifier suffix: bg-blue-500/50 → bg-blue-500
+ *
+ * @internal Exported for unit testing only.
  */
-function stripModifiers(cls: string): string | null {
+export function stripModifiers(cls: string): string | null {
   // Detect any colon outside square brackets (modifier prefix)
   let depth = 0;
   for (let i = 0; i < cls.length; i++) {
