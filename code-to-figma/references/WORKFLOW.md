@@ -84,9 +84,19 @@ code-to-figma scan Button.tsx --resolve-tailwind
   "autoLayout": {
     "mode": "HORIZONTAL",
     "gap": 8
-  }
+  },
+  "tokens": [
+    {
+      "name": "brand/primary",
+      "type": "COLOR",
+      "value": { "r": 0.2, "g": 0.4, "b": 1, "a": 1 },
+      "source": "bg-blue-500"
+    }
+  ]
 }
 ```
+
+`tokens` is populated when `tokenMapping` is configured. Each entry carries a resolved `value` so the plugin can create real Figma Variables without further lookups.
 
 ## Step 5: IMPORT — Load in Figma via Plugin
 
@@ -100,6 +110,10 @@ In Figma:
 Plugins → Code to Figma → Import from JSON
 Select plugin-data.json
 ```
+
+On import the plugin will:
+1. Create frames/component sets on the `code-to-figma` page
+2. **Create a Figma Variable Collection** named after the component for every token in `tokens[]` — one Variable per token entry (COLOR or FLOAT type)
 
 > **Note:** The Figma REST API is read-only for design data. Creating frames
 > and components requires the Plugin API. Use `code-to-figma read` to

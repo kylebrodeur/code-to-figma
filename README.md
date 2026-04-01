@@ -82,8 +82,9 @@ The CLI uses Babel AST to extract:
 | **Typography** | `font-*`, `text-*` (size classes), `fontFamily` |
 | **Fills** | `bg-*` Tailwind color classes → RGBA fills |
 | **Props list** | All destructured props with `variantProperty` flag |
+| **Design tokens** | CSS-class → Figma path via `tokenMapping` → `tokens[]` with resolved values; plugin creates a Figma Variable Collection on import |
 
-**Limitations:** Tailwind color classes resolve to placeholders (e.g. `bg-blue-600` → a fallback blue) unless you provide a `tokenMapping` in config. Dynamic `className` expressions aren't resolved. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
+**Limitations:** Dynamic `className` expressions aren't resolved. Tailwind color classes without a `tokenMapping` entry resolve to built-in fallback colors. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
 
 ---
 

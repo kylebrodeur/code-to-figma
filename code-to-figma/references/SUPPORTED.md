@@ -62,6 +62,28 @@ function Button({ className }: { className?: string }) {
 }
 ```
 
+### Figma Variable Collections via `tokenMapping`
+
+```json
+// .code-to-figma.json
+{
+  "tokenMapping": {
+    "--color-primary": "brand/primary",
+    "--space-4": "spacing/base"
+  }
+}
+```
+
+When a CSS class matches a `tokenMapping` key, its resolved value (`{r,g,b,a}` for colors, `number` for spacing) is included in `tokens[]` of the generated JSON. On import, the Figma plugin creates a **Variable Collection** named after the component with one Variable per token entry.
+
+Token types resolved automatically:
+| Source class | Figma Variable type | Example value |
+|---|---|---|
+| `bg-*`, `text-*` | `COLOR` | `{r:0.2, g:0.4, b:1, a:1}` |
+| `gap-*`, `p-*` (spacing) | `FLOAT` | `16` (px, Tailwind ×4) |
+
+> Components without a `tokenMapping` match still generate correctly — `tokens[]` is empty and no Variable Collection is created.
+
 ---
 
 ## ⚠️ Limited Support

@@ -76,6 +76,7 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 | Arrow function + `React.FC<Props>` | ✅ | Standard function component |
 | `interface Props` + `type Props` | ✅ | Types read for variant detection |
 | Template literals (static parts) | ✅ | `` `${base} ${cls}` `` (base string extracted) |
+| Figma Variable Collections | ✅ | `tokenMapping` in config → COLOR/FLOAT variables created on import |
 | Dynamic `className` expressions | ⚠️ | `{isActive ? 'x' : 'y'}` not resolved |
 | `clsx()` / `cn()` with conditions | ⚠️ | Limited to static args |
 | CSS-in-JS (styled, emotion) | ❌ | Not supported |
@@ -87,7 +88,8 @@ See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
 | Issue | Solution |
 |-------|----------|
 | Variants are wrong names | Ensure `interface Props { variant: 'a' \| 'b' }` syntax (literal unions, not `string`) |
-| Empty fills in Figma | Add `tokenMapping` in config, or manually style in Figma after import |
+| Empty fills in Figma | Add `tokenMapping` in config to resolve colors; plugin will also create Figma Variables per token |
+| No Figma Variables created | Expected when `tokenMapping` is empty — add CSS-class-to-path entries in config |
 | Plugin not in menu | Use Figma **Desktop** (not browser); load via **Plugins → Development → Import from manifest** |
 | `fontSize` shows wrong | Fixed in v0.2 — was returning `"AUTO"` for non-numeric Tailwind classes |
 
