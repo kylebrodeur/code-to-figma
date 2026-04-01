@@ -4,23 +4,29 @@ The BSS plugin works — it has 1482 lines of proven Figma API code, primitive b
 
 ## Steps
 
-### Phase 1: Plugin Foundation
-1. Create `packages/plugin/` — `manifest.json`, `src/code.ts`, `src/ui.html`, `package.json`, `esbuild.config.mjs`
-2. Extract reusable primitives from BSS `code.js`: color helpers (`hex`, `fill`, `hexA`), frame/rect/text factories (`fr`, `rct`, `tx`), layout builders (`hrow`, `vcol`), gradient factories, `applyGrid`, `restackOrdered`, font loading
-3. Build the JSON consumer — `code.ts` reads `FigmaJsonOutput` (the interface already defined in `packages/cli/src/generator/figma-generator.ts`) and maps variants → component frames, styles → auto-layout/fills/typography, tokens → Figma variables
+### Phase 1: Plugin Foundation ✅ COMPLETE
+1. ✅ Create `packages/plugin/` — `manifest.json`, `src/code.ts`, `src/ui.html`, `package.json`, `esbuild.config.mjs`
+2. ✅ Extract reusable primitives from BSS `code.js`: color helpers (`hex`, `fill`, `hexA`), frame/rect/text factories (`fr`, `rct`, `tx`), layout builders (`hrow`, `vcol`), gradient factories, `applyGrid`, `restackOrdered`, font loading
+3. ✅ Build the JSON consumer — `code.ts` reads `FigmaJsonOutput` and maps variants → component frames, styles → auto-layout/fills/typography
 
-### Phase 2: UI & Message Protocol
-4. Build `ui.html` — file picker/paste JSON, preview, build/remove buttons
-5. Message protocol: `IMPORT_JSON`, `BUILD_COMPONENT`, `REMOVE_COMPONENT`, `STATUS`/`DONE`/`ERROR`
+### Phase 2: UI & Message Protocol ✅ COMPLETE
+4. ✅ Build `ui.html` — BSS warm dark theme, collapsible import panel, file picker/paste JSON, per-component rows with Build/X inline buttons
+5. ✅ Message protocol: `IMPORT_JSON`, `BUILD_COMPONENT`, `REMOVE_COMPONENT`, `REMOVE_COMPONENTS`, `STATUS`/`DONE`/`ERROR`
+   - Extended with `REMOVE_COMPONENTS` (array) for bulk removal
 
-### Phase 3: CLI Bridge
-6. Create `packages/cli/src/commands/plugin-output.ts` — reads `.figma.json` files, bundles into `plugin-data.json` *(currently a stub action in `packages/cli/src/cli.ts`)*
-7. Wire up properly in `cli.ts`
+> Commits: `feat(plugin): add packages/plugin Phase 1 foundation`, `feat(plugin): adopt BSS checkbox-per-component UX pattern`
 
-### Phase 4: Integration & Testing
-8. End-to-end: `scan` → `plugin-output` → load in Figma → verify rendered frame
-9. Test with BSS theme components (badge, button, card from `bss-figma-project/plugin/theme/components/ui/`)
-10. Update docs (README, SKILL.md)
+### Phase 3: CLI Bridge ✅ COMPLETE
+6. ✅ Create `packages/cli/src/commands/plugin-output.ts` — reads `.figma.json` files from input dir, bundles into `plugin-data.json`
+7. ✅ Wire up properly in `cli.ts` (replaced stub `console.log` action with `pluginOutput()` call)
+8. ✅ Export `pluginOutput` from `packages/cli/src/index.ts`
+
+> Commit: `feat(cli): implement plugin-output command`
+
+### Phase 4: Integration & Testing ← CURRENT
+9. ⬜ End-to-end: `scan` → `plugin-output` → load in Figma → verify rendered frame
+10. ⬜ Test with BSS theme components (badge, button, card from `bss-figma-project/plugin/theme/components/ui/`)
+11. ⬜ Update docs (README, SKILL.md)
 
 ## Relevant Files
 

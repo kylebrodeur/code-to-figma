@@ -5,6 +5,7 @@ import { initConfig } from "./commands/init.js";
 import { scanFile } from "./commands/scan.js";
 import { readFromFigma } from "./commands/read.js";
 import { watchFiles } from "./commands/watch.js";
+import { pluginOutput } from "./commands/plugin-output.js";
 import { loadConfig } from "./config.js";
 
 const program = new Command();
@@ -58,7 +59,7 @@ program
   .option("-o, --output <file>", "Output file", "plugin-data.json")
   .action(async (options) => {
     console.log(pc.cyan("Generating plugin output..."));
-    // Implementation in commands/plugin-output.ts
+    await pluginOutput({ input: options.input, output: options.output });
   });
 
 program.parse();
