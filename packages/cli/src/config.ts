@@ -8,7 +8,13 @@ export interface Config {
   tokenMapping: Record<string, string>;
   outputDir: string;
   framework: "react" | "vue" | "svelte";
-  styling: "tailwind" | "css-modules" | "styled-components" | "css";
+  styling: "tailwind" | "tailwind-v4" | "shadcn" | "shadcn-v4" | "css-modules" | "styled-components" | "css";
+  /**
+   * Optional explicit adapter override.
+   * Auto-detected from `styling` when omitted.
+   * Valid values: "tailwind-v3" | "tailwind-v4" | "shadcn" | "shadcn-v4" | "radix" | "radix-ui" | "base-ui"
+   */
+  adapter?: string;
   parserOptions: {
     extractVariantsFromProps: boolean;
     detectClassNameUtilities: boolean;

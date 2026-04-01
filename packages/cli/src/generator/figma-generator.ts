@@ -1,5 +1,6 @@
 import type { Config } from "../config.js";
 import type { ParsedComponent, Variant, ExtractedStyles } from "../parser/react-parser.js";
+import { getAdapter } from "../adapters/index.js";
 
 export interface FigmaToken {
   name: string;                                   // e.g. "brand/primary"
@@ -197,6 +198,7 @@ function generateFigmaStyles(
   styles: ExtractedStyles,
   config: Config
 ): FigmaStyle {
+  const adapter = getAdapter(config);
   return {
     layout: {
       display: (styles.layout.display?.toUpperCase() as any) || "FLEX",
@@ -210,8 +212,10 @@ function generateFigmaStyles(
     },
     typography: {
       fontFamily: styles.typography.fontFamily || "Inter",
-      fontSize: parseSizeNum(styles.typography.fontSize, 16),
-      fontWeight: parseWeight(styles.typography.fontWeight) || 400,
+      fontSize: adapter.resolveFontSize(styles.typography.fontSize || "", config)
+        ?? parseSizeNum(styles.typography.fontSize, 16),
+      fontWeight: adapter.resolveFontWeight(styles.typography.fontWeight || "", config)
+        ?? parseWeight(styles.typography.fontWeight) ?? 400,
       lineHeight: parseSize(styles.typography.lineHeight),
       letterSpacing: 0,
     },
@@ -242,25 +246,39 @@ function extractTokenNames(
 ): FigmaToken[] {
   const tokens: FigmaToken[] = [];
   const seen = new Set<string>();
+  const adapter = getAdapter(config);
+
+  function pushColorToken(cls: string): void {
+    if (seen.has(cls)) return;
+
+    // 1. Explicit tokenMapping entry
+    const mappedName = mapClassToToken(cls, config);
+    if (mappedName && !seen.has(mappedName)) {
+      seen.add(mappedName);
+      const color = mapTokenToColor(cls, config);
+      if (color) tokens.push({ name: mappedName, type: "COLOR", value: color, source: cls });
+      return;
+    }
+
+    // 2. Adapter auto-token (e.g. shadcn semantic tokens)
+    const auto = adapter.autoToken?.(cls, config);
+    if (auto && !seen.has(auto.name)) {
+      seen.add(auto.name);
+      const color = mapTokenToColor(cls, config);
+      if (color && auto.type === "COLOR") {
+        tokens.push({ name: auto.name, type: "COLOR", value: color, source: cls });
+      }
+    }
+  }
 
   // Color tokens from background and text color classes
   const colorClasses = [
     styles.visual.backgroundColor,
     styles.visual.color,
   ].filter(Boolean) as string[];
+  for (const cls of colorClasses) pushColorToken(cls);
 
-  for (const cls of colorClasses) {
-    const tokenName = mapClassToToken(cls, config);
-    if (tokenName && !seen.has(tokenName)) {
-      seen.add(tokenName);
-      const color = mapTokenToColor(cls, config);
-      if (color) {
-        tokens.push({ name: tokenName, type: "COLOR", value: color, source: cls });
-      }
-    }
-  }
-
-  // Spacing/sizing tokens from layout classes
+  // Spacing/sizing tokens from layout classes (explicit tokenMapping only)
   const spacingClasses = [
     styles.layout.gap,
     styles.layout.padding,
@@ -284,44 +302,7 @@ function mapTokenToColor(
   config: Config
 ): { r: number; g: number; b: number; a: number } | null {
   if (!cssClass) return null;
-  // Default fallback colors — semantic names AND common Tailwind color keywords
-  const colorMap: Record<string, { r: number; g: number; b: number }> = {
-    // Semantic
-    primary: { r: 0.2, g: 0.4, b: 1 },
-    secondary: { r: 0.5, g: 0.5, b: 0.5 },
-    danger: { r: 0.9, g: 0.2, b: 0.2 },
-    success: { r: 0.2, g: 0.8, b: 0.4 },
-    white: { r: 1, g: 1, b: 1 },
-    black: { r: 0, g: 0, b: 0 },
-    // Tailwind color keywords
-    blue: { r: 0.23, g: 0.51, b: 0.96 },
-    red: { r: 0.94, g: 0.27, b: 0.27 },
-    green: { r: 0.13, g: 0.77, b: 0.37 },
-    yellow: { r: 0.98, g: 0.8, b: 0.08 },
-    orange: { r: 0.98, g: 0.45, b: 0.09 },
-    purple: { r: 0.66, g: 0.33, b: 0.97 },
-    pink: { r: 0.93, g: 0.28, b: 0.6 },
-    indigo: { r: 0.39, g: 0.4, b: 0.95 },
-    teal: { r: 0.09, g: 0.72, b: 0.65 },
-    cyan: { r: 0.06, g: 0.72, b: 0.83 },
-    gray: { r: 0.62, g: 0.62, b: 0.62 },
-    slate: { r: 0.55, g: 0.6, b: 0.67 },
-    zinc: { r: 0.58, g: 0.58, b: 0.6 },
-    rose: { r: 0.96, g: 0.26, b: 0.44 },
-    violet: { r: 0.6, g: 0.33, b: 0.97 },
-    sky: { r: 0.22, g: 0.7, b: 0.97 },
-    lime: { r: 0.52, g: 0.86, b: 0.11 },
-    amber: { r: 0.96, g: 0.62, b: 0.04 },
-    emerald: { r: 0.06, g: 0.73, b: 0.51 },
-  };
-  
-  for (const [name, color] of Object.entries(colorMap)) {
-    if (cssClass.toLowerCase().includes(name)) {
-      return { ...color, a: 1 };
-    }
-  }
-  
-  return { r: 0.8, g: 0.8, b: 0.8, a: 1 };
+  return getAdapter(config).resolveColor(cssClass, config);
 }
 
 function mapClassToToken(

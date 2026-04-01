@@ -116,6 +116,40 @@ export async function parseComponent(
       }
     },
 
+    // Detect cva() calls (class-variance-authority) — used by shadcn v4 and
+    // any component using CVA for variant management.
+    // cva("base", { variants: { variant: { primary: "...", secondary: "..." }, size: { sm: "...", lg: "..." } } })
+    CallExpression(path: NodePath<t.CallExpression>) {
+      const callee = path.node.callee;
+      const isCva =
+        (t.isIdentifier(callee) && callee.name === "cva") ||
+        (t.isMemberExpression(callee) && t.isIdentifier(callee.property) && callee.property.name === "cva");
+
+      if (!isCva || path.node.arguments.length < 2) return;
+
+      const optionsArg = path.node.arguments[1];
+      if (!t.isObjectExpression(optionsArg)) return;
+
+      const variantsProp = optionsArg.properties.find(
+        (p) => t.isObjectProperty(p) && t.isIdentifier((p as t.ObjectProperty).key) &&
+               ((p as t.ObjectProperty).key as t.Identifier).name === "variants"
+      ) as t.ObjectProperty | undefined;
+
+      if (!variantsProp || !t.isObjectExpression(variantsProp.value)) return;
+
+      for (const group of variantsProp.value.properties) {
+        if (!t.isObjectProperty(group) || !t.isIdentifier(group.key)) continue;
+        if (!t.isObjectExpression(group.value)) continue;
+        const propName = (group.key as t.Identifier).name;
+        const vals = group.value.properties
+          .filter((p): p is t.ObjectProperty => t.isObjectProperty(p) && t.isIdentifier(p.key))
+          .map((p) => ((p.key as t.Identifier).name));
+        if (vals.length > 0) {
+          propUnionTypes[propName] = vals;
+        }
+      }
+    },
+
     // Find function/component declarations
     FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
       if (isComponentFunction(path.node)) {
@@ -265,7 +299,10 @@ function parseTailwindClasses(
 
   const classList = classes.split(/\s+/);
   
-  for (const cls of classList) {
+  for (const rawCls of classList) {
+    const cls = stripModifiers(rawCls);
+    if (cls === null) continue; // e.g. dark: classes are skipped
+
     // Layout
     if (cls === "flex") styles.layout.display = "flex";
     if (cls === "grid") styles.layout.display = "grid";
@@ -278,13 +315,39 @@ function parseTailwindClasses(
     
     // Visual
     if (cls.startsWith("bg-")) styles.visual.backgroundColor = cls;
-    if (cls.startsWith("text-")) styles.visual.color = cls;
+    if (cls.startsWith("text-") && !cls.startsWith("text-xs") && !cls.startsWith("text-sm") &&
+        !cls.startsWith("text-base") && !cls.startsWith("text-lg") && !cls.startsWith("text-xl")) {
+      styles.visual.color = cls;
+    }
     if (cls.startsWith("rounded-")) styles.visual.borderRadius = cls;
     
     // Typography
     if (cls.startsWith("text-")) styles.typography.fontSize = cls;
     if (cls.startsWith("font-")) styles.typography.fontWeight = cls;
   }
+}
+
+/**
+ * Strip Tailwind modifier prefixes from a class.
+ *
+ * Returns null (skip class entirely) for any class with a conditional modifier:
+ * hover:, focus:, dark:, sm:, md:, data-[state=open]:, group-hover:, etc.
+ * Only pure unconditional utility classes (no colons outside brackets) are
+ * used as the canonical style for Figma rendering.
+ *
+ * Strips opacity modifier suffix: bg-blue-500/50 → bg-blue-500
+ */
+function stripModifiers(cls: string): string | null {
+  // Detect any colon outside square brackets (modifier prefix)
+  let depth = 0;
+  for (let i = 0; i < cls.length; i++) {
+    const ch = cls[i];
+    if (ch === "[") depth++;
+    else if (ch === "]") depth--;
+    else if (ch === ":" && depth === 0) return null; // has modifier → skip
+  }
+  // Strip opacity modifier: bg-blue-500/50 → bg-blue-500
+  return cls.replace(/\/[\d.]+$/, "");
 }
 
 function extractVariants(

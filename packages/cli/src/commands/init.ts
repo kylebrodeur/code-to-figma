@@ -14,7 +14,12 @@ const templateConfig = {
   },
   outputDir: ".figma",
   framework: "react",
+  // styling: controls which style adapter is used for color/font resolution.
+  // Options: "tailwind" | "tailwind-v4" | "shadcn" | "shadcn-v4" | "css-modules" | "css"
   styling: "tailwind",
+  // adapter: optional override (auto-detected from styling when omitted).
+  // Options: "tailwind-v3" | "tailwind-v4" | "shadcn" | "radix" | "radix-ui" | "base-ui"
+  // adapter: "shadcn",
   parserOptions: {
     extractVariantsFromProps: true,
     detectClassNameUtilities: true,
