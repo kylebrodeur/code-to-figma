@@ -104,8 +104,12 @@ Bug fixed: `buildComponent()` was branching on `data.type === 'COMPONENT_SET' &&
 
 ---
 
-## Phase 5: Figma Variable Collections (Future)
-- Extend `FigmaJsonOutput.tokens` to `TokenEntry[]` with `{ name, value, type }`
-- CLI: resolve Tailwind color classes → `{r,g,b,a}` when computing tokens
-- Plugin: `createVariableCollection(data.name)` + one variable per token entry
-- Only run when `data.tokens.length > 0`
+## Phase 5: Figma Variable Collections ✅ Complete
+
+**Commit:** `722ef6d — feat(tokens): FigmaToken contract + Figma variable collection creation`
+
+- `FigmaToken` interface: `{ name, type: "COLOR"|"FLOAT"|"STRING", value, source }` — defined in both `cli/src/generator/figma-generator.ts` and `plugin/src/types.ts`
+- `tokens: string[]` → `tokens: FigmaToken[]` in `FigmaJsonOutput` (both packages)
+- `extractTokenNames()` now returns `FigmaToken[]` with resolved RGBA values via `mapTokenToColor()` for color classes and numeric values for spacing classes
+- `maybeCreateVariables(data)` added to `plugin/src/code.ts`: creates `VariableCollection` per component, one `Variable` per token entry, skips gracefully when `data.tokens.length === 0`
+- `buildComponent()` calls `maybeCreateVariables(data)` before font loading
