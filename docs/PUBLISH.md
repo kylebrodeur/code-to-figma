@@ -11,7 +11,7 @@
 
 ## Part 1 — Testing Tasks
 
-✅ All unit tests implemented and passing (94 tests, commit `f1e28c4`).
+✅ All tests implemented and passing (99 tests — 94 unit + 5 integration, commit `2eac709`).
 
 ---
 
@@ -129,7 +129,7 @@ cd packages/cli && pnpm typecheck
 | `"main"` and `"exports"` set | ✅ Done | ESM-only, `.`, `./parser`, `./generator` |
 | `"engines": { "node": ">=18.0.0" }` | ✅ Done | already set |
 | `"repository"` with `directory` field | ✅ Done | points to `packages/cli` |
-| All tests pass | ✅ Done | 94 unit tests passing (`pnpm test`) |
+| All tests pass | ✅ Done | 99 tests passing — 94 unit + 5 integration (`pnpm test`) |
 | `pnpm build` succeeds | ✅ Done | passes, 0 errors |
 | `pnpm typecheck` passes | ✅ Done | no errors |
 | README is accurate | ✅ Done | up to date |
