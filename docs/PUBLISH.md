@@ -3,18 +3,18 @@
 ## Status
 
 - **Package:** `@kylebrodeur/code-to-figma` — version `0.1.0`
-- **Test runner:** Vitest (installed, no test files yet)
+- **Test runner:** Vitest — **94 tests passing** across 3 test files
 - **Lint/format:** Biome
 
 ---
 
 ## Part 1 — Testing Tasks
 
-No test files exist yet. The following tasks must be completed before a stable publish.
+✅ All unit tests implemented and passing (94 tests, commit `f1e28c4`).
 
 ---
 
-### 1.1 Adapter Unit Tests
+### 1.1 Adapter Unit Tests ✅
 
 **File:** `packages/cli/src/adapters/__tests__/adapters.test.ts`
 
@@ -41,7 +41,7 @@ No test files exist yet. The following tasks must be completed before a stable p
 
 ---
 
-### 1.2 Parser Unit Tests
+### 1.2 Parser Unit Tests ✅
 
 **File:** `packages/cli/src/parser/__tests__/react-parser.test.ts`
 
@@ -63,7 +63,7 @@ No test files exist yet. The following tasks must be completed before a stable p
 
 ---
 
-### 1.3 Generator Unit Tests
+### 1.3 Generator Unit Tests ✅
 
 **File:** `packages/cli/src/generator/__tests__/figma-generator.test.ts`
 
@@ -80,11 +80,11 @@ No test files exist yet. The following tasks must be completed before a stable p
 
 ---
 
-### 1.4 CLI Integration Tests (scan command)
+### 1.4 CLI Integration Tests (scan command) ⬜
 
 **File:** `packages/cli/src/__tests__/integration.test.ts`
 
-Use `tmp` dirs with fixture `.tsx` files. Spawn `cli.js scan` via `execa` and assert on the JSON output file.
+Not yet implemented. Use `tmp` dirs with fixture `.tsx` files. Spawn `cli.js scan` via `execa` and assert on the JSON output file.
 
 | Scenario | Input | Expected output |
 |---|---|---|
@@ -128,7 +128,7 @@ cd packages/cli && pnpm typecheck
 | `"main"` and `"exports"` set | ✅ Done | ESM-only, `.`, `./parser`, `./generator` |
 | `"engines": { "node": ">=18.0.0" }` | ✅ Done | already set |
 | `"repository"` with `directory` field | ✅ Done | points to `packages/cli` |
-| All tests pass | ⬜ Pending | no test files yet |
+| All tests pass | ✅ Done | 94 unit tests passing (`pnpm test`) |
 | `pnpm build` succeeds | ✅ Done | passes, 0 errors |
 | `pnpm typecheck` passes | ✅ Done | no errors |
 | README is accurate | ✅ Done | up to date |
@@ -202,7 +202,8 @@ npx code-to-figma init
 
 | Priority | Item |
 |---|---|
-| 🔴 Blocker | Write tests (Part 1 above) — no test coverage at all |
+| ✅ Done | Unit tests (94 passing across adapters, parser, generator) |
+| 🔴 Blocker | Integration tests (`src/__tests__/integration.test.ts`) — scan command not yet tested end-to-end via subprocess |
 | 🔴 Blocker | Set GitHub repo public OR confirm private/scoped publish intent |
 | 🟡 Required | `npm login` + verify `@kylebrodeur` scope ownership |
 | 🟢 Nice to have | CHANGELOG.md with v0.1.0 notes |
