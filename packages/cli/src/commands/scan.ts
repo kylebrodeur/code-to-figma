@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from "fs";
-import { dirname, join, parse } from "path";
+import { join, parse } from "path";
 import pc from "picocolors";
 import glob from "fast-glob";
 import type { Config } from "../config.js";
@@ -55,5 +55,5 @@ export async function scanFile(
   }
 
   console.log(pc.cyan(`Output written to: ${outputDir}`));
-  console.log(pc.dim(`\nNext: Sync to Figma with: npx code-to-figma sync`));
+  console.log(pc.dim(`\nNext: Load into Figma with: npx code-to-figma plugin-output`));
 }

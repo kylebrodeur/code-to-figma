@@ -2,9 +2,10 @@
 
 ## Status
 
-- **Package:** `@kylebrodeur/code-to-figma` — version `0.1.0`
-- **Test runner:** Vitest — **94 tests passing** across 3 test files
+- **Package:** `@kylebrodeur/code-to-figma` — version `0.1.0` **published to npm** ✅
+- **Test runner:** Vitest — **99 tests passing** (94 unit + 5 integration)
 - **Lint/format:** Biome
+- **Security:** esbuild override applied, `pnpm audit` clean
 
 ---
 
@@ -80,11 +81,11 @@
 
 ---
 
-### 1.4 CLI Integration Tests (scan command) ⬜
+### 1.4 CLI Integration Tests (scan command) ✅
 
 **File:** `packages/cli/src/__tests__/integration.test.ts`
 
-Not yet implemented. Use `tmp` dirs with fixture `.tsx` files. Spawn `cli.js scan` via `execa` and assert on the JSON output file.
+Spawns `cli.js scan` via `execa` against tmp fixture dirs, asserts on the generated `.figma.json` output.
 
 | Scenario | Input | Expected output |
 |---|---|---|
@@ -132,10 +133,10 @@ cd packages/cli && pnpm typecheck
 | `pnpm build` succeeds | ✅ Done | passes, 0 errors |
 | `pnpm typecheck` passes | ✅ Done | no errors |
 | README is accurate | ✅ Done | up to date |
-| GitHub repo is public | ⬜ Required | currently **PRIVATE** — must be public OR use `--access public` flag |
-| npm account authenticated | ⬜ Required | `npm whoami` to verify |
-| npm org scope `@kylebrodeur` available | ⬜ Required | verify at npmjs.com |
-| CHANGELOG or release notes | ⬜ Optional for v0.1.0 | recommended |
+| GitHub repo is public | ✅ Done | repo is public at github.com/kylebrodeur/code-to-figma |
+| npm account authenticated | ✅ Done | published successfully |
+| npm org scope `@kylebrodeur` available | ✅ Done | `@kylebrodeur/code-to-figma@0.1.0` is live |
+| CHANGELOG or release notes | ✅ Done | `CHANGELOG.md` added to repo root |
 
 ---
 
@@ -203,8 +204,10 @@ npx code-to-figma init
 | Priority | Item |
 |---|---|
 | ✅ Done | Unit tests (94 passing across adapters, parser, generator) |
-| 🔴 Blocker | Integration tests (`src/__tests__/integration.test.ts`) — scan command not yet tested end-to-end via subprocess |
-| 🔴 Blocker | Set GitHub repo public OR confirm private/scoped publish intent |
-| 🟡 Required | `npm login` + verify `@kylebrodeur` scope ownership |
-| 🟢 Nice to have | CHANGELOG.md with v0.1.0 notes |
-| 🟢 Nice to have | GitHub Actions CI (run `pnpm build && pnpm test` on push) |
+| ✅ Done | Integration tests (5 scenarios via execa subprocess) |
+| ✅ Done | GitHub repo public |
+| ✅ Done | npm published — `@kylebrodeur/code-to-figma@0.1.0` live |
+| ✅ Done | CHANGELOG.md added |
+| ✅ Done | GitHub Actions CI (build + test on push) |
+| 🟡 Next | Write integration tests for v0.2 features (plugin-output command, watch mode) |
+| 🟡 Next | Bump to `0.1.1` for keywords/homepage update to appear on npm |
