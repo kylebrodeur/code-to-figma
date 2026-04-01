@@ -150,7 +150,9 @@ async function buildVariantFrame(
 
   // Add a text label showing the variant name for identification
   const fontFamily = styles.typography.fontFamily || 'Inter';
-  const fontSize = styles.typography.fontSize || 14;
+  const fontSize = (typeof styles.typography.fontSize === 'number' && styles.typography.fontSize > 0)
+    ? styles.typography.fontSize
+    : 14;
   const fontWeight = styles.typography.fontWeight || 400;
   const fontStyle = fontWeight >= 700 ? 'Bold' : fontWeight >= 500 ? 'Medium' : 'Regular';
 

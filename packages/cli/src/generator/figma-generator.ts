@@ -203,9 +203,9 @@ function generateFigmaStyles(
     },
     typography: {
       fontFamily: styles.typography.fontFamily || "Inter",
-      fontSize: (parseSize(styles.typography.fontSize) as number) || 16,
+      fontSize: parseSizeNum(styles.typography.fontSize, 16),
       fontWeight: parseWeight(styles.typography.fontWeight) || 400,
-      lineHeight: parseSize(styles.typography.lineHeight) as any,
+      lineHeight: parseSize(styles.typography.lineHeight),
       letterSpacing: 0,
     },
   };
@@ -307,6 +307,11 @@ function parseSize(size: string | undefined): number | "AUTO" {
   if (!size) return "AUTO";
   const num = parseInt(size.replace(/\D/g, ""), 10);
   return isNaN(num) ? "AUTO" : num;
+}
+
+function parseSizeNum(size: string | undefined, fallback: number): number {
+  const result = parseSize(size);
+  return result === "AUTO" ? fallback : result;
 }
 
 function parseWeight(weight: string | undefined): number {

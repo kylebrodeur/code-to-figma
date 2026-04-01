@@ -79,9 +79,43 @@ export async function parseComponent(
   const variants: Variant[] = [];
   let styles: ExtractedStyles = { layout: {}, visual: {}, typography: {} };
   const jsxStructure: JSXNode[] = [];
+  const propUnionTypes: Record<string, string[]> = {};
 
   // Traverse AST to find component
   traverse(ast, {
+    // Collect TypeScript interface/type union literals for variant detection
+    TSInterfaceDeclaration(path: NodePath<t.TSInterfaceDeclaration>) {
+      path.node.body.body.forEach((member) => {
+        if (
+          t.isTSPropertySignature(member) &&
+          t.isIdentifier(member.key) &&
+          member.typeAnnotation
+        ) {
+          const vals = extractUnionLiterals(member.typeAnnotation.typeAnnotation);
+          if (vals.length > 0) {
+            propUnionTypes[member.key.name] = vals;
+          }
+        }
+      });
+    },
+
+    TSTypeAliasDeclaration(path: NodePath<t.TSTypeAliasDeclaration>) {
+      if (t.isTSTypeLiteral(path.node.typeAnnotation)) {
+        path.node.typeAnnotation.members.forEach((member) => {
+          if (
+            t.isTSPropertySignature(member) &&
+            t.isIdentifier(member.key) &&
+            member.typeAnnotation
+          ) {
+            const vals = extractUnionLiterals(member.typeAnnotation.typeAnnotation);
+            if (vals.length > 0) {
+              propUnionTypes[member.key.name] = vals;
+            }
+          }
+        });
+      }
+    },
+
     // Find function/component declarations
     FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
       if (isComponentFunction(path.node)) {
@@ -121,7 +155,7 @@ export async function parseComponent(
 
   // Extract variants from props
   if (config.parserOptions.extractVariantsFromProps) {
-    extractVariants(props, variants);
+    extractVariants(props, variants, propUnionTypes);
   }
 
   return {
@@ -253,24 +287,47 @@ function parseTailwindClasses(
   }
 }
 
-function extractVariants(props: ComponentProp[], variants: Variant[]): void {
-  // Look for variant/size/style props
-  const variantProps = props.filter(
-    (p) => ["variant", "size", "color"].includes(p.name.toLowerCase())
+function extractVariants(
+  props: ComponentProp[],
+  variants: Variant[],
+  propUnionTypes: Record<string, string[]>,
+): void {
+  const variantPropKeys = ["variant", "size", "color", "type", "intent"];
+  const variantProp = props.find((p) =>
+    variantPropKeys.includes(p.name.toLowerCase())
   );
-  
-  if (variantProps.length === 0) return;
 
-  // Create basic variants (default, primary, secondary, etc.)
-  const variantNames = ["default", "primary", "secondary", "outline"];
-  
-  for (const name of variantNames) {
-    variants.push({
-      name,
-      propValues: { variant: name },
-      styles: {},
-    });
+  if (!variantProp) return;
+
+  // Prefer actual TypeScript union literals over hardcoded fallbacks
+  const unionValues = propUnionTypes[variantProp.name];
+  if (unionValues && unionValues.length > 0) {
+    for (const val of unionValues) {
+      variants.push({ name: val, propValues: { [variantProp.name]: val }, styles: {} });
+    }
+    return;
   }
+
+  // Fallback: generic names when no TypeScript types are present
+  for (const name of ["default", "primary", "secondary", "outline"]) {
+    variants.push({ name, propValues: { variant: name }, styles: {} });
+  }
+}
+
+function extractUnionLiterals(typeNode: t.TSType): string[] {
+  if (t.isTSUnionType(typeNode)) {
+    const values: string[] = [];
+    for (const member of typeNode.types) {
+      if (t.isTSLiteralType(member) && t.isStringLiteral(member.literal)) {
+        values.push(member.literal.value);
+      }
+    }
+    return values;
+  }
+  if (t.isTSLiteralType(typeNode) && t.isStringLiteral(typeNode.literal)) {
+    return [typeNode.literal.value];
+  }
+  return [];
 }
 
 function buildJSXNode(node: t.JSXElement): JSXNode | null {
