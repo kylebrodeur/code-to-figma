@@ -284,23 +284,35 @@ function mapTokenToColor(
   config: Config
 ): { r: number; g: number; b: number; a: number } | null {
   if (!cssClass) return null;
-  
-  // Check token mapping
-  for (const [css, figmaPath] of Object.entries(config.tokenMapping)) {
-    if (cssClass.includes(css.replace("--", "").replace("color-", ""))) {
-      // Return placeholder color - Figma plugin should resolve actual token
-      return { r: 0.5, g: 0.5, b: 0.5, a: 1 };
-    }
-  }
-  
-  // Default fallback colors
+  // Default fallback colors — semantic names AND common Tailwind color keywords
   const colorMap: Record<string, { r: number; g: number; b: number }> = {
+    // Semantic
     primary: { r: 0.2, g: 0.4, b: 1 },
     secondary: { r: 0.5, g: 0.5, b: 0.5 },
     danger: { r: 0.9, g: 0.2, b: 0.2 },
     success: { r: 0.2, g: 0.8, b: 0.4 },
     white: { r: 1, g: 1, b: 1 },
     black: { r: 0, g: 0, b: 0 },
+    // Tailwind color keywords
+    blue: { r: 0.23, g: 0.51, b: 0.96 },
+    red: { r: 0.94, g: 0.27, b: 0.27 },
+    green: { r: 0.13, g: 0.77, b: 0.37 },
+    yellow: { r: 0.98, g: 0.8, b: 0.08 },
+    orange: { r: 0.98, g: 0.45, b: 0.09 },
+    purple: { r: 0.66, g: 0.33, b: 0.97 },
+    pink: { r: 0.93, g: 0.28, b: 0.6 },
+    indigo: { r: 0.39, g: 0.4, b: 0.95 },
+    teal: { r: 0.09, g: 0.72, b: 0.65 },
+    cyan: { r: 0.06, g: 0.72, b: 0.83 },
+    gray: { r: 0.62, g: 0.62, b: 0.62 },
+    slate: { r: 0.55, g: 0.6, b: 0.67 },
+    zinc: { r: 0.58, g: 0.58, b: 0.6 },
+    rose: { r: 0.96, g: 0.26, b: 0.44 },
+    violet: { r: 0.6, g: 0.33, b: 0.97 },
+    sky: { r: 0.22, g: 0.7, b: 0.97 },
+    lime: { r: 0.52, g: 0.86, b: 0.11 },
+    amber: { r: 0.96, g: 0.62, b: 0.04 },
+    emerald: { r: 0.06, g: 0.73, b: 0.51 },
   };
   
   for (const [name, color] of Object.entries(colorMap)) {

@@ -293,25 +293,44 @@ function extractVariants(
   propUnionTypes: Record<string, string[]>,
 ): void {
   const variantPropKeys = ["variant", "size", "color", "type", "intent"];
-  const variantProp = props.find((p) =>
-    variantPropKeys.includes(p.name.toLowerCase())
+
+  // Collect ALL variant-like props that have resolved union literals
+  const activePropNames = variantPropKeys.filter(
+    (key) => props.some((p) => p.name.toLowerCase() === key) && propUnionTypes[key]?.length > 0
   );
 
-  if (!variantProp) return;
-
-  // Prefer actual TypeScript union literals over hardcoded fallbacks
-  const unionValues = propUnionTypes[variantProp.name];
-  if (unionValues && unionValues.length > 0) {
-    for (const val of unionValues) {
-      variants.push({ name: val, propValues: { [variantProp.name]: val }, styles: {} });
+  if (activePropNames.length === 0) {
+    // Fallback: use first variant-like prop name without types, or generic fallback
+    const variantProp = props.find((p) => variantPropKeys.includes(p.name.toLowerCase()));
+    if (!variantProp) return;
+    for (const name of ["default", "primary", "secondary", "outline"]) {
+      variants.push({ name, propValues: { variant: name }, styles: {} });
     }
     return;
   }
 
-  // Fallback: generic names when no TypeScript types are present
-  for (const name of ["default", "primary", "secondary", "outline"]) {
-    variants.push({ name, propValues: { variant: name }, styles: {} });
+  // Cross-product all variant prop values
+  const allValues: Array<[string, string[]]> = activePropNames.map(
+    (key) => [key, propUnionTypes[key]]
+  );
+
+  function cartesian(
+    axes: Array<[string, string[]]>,
+    current: Record<string, string>,
+    depth: number
+  ): void {
+    if (depth === axes.length) {
+      const name = Object.entries(current).map(([, v]) => v).join("/");
+      variants.push({ name, propValues: { ...current }, styles: {} });
+      return;
+    }
+    const [propName, values] = axes[depth];
+    for (const val of values) {
+      cartesian(axes, { ...current, [propName]: val }, depth + 1);
+    }
   }
+
+  cartesian(allValues, {}, 0);
 }
 
 function extractUnionLiterals(typeNode: t.TSType): string[] {
