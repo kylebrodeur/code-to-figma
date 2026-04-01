@@ -31,3 +31,5 @@ dist/
 
 # Misc
 *.log
+
+docs/_archive
