@@ -89,7 +89,7 @@ The CLI uses Babel AST to extract:
 | **Props list** | All destructured props with `variantProperty` flag |
 | **Design tokens** | CSS-class → Figma path via `tokenMapping` → `tokens[]` with resolved values; plugin creates a Figma Variable Collection on import |
 
-**Limitations:** Dynamic/conditional `className` expressions aren't resolved. The built-in palette covers all 22 standard Tailwind colors at shades 50–950; custom/extended colors need `tokenMapping`. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
+**Limitations:** Only TypeScript union literals are used to resolve `styles[variant]` — runtime-only dynamic keys can't be inferred. The built-in palette covers all 22 standard Tailwind colors at shades 50–950; custom/extended colors need `tokenMapping`. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
 
 ---
 

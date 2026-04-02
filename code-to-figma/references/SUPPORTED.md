@@ -66,8 +66,9 @@ function Button({ variant }: { variant: 'primary' | 'secondary' }) {
     </button>
   );
 }
-// ✅ The leading static string "px-4 py-2 rounded-md font-medium" is extracted
-// ⚠️ Conditional args (ternary, &&) are not resolved at parse time
+// ✅ The leading static string is extracted
+// ✅ Both branches of the ternary are extracted
+// ✅ Logical && args: cn('base', loading && 'opacity-50') — both sides extracted
 ```
 
 Supported utility names: `cn`, `clsx`, `classnames`, `cx`, `twMerge`.
@@ -128,7 +129,9 @@ The parser resolves the import path relative to the component file, reads the `.
 
 **Bracket notation** also works: `className={styles['button-primary']}`.
 
-**Not supported:** multiple CSS Module classes merged at runtime (`className={cn(styles.a, styles.b)}`), dynamic key access (`className={styles[variant]}`).
+**`cn(styles.a, styles.b)` merges** are fully resolved — all CSS Module refs in a `cn()`/`clsx()` call (including logical `&&` and conditional `? :` branches) are merged into the extracted styles. Any bare Tailwind strings in the same call are processed normally alongside them.
+
+**`styles[variant]` dynamic access** is resolved by enumerating all union literal values declared in the component's TypeScript `interface` or `type`. For example `interface Props { variant: "primary" | "danger" }` with `className={styles[variant]}` extracts both `.primary` and `.danger` class styles.
 
 ### Figma Variable Collections via `tokenMapping`
 
@@ -156,79 +159,87 @@ Token types resolved automatically:
 
 ## ⚠️ Limited Support
 
-### Conditional Expressions
+### Dynamic Class Names (runtime numeric values)
 
 ```tsx
-// ⚠️ May not resolve correctly
-function Button({ isActive }: { isActive: boolean }) {
-  return (
-    <button className={isActive ? 'bg-blue-500' : 'bg-gray-500'}>
-      Toggle
-    </button>
-  );
-}
-```
-
-**Workaround:** Use variant props instead:
-```tsx
-// ✅ Better approach
-variant: 'active' | 'inactive'
-```
-
-### Dynamic Class Names
-
-```tsx
-// ⚠️ Cannot resolve at build time
+// ⚠️ Cannot resolve — padding is a plain number, not a union literal
 function Button({ padding }: { padding: number }) {
   return <button className={`p-${padding}`}>...</button>;
 }
 ```
 
-**Workaround:** Use static sizes:
+**Fix:** Use a string union type instead, and the template will be enumerated:
 ```tsx
-// ✅ Use predefined sizes
-size: 'sm' | 'md' | 'lg'
+// ✅ Resolved — size is a string union
+function Button({ size }: { size: 'sm' | 'md' | 'lg' }) {
+  return <button className={`text-${size}`}>...</button>;
+}
 ```
 
-### Conditional with Logical AND
+---
+
+### Styled Components / Emotion (static)
 
 ```tsx
-// ⚠️ Limited detection
-import { cn } from "@/lib/utils";
+// ✅ Supported when the template literal has NO expressions
+import styled from 'styled-components'; // or @emotion/styled
 
-function Button({ isLoading }: { isLoading: boolean }) {
-  return (
-    <button className={cn('bg-blue-500', isLoading && 'opacity-50')}>
-      Save
-    </button>
-  );
+const Button = styled.button`
+  background-color: #3b82f6;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+`;
+// ✅ Also works with styled(Component)`...`
+// ✅ Also works with styled.button.attrs({})`...` (attrs are ignored, base CSS extracted)
+// ❌ Template literals with ${} expressions are skipped (runtime values can't be inferred)
+```
+
+### Direct JSX Ternary
+
+```tsx
+// ✅ Both branches are extracted
+function Button({ active }: { active: boolean }) {
+  return <button className={active ? 'bg-blue-500' : 'bg-gray-500'}>...</button>;
 }
+```
+
+### Template Literal Interpolation (Union Prop)
+
+```tsx
+// ✅ Enumerates all union values when the interpolated identifier has a TS union type
+interface Props { size: 'sm' | 'md' | 'lg'; }
+function Button({ size }: Props) {
+  return <button className={`text-${size} font-medium`}>...</button>;
+}
+// Extracts text-sm, text-md, text-lg — last write wins for the canonical Figma style
+// Only single-identifier interpolations are enumerated.
+// Purely-runtime dynamic values (`p-${padding}` where padding: number) still can't be resolved.
 ```
 
 ---
 
 ## ❌ Not Supported
 
-### CSS-in-JS
+### CSS-in-JS with Interpolations
 
 ```tsx
-// ❌ Not supported
-import styled from 'styled-components';
-
+// ❌ Cannot resolve — expressions reference runtime values
 const Button = styled.button`
-  background: blue;
-  padding: 8px 16px;
+  background: ${props => props.theme.primary};
+  padding: ${props => props.size === 'lg' ? '12px' : '8px'};
 `;
 ```
 
 ### Runtime Computed Styles
 
 ```tsx
-// ❌ Cannot resolve
-function Button(props) {
-  const classes = computeClasses(props); // Runtime function
-  return <button className={classes}>...</button>;
-}
+// ❌ Cannot resolve — expressions reference runtime values that aren't statically typed
+const Button = styled.button`
+  background: ${props => props.theme.primary};
+  padding: ${props => props.size === 'lg' ? '12px' : '8px'};
+`;
 ```
 
 ### Media Queries / Responsive
@@ -264,10 +275,11 @@ function Button() {
 | Solution | Status | Notes |
 |----------|--------|-------|
 | Tailwind CSS | ✅ Full | v3, v4 supported |
-| CSS Modules | ✅ Full | Reads `.module.css`, resolves colors/spacing/typography directly |
-| Styled Components | ❌ No | CSS-in-JS |
-| Emotion | ❌ No | CSS-in-JS |
-| Linaria | ❌ No | CSS-in-JS (static extraction not implemented) |
+| CSS Modules | ✅ Full | Reads `.module.css`, resolves colors/spacing/typography; `composes` resolved recursively |
+| Styled Components | ✅ Partial | Static template literals (no `${}`) — expressions skipped |
+| Emotion (`@emotion/styled`) | ✅ Partial | Same as styled-components — static template literals only |
+| Linaria | ❌ No | Static extraction not yet implemented |
+| CSS-in-JS with expressions | ❌ No | Runtime values can't be inferred |
 
 ---
 

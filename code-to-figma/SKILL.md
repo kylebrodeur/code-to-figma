@@ -87,11 +87,12 @@ Then in Figma: load plugin from `packages/plugin/manifest.json`, import `plugin-
 | Frame size from font-size + padding | ✅ | Inferred, not hardcoded |
 | Figma Variable Collections | ✅ | `tokenMapping` in config → COLOR/FLOAT variables created on import |
 | Tailwind v4 CSS-var syntax | ✅ | `bg-(--color-primary)` matched to `tokenMapping` |
-| CSS-in-JS (styled, emotion) | ❌ | Not supported |
+| styled-components / emotion — static CSS | ✅ Partial | `styled.div\`...\`` with no `${}` expressions |
 | Watch mode with unlink cleanup | ✅ | Removes `.figma.json` when source is deleted |
-| Dynamic `className` expressions | ⚠️ | `{isActive ? 'x' : 'y'}` not resolved |
-| `cn()` / `clsx()` with boolean conditions | ⚠️ | Unconditional args only |
-| CSS Modules | ✅ | `import styles from './Button.module.css'` + `className={styles.button}` |
+| Direct JSX ternary `className` | ✅ | Both string branches extracted |
+| `cn()` / `clsx()` — ternary and `&&` args | ✅ | All string branches extracted |
+| Template literal with string union prop | ✅ | `` `text-${size}` `` where `size: "sm" \| "lg"` — all values enumerated |
+| CSS Modules | ✅ | `className={styles.button}`, `cn(styles.a, styles.b)`, `styles[variant]`, `composes:` |
 
 See [references/SUPPORTED.md](references/SUPPORTED.md) for full spec.
 

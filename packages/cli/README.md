@@ -170,17 +170,19 @@ code-to-figma read --file-key ABC123 -o figma-read.json
 |---------|--------|
 | Static `className="..."` strings | ✅ Full |
 | TypeScript literal union props (`'a' \| 'b'`) | ✅ Full |
-| Template literals in `className` (static parts) | ✅ Full |
-| `cn()` / `clsx()` / `classnames()` — static string args | ✅ Full |
+| Template literals — static parts + single-identifier union interpolation | ✅ Full |
+| `cn()` / `clsx()` — static strings, ternary branches, logical `&&` args | ✅ Full |
 | Inline `style={{ backgroundColor, color, fontSize, fontWeight, borderRadius }}` | ✅ Full |
 | Arrow function + `React.FC<Props>` | ✅ Full |
 | Function declaration components | ✅ Full |
 | `interface Props` + `type Props` — prop type inference | ✅ Full |
 | Watch mode (`--watch`) with unlink cleanup | ✅ Full |
 | `FIGMA_ACCESS_TOKEN` env var for `read` command | ✅ Full |
-| CSS Modules (`import styles from './Btn.module.css'` + `className={styles.button}`) | ✅ Full |
-| Dynamic `className` expressions (conditional ternaries) | ⚠️ Limited (static quasis only) |
-| CSS-in-JS (styled-components, emotion) | ❌ Not supported |
+| CSS Modules (`className={styles.button}`, `cn(styles.a, styles.b)`, `styles[variant]`) | ✅ Full |
+| CSS `composes:` directives (same-file and cross-file) | ✅ Full |
+| Direct JSX ternary `className={a ? 'x' : 'y'}` | ✅ Full |
+| styled-components / `@emotion/styled` — static template literals (no `${}`) | ✅ Partial |
+| CSS-in-JS with runtime interpolations | ❌ Not supported |
 
 See [`../../code-to-figma/references/SUPPORTED.md`](../../code-to-figma/references/SUPPORTED.md) for detailed examples.
 

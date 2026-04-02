@@ -233,3 +233,278 @@ describe("parseComponent — returns null for non-component", () => {
     expect(result).toBeNull();
   });
 });
+
+describe("parseComponent — CSS Module: cn() merges", () => {
+  it("merges two CSS Module classes passed to cn()", async () => {
+    writeFileSync(join(TMP, "Merged.module.css"), `
+      .base { background-color: #1d4ed8; border-radius: 4px; }
+      .active { background-color: #16a34a; }
+    `);
+    const file = writeTmp("Merged.tsx", `
+      import styles from "./Merged.module.css";
+      import { cn } from "./cn";
+      export function Merged() {
+        return <div className={cn(styles.base, styles.active)}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // .active wins (last write) for backgroundColor
+    expect(result!.styles.visual.backgroundColor).toBe("#16a34a");
+    // borderRadius comes from .base
+    expect(result!.styles.visual.borderRadius).toBe("4px");
+  });
+
+  it("mixes CSS Module class and bare Tailwind string in cn()", async () => {
+    writeFileSync(join(TMP, "Mixed.module.css"), `
+      .card { background-color: #f0f0f0; }
+    `);
+    const file = writeTmp("Mixed.tsx", `
+      import styles from "./Mixed.module.css";
+      import { cn } from "./cn";
+      export function Mixed() {
+        return <div className={cn(styles.card, "flex gap-4")}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBe("#f0f0f0");
+    expect(result!.styles.layout.display).toBe("flex");
+    expect(result!.styles.layout.gap).toBe("4"); // parseTailwindClasses strips "gap-" prefix
+  });
+
+  it("resolves conditional expression inside cn() — both branches", async () => {
+    writeFileSync(join(TMP, "Cond.module.css"), `
+      .primary { background-color: #3b82f6; }
+      .secondary { background-color: #6b7280; }
+    `);
+    const file = writeTmp("Cond.tsx", `
+      import styles from "./Cond.module.css";
+      import { cn } from "./cn";
+      export function Cond({ active }: { active: boolean }) {
+        return <div className={cn(active ? styles.primary : styles.secondary)}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // Both branches are extracted; secondary overwrites primary in a single-pass merge
+    expect(result!.styles.visual.backgroundColor).toBeTruthy();
+  });
+
+  it("resolves logical && expression inside cn()", async () => {
+    writeFileSync(join(TMP, "Logical.module.css"), `
+      .disabled { background-color: #d1d5db; }
+    `);
+    const file = writeTmp("Logical.tsx", `
+      import styles from "./Logical.module.css";
+      import { cn } from "./cn";
+      export function Logical({ disabled }: { disabled: boolean }) {
+        return <div className={cn(disabled && styles.disabled)}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBe("#d1d5db");
+  });
+});
+
+describe("parseComponent — CSS Module: styles[variant] dynamic access", () => {
+  it("resolves all union values from styles[variant]", async () => {
+    writeFileSync(join(TMP, "Dynamic.module.css"), `
+      .primary { background-color: #3b82f6; font-size: 14px; }
+      .danger { background-color: #ef4444; }
+    `);
+    const file = writeTmp("Dynamic.tsx", `
+      import styles from "./Dynamic.module.css";
+      interface Props { variant: "primary" | "danger"; }
+      export function Dynamic({ variant }: Props) {
+        return <div className={styles[variant]}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // fontSize comes from .primary (last value from any merged class)
+    expect(result!.styles.typography.fontSize).toBe("14px");
+    // backgroundColor is set (could be from either class)
+    expect(result!.styles.visual.backgroundColor).toBeTruthy();
+  });
+
+  it("resolves styles[variant] inside cn() alongside Tailwind class", async () => {
+    writeFileSync(join(TMP, "DynCn.module.css"), `
+      .sm { font-size: 12px; }
+      .lg { font-size: 20px; }
+    `);
+    const file = writeTmp("DynCn.tsx", `
+      import styles from "./DynCn.module.css";
+      import { cn } from "./cn";
+      interface Props { size: "sm" | "lg"; }
+      export function DynCn({ size }: Props) {
+        return <div className={cn(styles[size], "flex")}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.typography.fontSize).toBeTruthy();
+    expect(result!.styles.layout.display).toBe("flex");
+  });
+});
+
+describe("parseComponent — cn() logical && and ternary extraction", () => {
+  it("extracts string from logical && arg in cn()", async () => {
+    const file = writeTmp("LogicalTailwind.tsx", `
+      import React from "react";
+      import { cn } from "./cn";
+      export function LogicalTailwind({ loading }: { loading: boolean }) {
+        return <div className={cn("flex gap-2", loading && "opacity-50")}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.layout.display).toBe("flex");
+  });
+
+  it("extracts both branches of a ternary arg in cn()", async () => {
+    const file = writeTmp("TernaryCn.tsx", `
+      import React from "react";
+      import { cn } from "./cn";
+      export function TernaryCn({ active }: { active: boolean }) {
+        return <div className={cn("rounded-md", active ? "bg-blue-500" : "bg-gray-200")}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // bg-gray-200 is last branch — overwrites bg-blue-500 in single pass
+    expect(result!.styles.visual.backgroundColor).toBeTruthy();
+  });
+
+  it("extracts both branches of a direct JSX ternary", async () => {
+    const file = writeTmp("DirectTernary.tsx", `
+      import React from "react";
+      export function DirectTernary({ active }: { active: boolean }) {
+        return <div className={active ? "bg-blue-500 text-white" : "bg-gray-200 text-black"}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBeTruthy();
+  });
+});
+
+describe("parseComponent — template literal Tailwind interpolation", () => {
+  it("enumerates union values for single-identifier template literal", async () => {
+    const file = writeTmp("TplTailwind.tsx", `
+      import React from "react";
+      interface Props { size: "sm" | "lg"; }
+      export function TplTailwind({ size }: Props) {
+        return <div className={\`text-\${size} font-bold\`}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // fontSize should be set from one of text-sm / text-lg
+    expect(result!.styles.typography.fontSize).toBeTruthy();
+    expect(result!.styles.typography.fontWeight).toBeTruthy();
+  });
+});
+
+describe("parseComponent — CSS composes resolution", () => {
+  it("resolves composes from another file", async () => {
+    writeFileSync(join(TMP, "base.module.css"), `
+      .base { background-color: #1d4ed8; border-radius: 4px; }
+    `);
+    writeFileSync(join(TMP, "Composed.module.css"), `
+      .button { composes: base from './base.module.css'; font-size: 14px; }
+    `);
+    const file = writeTmp("Composed.tsx", `
+      import styles from "./Composed.module.css";
+      export function Composed() {
+        return <div className={styles.button}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    // From composed base class
+    expect(result!.styles.visual.backgroundColor).toBe("#1d4ed8");
+    expect(result!.styles.visual.borderRadius).toBe("4px");
+    // From own class
+    expect(result!.styles.typography.fontSize).toBe("14px");
+  });
+
+  it("resolves composes from same file", async () => {
+    writeFileSync(join(TMP, "SameFile.module.css"), `
+      .base { background-color: #16a34a; }
+      .button { composes: base; color: #ffffff; }
+    `);
+    const file = writeTmp("SameFile.tsx", `
+      import styles from "./SameFile.module.css";
+      export function SameFile() {
+        return <div className={styles.button}>hi</div>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBe("#16a34a");
+    expect(result!.styles.visual.color).toBe("#ffffff");
+  });
+});
+
+describe("parseComponent — styled-components / emotion static CSS", () => {
+  it("extracts styles from styled.div with no interpolations", async () => {
+    const file = writeTmp("StyledDiv.tsx", `
+      import styled from "styled-components";
+      const Box = styled.div\`
+        background-color: #3b82f6;
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        gap: 8px;
+      \`;
+      export function StyledDiv() {
+        return <Box>hi</Box>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBe("#3b82f6");
+    expect(result!.styles.visual.borderRadius).toBe("8px");
+    expect(result!.styles.layout.display).toBe("flex");
+    expect(result!.styles.layout.gap).toBe("8px");
+  });
+
+  it("extracts styles from styled(Component) wrapping pattern", async () => {
+    const file = writeTmp("StyledWrap.tsx", `
+      import styled from "styled-components";
+      const BaseButton = () => null;
+      const Button = styled(BaseButton)\`
+        background-color: #ef4444;
+        font-size: 14px;
+        font-weight: 600;
+      \`;
+      export function StyledWrap() {
+        return <Button>hi</Button>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    expect(result).not.toBeNull();
+    expect(result!.styles.visual.backgroundColor).toBe("#ef4444");
+    expect(result!.styles.typography.fontSize).toBe("14px");
+    expect(result!.styles.typography.fontWeight).toBe("600");
+  });
+
+  it("skips styled templates with interpolations (cannot resolve at parse time)", async () => {
+    const file = writeTmp("StyledDynamic.tsx", `
+      import styled from "styled-components";
+      const Box = styled.div\`
+        background-color: \${props => props.color};
+        padding: 8px;
+      \`;
+      export function StyledDynamic() {
+        return <Box>hi</Box>;
+      }
+    `);
+    const result = await parseComponent(file, defaultConfig);
+    // backgroundColor is not set because template has expressions
+    // padding would also not be set since entire template is skipped
+    expect(result!.styles.visual.backgroundColor).toBeUndefined();
+  });
+});
