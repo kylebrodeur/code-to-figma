@@ -15,6 +15,10 @@ plugin-data.json  (bundled for plugin)
 Figma Canvas  (auto-layout frames + variant sets)
 ```
 
+## Documentation
+
+- [**End-to-End Workflow Guide**](./docs/WORKFLOW.md) — Full walkthrough: setup → scan → plugin → ongoing sync
+
 ## Packages
 
 | Package | Description | Docs |
