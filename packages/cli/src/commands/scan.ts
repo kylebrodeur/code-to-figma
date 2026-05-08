@@ -4,7 +4,7 @@ import pc from "picocolors";
 import glob from "fast-glob";
 import type { Config } from "../config.js";
 import { parseComponent } from "../parser/react-parser.js";
-import { generateFigmaJson } from "../generator/figma-generator.js";
+import { extractFigmaData } from "../renderer/extractor.js";
 
 export async function scanFile(
   pattern: string,
@@ -34,8 +34,8 @@ export async function scanFile(
         continue;
       }
 
-      // Generate Figma-compatible JSON
-      const figmaJson = generateFigmaJson(componentInfo, config);
+      // Generate Figma-compatible JSON via headless browser
+      const figmaJson = await extractFigmaData(componentInfo);
 
       // Write output
       const { name } = parse(filePath);
@@ -47,7 +47,6 @@ export async function scanFile(
       // Summary
       console.log(pc.dim(`  Variants: ${figmaJson.variants?.length || 1}`));
       console.log(pc.dim(`  Props detected: ${componentInfo.props?.length || 0}`));
-      console.log(pc.dim(`  Tokens mapped: ${figmaJson.tokens?.length || 0}`));
       console.log();
     } catch (error) {
       console.error(pc.red(`✗ Error processing ${filePath}:`), error);

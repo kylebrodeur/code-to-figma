@@ -1,6 +1,6 @@
 {
   "name": "@kylebrodeur/code-to-figma",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "CLI tool for syncing React components to Figma designs",
   "author": "Kyle Brodeur",
   "license": "MIT",
@@ -41,9 +41,9 @@
       "import": "./dist/parser/index.js",
       "types": "./dist/parser/index.d.ts"
     },
-    "./generator": {
-      "import": "./dist/generator/index.js",
-      "types": "./dist/generator/index.d.ts"
+    "./renderer": {
+      "import": "./dist/renderer/extractor.js",
+      "types": "./dist/renderer/extractor.d.ts"
     }
   },
   "bin": {
@@ -68,10 +68,12 @@
     "@babel/parser": "^7.24.0",
     "@babel/traverse": "^7.24.0",
     "@babel/types": "^7.24.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "chokidar": "^3.6.0",
     "commander": "^12.0.0",
     "fast-glob": "^3.3.0",
     "picocolors": "^1.0.0",
+    "playwright": "^1.59.1",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0"
   },
@@ -79,7 +81,11 @@
     "@biomejs/biome": "^1.8.0",
     "@types/babel__traverse": "^7.20.0",
     "@types/node": "^20.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "execa": "^9.6.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "typescript": "^5.4.0",
     "vite": "^8.0.3",
     "vitest": "^4.1.2"

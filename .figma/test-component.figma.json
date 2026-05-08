@@ -1,0 +1,417 @@
+{
+  "name": "Button",
+  "type": "COMPONENT_SET",
+  "variants": [
+    {
+      "name": "primary/sm",
+      "propValues": {
+        "variant": "primary",
+        "size": "sm"
+      },
+      "frame": {
+        "width": 103.671875,
+        "height": 32,
+        "fills": [
+          {
+            "r": 0.1450980392156863,
+            "g": 0.38823529411764707,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 6,
+          "right": 12,
+          "bottom": 6,
+          "left": 12
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 14,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "primary/md",
+      "propValues": {
+        "variant": "primary",
+        "size": "md"
+      },
+      "frame": {
+        "width": 123.046875,
+        "height": 40,
+        "fills": [
+          {
+            "r": 0.1450980392156863,
+            "g": 0.38823529411764707,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 8,
+          "right": 16,
+          "bottom": 8,
+          "left": 16
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 16,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "primary/lg",
+      "propValues": {
+        "variant": "primary",
+        "size": "lg"
+      },
+      "frame": {
+        "width": 150.421875,
+        "height": 52,
+        "fills": [
+          {
+            "r": 0.1450980392156863,
+            "g": 0.38823529411764707,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 12,
+          "right": 24,
+          "bottom": 12,
+          "left": 24
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 18,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "secondary/sm",
+      "propValues": {
+        "variant": "secondary",
+        "size": "sm"
+      },
+      "frame": {
+        "width": 103.671875,
+        "height": 32,
+        "fills": [
+          {
+            "r": 0.8980392156862745,
+            "g": 0.9058823529411765,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 6,
+          "right": 12,
+          "bottom": 6,
+          "left": 12
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 14,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "secondary/md",
+      "propValues": {
+        "variant": "secondary",
+        "size": "md"
+      },
+      "frame": {
+        "width": 123.046875,
+        "height": 40,
+        "fills": [
+          {
+            "r": 0.8980392156862745,
+            "g": 0.9058823529411765,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 8,
+          "right": 16,
+          "bottom": 8,
+          "left": 16
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 16,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "secondary/lg",
+      "propValues": {
+        "variant": "secondary",
+        "size": "lg"
+      },
+      "frame": {
+        "width": 150.421875,
+        "height": 52,
+        "fills": [
+          {
+            "r": 0.8980392156862745,
+            "g": 0.9058823529411765,
+            "b": 0.9215686274509803,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 12,
+          "right": 24,
+          "bottom": 12,
+          "left": 24
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 18,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "destructive/sm",
+      "propValues": {
+        "variant": "destructive",
+        "size": "sm"
+      },
+      "frame": {
+        "width": 103.671875,
+        "height": 32,
+        "fills": [
+          {
+            "r": 0.8627450980392157,
+            "g": 0.14901960784313725,
+            "b": 0.14901960784313725,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 6,
+          "right": 12,
+          "bottom": 6,
+          "left": 12
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 14,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "destructive/md",
+      "propValues": {
+        "variant": "destructive",
+        "size": "md"
+      },
+      "frame": {
+        "width": 123.046875,
+        "height": 40,
+        "fills": [
+          {
+            "r": 0.8627450980392157,
+            "g": 0.14901960784313725,
+            "b": 0.14901960784313725,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 8,
+          "right": 16,
+          "bottom": 8,
+          "left": 16
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 16,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "destructive/lg",
+      "propValues": {
+        "variant": "destructive",
+        "size": "lg"
+      },
+      "frame": {
+        "width": 150.421875,
+        "height": 52,
+        "fills": [
+          {
+            "r": 0.8627450980392157,
+            "g": 0.14901960784313725,
+            "b": 0.14901960784313725,
+            "a": 1
+          }
+        ],
+        "padding": {
+          "top": 12,
+          "right": 24,
+          "bottom": 12,
+          "left": 24
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 18,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "outline/sm",
+      "propValues": {
+        "variant": "outline",
+        "size": "sm"
+      },
+      "frame": {
+        "width": 107.671875,
+        "height": 36,
+        "fills": [],
+        "padding": {
+          "top": 6,
+          "right": 12,
+          "bottom": 6,
+          "left": 12
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 14,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "outline/md",
+      "propValues": {
+        "variant": "outline",
+        "size": "md"
+      },
+      "frame": {
+        "width": 127.046875,
+        "height": 44,
+        "fills": [],
+        "padding": {
+          "top": 8,
+          "right": 16,
+          "bottom": 8,
+          "left": 16
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 16,
+          "fontWeight": 500
+        }
+      }
+    },
+    {
+      "name": "outline/lg",
+      "propValues": {
+        "variant": "outline",
+        "size": "lg"
+      },
+      "frame": {
+        "width": 154.421875,
+        "height": 56,
+        "fills": [],
+        "padding": {
+          "top": 12,
+          "right": 24,
+          "bottom": 12,
+          "left": 24
+        },
+        "gap": 0,
+        "cornerRadius": 6,
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "typography": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+          "fontSize": 18,
+          "fontWeight": 500
+        }
+      }
+    }
+  ]
+}

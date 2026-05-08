@@ -5,8 +5,7 @@ import {
   getOrCreatePage, clearByName, restackVertical,
 } from './primitives';
 import type {
-  FigmaJsonOutput, FigmaVariant, FigmaFill, FigmaStroke,
-  FigmaEffect, FigmaAutoLayout, FigmaPadding, PluginMessage, UIMessage, FigmaToken,
+  FigmaJsonOutput, ExtractedVariantData, PluginMessage, UIMessage
 } from './types';
 
 const PAGE_NAME = 'code-to-figma';
@@ -29,131 +28,68 @@ function sendError(msg: string): void {
 }
 
 // ── APPLY FILLS ──
-function applyFills(node: GeometryMixin, fills: FigmaFill[]): void {
+function applyFills(node: GeometryMixin, fills: { r: number; g: number; b: number; a: number }[]): void {
   if (!fills || fills.length === 0) {
     node.fills = noFill();
     return;
   }
   const paintList: Paint[] = [];
   for (const f of fills) {
-    if (f.type === 'SOLID' && f.color) {
-      paintList.push({
-        type: 'SOLID',
-        color: { r: f.color.r, g: f.color.g, b: f.color.b },
-        opacity: f.opacity !== undefined ? f.opacity : f.color.a,
-      });
-    }
-    // Gradient and image fills can be extended later
+    paintList.push({
+      type: 'SOLID',
+      color: { r: f.r, g: f.g, b: f.b },
+      opacity: f.a,
+    });
   }
   node.fills = paintList;
 }
 
-// ── APPLY STROKES ──
-function applyStrokes(node: GeometryMixin, strokes: FigmaStroke[]): void {
-  if (!strokes || strokes.length === 0) return;
-  const strokeList: Paint[] = [];
-  for (const s of strokes) {
-    strokeList.push({
-      type: 'SOLID',
-      color: { r: s.color.r, g: s.color.g, b: s.color.b },
-      opacity: s.color.a,
-    });
-  }
-  node.strokes = strokeList;
-  if (strokes[0]) {
-    node.strokeWeight = strokes[0].weight;
-    node.strokeAlign = strokes[0].alignment;
-  }
-}
-
-// ── APPLY EFFECTS ──
-function applyEffects(node: BlendMixin, effects: FigmaEffect[]): void {
-  if (!effects || effects.length === 0) return;
-  const effectList: Effect[] = [];
-  for (const e of effects) {
-    if (e.type === 'DROP_SHADOW' || e.type === 'INNER_SHADOW') {
-      effectList.push({
-        type: e.type,
-        color: e.color ? { r: e.color.r, g: e.color.g, b: e.color.b, a: e.color.a } : { r: 0, g: 0, b: 0, a: 0.25 },
-        offset: e.offset ? { x: e.offset.x, y: e.offset.y } : { x: 0, y: 4 },
-        radius: e.radius,
-        spread: e.spread !== undefined ? e.spread : 0,
-        visible: true,
-        blendMode: 'NORMAL',
-      });
-    } else if (e.type === 'LAYER_BLUR' || e.type === 'BACKGROUND_BLUR') {
-      effectList.push({
-        type: e.type,
-        blurType: 'NORMAL',
-        radius: e.radius,
-        visible: true,
-      } as Effect);
-    }
-  }
-  node.effects = effectList;
-}
-
-// ── APPLY PADDING ──
-function applyPadding(frame: FrameNode, padding?: FigmaPadding): void {
-  if (!padding) return;
-  frame.paddingTop = padding.top;
-  frame.paddingRight = padding.right;
-  frame.paddingBottom = padding.bottom;
-  frame.paddingLeft = padding.left;
-}
-
-// ── APPLY AUTO-LAYOUT ──
-function applyAutoLayout(frame: FrameNode, layout: FigmaAutoLayout): void {
-  frame.layoutMode = layout.mode;
-  frame.layoutWrap = layout.wrap ? 'WRAP' : 'NO_WRAP';
-  frame.itemSpacing = layout.gap;
-  applyPadding(frame, layout.padding);
-
-  // Primary axis alignment
-  const primaryMap: Record<string, 'MIN' | 'CENTER' | 'MAX' | 'SPACE_BETWEEN'> = {
-    MIN: 'MIN',
-    CENTER: 'CENTER',
-    MAX: 'MAX',
-    SPACE_BETWEEN: 'SPACE_BETWEEN',
-  };
-  frame.primaryAxisAlignItems = primaryMap[layout.alignment.primary] || 'MIN';
-
-  // Counter axis alignment
-  const counterMap: Record<string, 'MIN' | 'CENTER' | 'MAX'> = {
-    MIN: 'MIN',
-    CENTER: 'CENTER',
-    MAX: 'MAX',
-  };
-  frame.counterAxisAlignItems = counterMap[layout.alignment.counter] || 'MIN';
-}
-
 // ── BUILD VARIANT FRAME ──
 async function buildVariantFrame(
-  variant: FigmaVariant,
-  styles: FigmaJsonOutput['styles'],
-  autoLayout: FigmaAutoLayout,
+  variant: ExtractedVariantData
 ): Promise<FrameNode> {
   const frame = createFrame(variant.name, variant.frame.width);
   frame.resize(variant.frame.width, variant.frame.height);
 
-  // Apply auto-layout from component-level settings
-  applyAutoLayout(frame, autoLayout);
+  // Apply auto-layout properties derived from DOM
+  if (variant.frame.display === 'flex' || variant.frame.display === 'inline-flex') {
+    frame.layoutMode = variant.frame.flexDirection.includes('column') ? 'VERTICAL' : 'HORIZONTAL';
+    frame.itemSpacing = variant.frame.gap || 0;
+    
+    const alignMap: Record<string, "MIN" | "CENTER" | "MAX" | "SPACE_BETWEEN"> = {
+      'flex-start': 'MIN',
+      'center': 'CENTER',
+      'flex-end': 'MAX',
+      'space-between': 'SPACE_BETWEEN'
+    };
+    
+    if (frame.layoutMode === 'HORIZONTAL') {
+      frame.primaryAxisAlignItems = alignMap[variant.frame.justifyContent] || 'MIN';
+      frame.counterAxisAlignItems = alignMap[variant.frame.alignItems] || 'MIN';
+    } else {
+      frame.primaryAxisAlignItems = alignMap[variant.frame.justifyContent] || 'MIN';
+      frame.counterAxisAlignItems = alignMap[variant.frame.alignItems] || 'MIN';
+    }
+  }
 
-  // Override padding/gap from variant if specified
-  if (variant.frame.padding) applyPadding(frame, variant.frame.padding);
-  if (variant.frame.gap !== undefined) frame.itemSpacing = variant.frame.gap;
+  // Padding
+  frame.paddingTop = variant.frame.padding.top;
+  frame.paddingRight = variant.frame.padding.right;
+  frame.paddingBottom = variant.frame.padding.bottom;
+  frame.paddingLeft = variant.frame.padding.left;
+  
+  // Corner Radius
+  frame.cornerRadius = variant.frame.cornerRadius;
 
   // Apply visual properties
   applyFills(frame, variant.frame.fills);
-  applyStrokes(frame, variant.frame.strokes);
-  applyEffects(frame, variant.frame.effects);
 
   // Add a text label showing the variant name for identification
-  const fontFamily = styles.typography.fontFamily || 'Inter';
-  const fontSize = (typeof styles.typography.fontSize === 'number' && styles.typography.fontSize > 0)
-    ? styles.typography.fontSize
+  const fontFamily = variant.frame.typography.fontFamily.split(',')[0].replace(/['"]/g, '') || 'Inter';
+  const fontSize = (typeof variant.frame.typography.fontSize === 'number' && variant.frame.typography.fontSize > 0)
+    ? variant.frame.typography.fontSize
     : 14;
-  const fontWeight = styles.typography.fontWeight || 400;
+  const fontWeight = variant.frame.typography.fontWeight || 400;
   const fontStyle = fontWeight >= 700 ? 'Bold' : fontWeight >= 500 ? 'Medium' : 'Regular';
 
   try {
@@ -180,28 +116,6 @@ async function buildVariantFrame(
   return frame;
 }
 
-// ── CREATE FIGMA VARIABLES ──
-async function maybeCreateVariables(data: FigmaJsonOutput): Promise<void> {
-  if (!data.tokens || data.tokens.length === 0) return;
-
-  // Remove existing collection with same name to avoid duplicates
-  const existing = figma.variables.getLocalVariableCollections()
-    .find((c) => c.name === data.name);
-  if (existing) existing.remove();
-
-  const collection = figma.variables.createVariableCollection(data.name);
-  const modeId = collection.modes[0].modeId;
-
-  for (const token of data.tokens) {
-    try {
-      const variable = figma.variables.createVariable(token.name, collection, token.type);
-      variable.setValueForMode(modeId, token.value as VariableValue);
-    } catch (_e) {
-      // Skip invalid tokens silently
-    }
-  }
-}
-
 // ── BUILD COMPONENT ──
 async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
   sendStatus('Building ' + data.name + '...');
@@ -212,12 +126,13 @@ async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
   // Clear any existing frame with this name
   clearByName(pg, data.name);
 
-  // Create Figma variable collection from tokens if present
-  await maybeCreateVariables(data);
-
   // Collect unique font families to preload
-  const fontFamilies: string[] = [data.styles.typography.fontFamily || 'Inter'];
-  await loadFonts(fontFamilies);
+  const fontFamilies = new Set<string>(['Inter']);
+  data.variants.forEach(v => {
+    const family = v.frame.typography.fontFamily.split(',')[0].replace(/['"]/g, '');
+    if (family) fontFamilies.add(family);
+  });
+  await loadFonts(Array.from(fontFamilies));
 
   if (data.type === 'COMPONENT_SET') {
     // Create a wrapper frame for the component set
@@ -239,8 +154,10 @@ async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
 
     // Build each variant
     const variantRow = hRow('variants', 16);
+    variantRow.layoutWrap = 'WRAP';
+    
     for (const variant of data.variants) {
-      const variantFrame = await buildVariantFrame(variant, data.styles, data.autoLayout);
+      const variantFrame = await buildVariantFrame(variant);
       variantRow.appendChild(variantFrame);
     }
     wrapper.appendChild(variantRow);
@@ -253,7 +170,7 @@ async function buildComponent(data: FigmaJsonOutput): Promise<FrameNode> {
     if (!variant) {
       throw new Error('Component has no variants');
     }
-    const frame = await buildVariantFrame(variant, data.styles, data.autoLayout);
+    const frame = await buildVariantFrame(variant);
     frame.name = data.name;
     pg.appendChild(frame);
     return frame;
@@ -271,7 +188,7 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
           return;
         }
         sendStatus('Importing ' + components.length + ' component(s)...');
-        await loadFonts();
+        await loadFonts(['Inter']);
         for (const comp of components) {
           await buildComponent(comp);
         }

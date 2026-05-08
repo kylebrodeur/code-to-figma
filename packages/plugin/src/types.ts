@@ -13,92 +13,30 @@ export interface FigmaToken {
 
 export interface FigmaJsonOutput {
   name: string;
-  type: "COMPONENT_SET" | "COMPONENT";
-  variants: FigmaVariant[];
-  styles: FigmaStyle;
-  tokens: FigmaToken[];
-  props: FigmaProp[];
-  autoLayout: FigmaAutoLayout;
+  type: string;
+  variants: ExtractedVariantData[];
 }
 
-export interface FigmaVariant {
+export interface ExtractedVariantData {
   name: string;
-  properties: Record<string, string>;
+  propValues: Record<string, string>;
   frame: {
     width: number;
     height: number;
-    fills: FigmaFill[];
-    strokes: FigmaStroke[];
-    effects: FigmaEffect[];
-    padding?: FigmaPadding;
-    gap?: number;
-  };
-}
-
-export interface FigmaStyle {
-  layout: {
-    display: "FLEX" | "GRID" | "NONE";
-    flexDirection?: "ROW" | "COLUMN";
+    fills: { r: number; g: number; b: number; a: number }[];
+    padding: { top: number; right: number; bottom: number; left: number };
     gap: number;
-    padding: FigmaPadding;
-    alignment: {
-      horizontal: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFY";
-      vertical: "TOP" | "CENTER" | "BOTTOM";
+    cornerRadius: number;
+    display: string;
+    flexDirection: string;
+    alignItems: string;
+    justifyContent: string;
+    typography: {
+      fontFamily: string;
+      fontSize: number;
+      fontWeight: number;
     };
   };
-  typography: {
-    fontFamily: string;
-    fontSize: number;
-    fontWeight: number;
-    lineHeight: number | "AUTO";
-    letterSpacing: number;
-  };
-}
-
-export interface FigmaAutoLayout {
-  mode: "HORIZONTAL" | "VERTICAL";
-  wrap: boolean;
-  gap: number;
-  padding: FigmaPadding;
-  alignment: {
-    primary: "MIN" | "CENTER" | "MAX" | "SPACE_BETWEEN";
-    counter: "MIN" | "CENTER" | "MAX";
-  };
-}
-
-export interface FigmaPadding {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
-
-export interface FigmaFill {
-  type: "SOLID" | "GRADIENT_LINEAR" | "GRADIENT_RADIAL" | "IMAGE";
-  color?: { r: number; g: number; b: number; a: number };
-  opacity?: number;
-}
-
-export interface FigmaStroke {
-  type: "SOLID";
-  color: { r: number; g: number; b: number; a: number };
-  weight: number;
-  alignment: "INSIDE" | "OUTSIDE" | "CENTER";
-}
-
-export interface FigmaEffect {
-  type: "DROP_SHADOW" | "INNER_SHADOW" | "LAYER_BLUR" | "BACKGROUND_BLUR";
-  color?: { r: number; g: number; b: number; a: number };
-  offset?: { x: number; y: number };
-  radius: number;
-  spread?: number;
-}
-
-export interface FigmaProp {
-  name: string;
-  type: string;
-  defaultValue?: string;
-  variantProperty: boolean;
 }
 
 // Plugin message protocol

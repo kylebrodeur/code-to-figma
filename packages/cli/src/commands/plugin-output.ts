@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync } from "fs";
 import { join, resolve } from "path";
 import pc from "picocolors";
-import type { FigmaJsonOutput } from "../generator/figma-generator.js";
+import type { FigmaJsonOutput } from "../renderer/extractor.js";
 
 export interface PluginOutputOptions {
   input: string;

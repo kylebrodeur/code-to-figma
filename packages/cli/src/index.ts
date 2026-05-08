@@ -1,6 +1,6 @@
 // Main exports for @kylebrodeur/code-to-figma
 export { parseComponent } from "./parser/react-parser.js";
-export { generateFigmaJson } from "./generator/figma-generator.js";
+export { extractFigmaData, type FigmaJsonOutput } from "./renderer/extractor.js";
 export { loadConfig, type Config } from "./config.js";
 
 // Re-export command functions for programmatic use

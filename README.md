@@ -1,12 +1,12 @@
 # code-to-figma
 
-Parse React components with Babel AST, generate structured `.figma.json` files, and render them as Figma frames using a local plugin — all from the command line.
+Parse React components with a hybrid AST + Headless Browser approach, extract pixel-perfect computed styles, generate structured `.figma.json` files, and render them as Figma frames using a local plugin — all from the command line.
 
 ```
 React Component (.tsx)
         │
-        ▼  code-to-figma scan
-.figma.json  (structured component data)
+        ▼  code-to-figma scan (AST finds API + Playwright traces DOM)
+.figma.json  (structured pixel-perfect data)
         │
         ▼  code-to-figma plugin-output
 plugin-data.json  (bundled for plugin)
@@ -73,27 +73,24 @@ Components render on a page named `code-to-figma` as auto-layout frames.
 
 ---
 
-## What Gets Parsed
+## How it Works (The Hybrid Architecture)
 
-The CLI uses Babel AST to extract:
+Code-to-Figma uses a two-step hybrid approach to perfectly map complex React components to Figma:
 
-| Feature | What's extracted |
+1. **AST Parsing (The API):** It parses your TypeScript file using Babel to find exactly what props and variants exist (e.g. `variant: 'primary' | 'secondary'`).
+2. **Headless DOM Tracing (The Visuals):** It dynamically creates a Vite server, mounts every variant combination of your component, opens a headless browser (Playwright), and uses `window.getComputedStyle()` to trace the exact pixel values.
+
+Because it measures the real browser output, it **is immune to complex React logic**. It doesn't matter if you use 10 ternary operators, complex CSS modules, or heavily nested Tailwind classes — if it renders in the browser, it syncs to Figma.
+
+| Feature | How it's extracted |
 |---------|------------------|
-| **Variant props** | String literal unions (`'primary' \| 'secondary'`) → one frame per value |
+| **Variant props** | Extracted from TypeScript literal unions or `cva()` definitions |
 | **Component type** | `COMPONENT_SET` (has variant prop) or `COMPONENT` (single frame) |
-| **Layout** | `flex`, `flex-row/col`, `gap-*`, `p-*` Tailwind classes |
-| **Auto-layout** | Direction, gap, padding, alignment mode |
-| **Typography** | `font-*`, `text-*` size classes, `fontFamily` |
-| **Fills** | `bg-*` Tailwind classes → exact RGBA fills (22 colors × 11 shades 50–950) |
-| **Inline styles** | `style={{ backgroundColor, color, fontSize, fontWeight, borderRadius }}` |
-| **Corner radius** | `rounded-*` classes → `cornerRadius` px value per frame |
-| **Frame dimensions** | Inferred from font-size + padding; not hardcoded |
-| **`cn()`/`clsx()` classes** | Static string args extracted from `cn()`, `clsx()`, `classnames()`, `twMerge()` |
-| **Prop types** | TypeScript literal union annotations surfaced in the `props[]` array |
-| **Props list** | All destructured props with `variantProperty` flag |
-| **Design tokens** | CSS-class → Figma path via `tokenMapping` → `tokens[]` with resolved values; plugin creates a Figma Variable Collection on import |
-
-**Limitations:** Only TypeScript union literals are used to resolve `styles[variant]` — runtime-only dynamic keys can't be inferred. The built-in palette covers all 22 standard Tailwind colors at shades 50–950; custom/extended colors need `tokenMapping`. See [SUPPORTED.md](./code-to-figma/references/SUPPORTED.md) for the full matrix.
+| **Dimensions** | `rect.width` and `rect.height` from the rendered DOM node |
+| **Auto-layout** | Mapped from computed `display: flex`, `gap`, `flex-direction`, `align-items`, etc. |
+| **Typography** | `fontSize`, `fontWeight`, and `fontFamily` from computed styles |
+| **Fills** | Computed `backgroundColor` resolved to precise RGBA floats |
+| **Corner radius** | Computed `borderRadius` px value per frame |
 
 ---
 
