@@ -101,16 +101,14 @@ Output: one `.figma.json` file per component found.
 
 ### 2.3 What gets extracted
 
-The parser reads your TypeScript source (no build step required) and extracts:
+The parser reads your TypeScript source to find your component API, then uses a headless browser (Playwright) to capture the perfect visual representation.
 
 - **Variant props** — `variant?: 'primary' | 'secondary'` → one Figma frame per value
-- **Colors** — Tailwind `bg-*`, `text-*`, `border-*` → resolved to RGBA
-- **Layout** — `flex`, `flex-row/col`, `gap-*`, `p-*`, `px-*`, `py-*` → auto-layout settings
-- **Typography** — `text-sm`, `font-bold`, `font-sans` → fontSize, fontWeight, fontFamily
-- **Border radius** — `rounded-*` → cornerRadius
-- **CSS Modules** — `styles.button`, `cn(styles.a, styles.b)`, `styles[variant]`, `composes:`
-- **CVA** — `cva("base", { variants: { … } })` → full cross-product of variants
-- **cn()/clsx()** — static strings, ternary branches, logical `&&` args
+- **Dimensions** — Precise computed width and height from the rendered DOM
+- **Fills** — `backgroundColor` resolved to accurate RGBA values from computed styles
+- **Auto-layout** — `display: flex`, `gap`, `padding` computed from the browser DOM
+- **Typography** — `fontSize`, `fontWeight`, and `fontFamily` from computed styles
+- **Border radius** — Computed `borderRadius` values from the DOM
 
 ### 2.4 Example component and output
 
