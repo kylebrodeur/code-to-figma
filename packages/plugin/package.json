@@ -1,6 +1,6 @@
 {
   "name": "@kylebrodeur/code-to-figma-plugin",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Figma plugin that renders components from code-to-figma JSON",
   "author": "Kyle Brodeur",
   "license": "MIT",
